@@ -1,0 +1,171 @@
+#!/usr/bin/env python3
+"""gate — swe-agent 门禁运行器(YCFS L2 骨架,本项目实例)。
+
+一条命令跑全部**已实现**验收腿:任一腿红 → 退出非零。
+未实现的门禁腿(交叉编译/静态分析/单测/仿真/60730 自检表)**诚实标 BLOCKED**,
+既不算绿也不算红——它们等 PENDING_HUMAN 的 Q1–Q6 解锁,**绝不伪绿**。
+
+铁律(继承自 templates/gate.py):
+  · 门槛只紧不松 —— *_MIN 常量只允许往大改,永不为「凑过」调小。
+  · 促升器不信调用方 —— 发布/促升前自己重跑本 gate。
+  · 观测不干预门禁 —— 落历史行失败只警告,绝不影响门禁结果。
+  · 不伪绿 —— 一条腿没真跑过,不许显示为通过(BLOCKED ≠ PASS)。
+"""
+import json
+import os
+import re
+import sys
+import time
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+
+# ── 硬门槛(只紧不松) ──
+CARD_MIN = 11          # BACKLOG 首批卡数下限
+INTERVIEW_Q_MIN = 6    # PENDING_HUMAN 架构级问题数下限
+REQUIRED_DOCS = [
+    "docs/ARCHITECTURE.md",
+    "docs/verifier-firmware.md",
+    "docs/reuse-landscape.md",
+    "docs/unknown-map.md",
+]
+CARD_FIELDS = ("状态:", "翻译:", "验收")  # 每张卡必备字段
+
+
+def _read(rel):
+    with open(os.path.join(HERE, rel), encoding="utf-8") as f:
+        return f.read()
+
+
+# ── 已实现的绿腿:脚手架完整性自检 ──
+def leg_scaffold_integrity():
+    """决策无关的真实绿腿:验证 v0 脚手架结构完整、每张卡机器可查。"""
+    problems = []
+
+    # 1) 必备文档齐全
+    for doc in REQUIRED_DOCS:
+        if not os.path.exists(os.path.join(HERE, doc)):
+            problems.append(f"缺文档 {doc}")
+
+    # 2) BACKLOG 卡数与字段完整性
+    try:
+        backlog = _read("BACKLOG.md")
+    except FileNotFoundError:
+        return ["缺 BACKLOG.md"], {"cards": 0}
+    # 卡 = 形如 "### A1 · ..." 的标题(字母+数字)
+    card_headers = re.findall(r"^### ([A-Z]\d+) ·", backlog, re.MULTILINE)
+    n_cards = len(card_headers)
+    if n_cards < CARD_MIN:
+        problems.append(f"卡数 {n_cards} < 硬门槛 {CARD_MIN}")
+    # 每张卡的块必须含必备字段
+    blocks = re.split(r"^### [A-Z]\d+ ·", backlog, flags=re.MULTILINE)[1:]
+    for hid, block in zip(card_headers, blocks):
+        for field in CARD_FIELDS:
+            if field not in block:
+                problems.append(f"卡 {hid} 缺字段「{field}」")
+
+    # 3) DIGEST 至少一行数据(R\d 开头的表格行)
+    try:
+        digest = _read("DIGEST.md")
+        if not re.search(r"^\| R\d+ \|", digest, re.MULTILINE):
+            problems.append("DIGEST 无数据行(应有 | R1 | ...)")
+    except FileNotFoundError:
+        problems.append("缺 DIGEST.md")
+
+    # 4) PENDING_HUMAN 的架构级问题数达标
+    try:
+        ph = _read("GATES/PENDING_HUMAN.md")
+        n_q = len(re.findall(r"^### Q\d+ ·", ph, re.MULTILINE))
+        if n_q < INTERVIEW_Q_MIN:
+            problems.append(f"PENDING_HUMAN 问题数 {n_q} < 硬门槛 {INTERVIEW_Q_MIN}")
+    except FileNotFoundError:
+        problems.append("缺 GATES/PENDING_HUMAN.md")
+        n_q = 0
+
+    return problems, {"cards": n_cards, "docs": len(REQUIRED_DOCS), "interview_q": n_q}
+
+
+# ── 已实现的绿腿:文档内不出现伪 verified(状态机治理占位) ──
+def leg_no_fake_verified():
+    """卡不得自称 verified——verified 唯一路径穿过人的真机签字(BACKLOG C1)。
+    v0 阶段没有任何卡应处于 verified;检出即红。"""
+    problems = []
+    backlog = _read("BACKLOG.md")
+    if re.search(r"状态:`verified`", backlog):
+        problems.append("发现 verified 卡但 v0 无真机签字管道——疑似绕过边")
+    return problems, {}
+
+
+# 绿腿:现在就能真跑、能给绿灯的
+ACTIVE_LEGS = [
+    ("scaffold-integrity", leg_scaffold_integrity),
+    ("no-fake-verified", leg_no_fake_verified),
+]
+
+# BLOCKED 腿:结构上要有,但等决策/实现解锁。诚实展示,绝不伪绿。
+BLOCKED_LEGS = [
+    ("cross-compile (arm-none-eabi headless)", "阻塞于 Q1 (MCU/工具链;卡 F1 开源基线可先做)"),
+    ("static-analysis MISRA (cppcheck+clang-tidy)", "待 F1 之后实现"),
+    ("host-unit-test (Ceedling/Unity/CMock)", "待电机领域包 G1 (阻塞于 Q1)"),
+    ("renode-sim (map, not territory)", "待 F1 产出二进制后"),
+    ("iec60730-selftest-table (L0)", "阻塞于 Q2/Q4 (卡 B2)"),
+    ("provenance-check 中英等强 (L1)", "待卡 D1 实现"),
+]
+
+
+def main():
+    W = 82
+    print("=" * W)
+    print("swe-agent gate · YCFS L2 门禁(v0)")
+    print("-" * W)
+    failures, legs_detail = [], []
+    t0 = time.time()
+
+    for i, (name, fn) in enumerate(ACTIVE_LEGS, 1):
+        ts = time.time()
+        try:
+            problems, counts = fn()
+        except Exception as e:  # noqa: BLE001
+            problems, counts = [f"腿异常: {e}"], {}
+        dt = time.time() - ts
+        ok = not problems
+        legs_detail.append((name, ok, dt))
+        cnt = "  ".join(f"{k}={v}" for k, v in counts.items())
+        print(f"[{i}/{len(ACTIVE_LEGS)}] {'✅' if ok else '❌'} {name}  ({dt:.2f}s)  {cnt}")
+        if not ok:
+            for pr in problems:
+                print(f"        ✗ {pr}")
+            failures.append(name)
+
+    print("-" * W)
+    print(f"BLOCKED(诚实展示,不计入绿,等解锁) — {len(BLOCKED_LEGS)} 腿:")
+    for name, why in BLOCKED_LEGS:
+        print(f"   ⏸  {name}  —  {why}")
+
+    print("-" * W)
+    _append_history(legs_detail, failures, len(BLOCKED_LEGS), time.time() - t0)
+
+    if failures:
+        print(f"门禁: ❌ FAIL — {len(failures)}/{len(ACTIVE_LEGS)} 活跃腿未过: {', '.join(failures)}")
+        sys.exit(1)
+    print(f"门禁: ✅ PASS — 全部 {len(ACTIVE_LEGS)} 活跃腿通过;{len(BLOCKED_LEGS)} 腿 BLOCKED 待解锁(非绿)。")
+    sys.exit(0)
+
+
+def _append_history(legs, failures, n_blocked, total_dt):
+    """观测:每次运行落一行时间序列。落行失败只警告——观测永不干预门禁。"""
+    try:
+        row = {
+            "result": "PASS" if not failures else "FAIL",
+            "active_legs": len(legs),
+            "failed": failures,
+            "blocked_legs": n_blocked,
+            "duration_s": round(total_dt, 2),
+        }
+        with open(os.path.join(HERE, "gate_history.jsonl"), "a", encoding="utf-8") as f:
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+    except Exception as e:  # noqa: BLE001
+        print(f"        (警告: gate 历史落行失败: {e})")
+
+
+if __name__ == "__main__":
+    main()
