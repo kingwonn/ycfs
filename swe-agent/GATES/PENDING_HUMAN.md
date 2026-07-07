@@ -11,7 +11,11 @@
 
 ## ⏳ 仍等人的问题
 
-### Q2 · 老项目「表格自测」样例(原话:"会有测试表格以后说")
+### Q7 · 执行脊柱组合签字(D-005 提案,完整对比见 [docs/spine-comparison.md](../docs/spine-comparison.md))
+- **背景**:立法者对 OpenHands 路线不满意,点名六方重审(2026-07-07 六路并行调研完成)。
+- **提案**:执行脊柱 = **opencode server(主,MIT/183k★/模型无关/真 C-S)+ 可插拔适配层**(保留切换 Claude Agent SDK/Codex);沙箱 = 自建 Docker(F1 已验证)为基线;前端 = Vercel AI SDK 7 + AI Elements(InlineCitation 溯源)+ 抄 coding-agent-template 骨架;Hermes 排除;AWS 取素材(IDT 测试套件/Kiro spec 流程)不取脊柱。
+- **等什么**:签字采纳 / 指定调整(如「主选换 Claude Agent SDK」)。
+- **解锁**:A1 执行脊柱卡重写并开工。
 - **等什么**:一份真实自测表(行是什么、真值从哪来、布尔还是数值容差)。
 - **解锁**:B2 的 L0 表形态定稿。骨架先按推荐路径搭(60730 表+认证 STL+异模判题),样例到达触发前提重审。
 

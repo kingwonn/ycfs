@@ -10,10 +10,10 @@
 ## Lane A · 执行核心(决策无关)
 
 ### A1 · 执行脊柱 + 沙箱抽象 + 事件溯源骨架
-- 状态:`ready`
-- 原话:"系统可以先考虑BS架构" + "做成可观测,可追索,可审计,可验证的开发助手"
-- 翻译:用 OpenHands SDK(或 mini-SWE-agent 起步)+ SWE-ReX 起 BS 骨架,任务产出**不可变** Action/Observation 事件流落盘,确定性回放。无论 MCU/工具链/认证答案如何都需要。
-- 依赖:无(执行脊柱 build-vs-buy 见 PENDING_HUMAN,但轻量起步不阻塞)
+- 状态:`blocked-on-human`(Q7/D-005 执行脊柱签字;原 OpenHands 路线经六方重审后拟改为 opencode 主 + 可插拔适配层,见 docs/spine-comparison.md)
+- 原话:"系统可以先考虑BS架构" + "做成可观测,可追索,可审计,可验证的开发助手" + "我感觉不好,我希望考虑openai 或者anthropic agentsdk,vercel 的案例以及CF的" + "还有opencode+加上其沙箱功能是否也是一个好方案?"
+- 翻译:待 D-005 签字后:opencode server 经适配层嵌入 BS 后端,事件流(SSE)落**不可变**存储确定性回放;适配层保留换装 Claude Agent SDK/Codex。
+- 依赖:Q7 签字
 - 验收(机器可查):
   - `agent_server` 起 REST/WebSocket 并通过健康检查(exit 0)
   - 跑一次样例任务产出事件流文件,重放脚本对同一事件流两次执行**输出字节级一致**
