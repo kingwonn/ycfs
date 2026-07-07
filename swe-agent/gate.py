@@ -21,7 +21,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 # ── 硬门槛(只紧不松) ──
 CARD_MIN = 11          # BACKLOG 首批卡数下限
-INTERVIEW_Q_MIN = 6    # PENDING_HUMAN 架构级问题数下限
+INTERVIEW_Q_MIN = 6    # PENDING_HUMAN 架构级问题数下限(已答的归档仍计入)
+FLASH_MAX_BYTES = 512 * 1024   # STM32G474RE flash 预算(text+data 超出即红)
+TEXT_MIN_BYTES = 200           # text 段下限:防"编译了个空壳"充数
 REQUIRED_DOCS = [
     "docs/ARCHITECTURE.md",
     "docs/verifier-firmware.md",
@@ -95,19 +97,78 @@ def leg_no_fake_verified():
     return problems, {}
 
 
+# ── 已实现的绿腿:交叉编译(F1,D-001 解锁后激活) ──
+def leg_cross_compile():
+    """arm-none-eabi headless 构建:工具链版本锁定 + 可复现构建 + size 断言。
+    工具链缺失 = 红(无法验证 ≠ 通过),不降级为 BLOCKED。"""
+    import subprocess
+    problems, counts = [], {}
+    fw = os.path.join(HERE, "firmware")
+
+    # 1) 工具链版本锁定(toolchain.lock 一致性)
+    try:
+        lock = dict(
+            line.split("=", 1)
+            for line in _read("firmware/toolchain.lock").strip().splitlines()
+        )
+        want = lock["arm-none-eabi-gcc"]
+    except Exception as e:  # noqa: BLE001
+        return [f"toolchain.lock 不可读: {e}"], counts
+    try:
+        got = subprocess.run(
+            ["arm-none-eabi-gcc", "-dumpversion"],
+            capture_output=True, text=True, timeout=30,
+        ).stdout.strip()
+    except FileNotFoundError:
+        return ["arm-none-eabi-gcc 未安装(无法验证≠通过): apt-get install gcc-arm-none-eabi"], counts
+    if got != want:
+        problems.append(f"工具链版本 {got} ≠ lock {want}(可复现性破坏)")
+    counts["gcc"] = got
+
+    # 2) 一条命令构建
+    p = subprocess.run(
+        [os.path.join(fw, "build.sh")], capture_output=True, text=True, timeout=300, cwd=fw,
+    )
+    if p.returncode != 0:
+        problems.append(f"构建失败 exit={p.returncode}")
+        tail = ((p.stdout or "") + (p.stderr or "")).strip().splitlines()[-8:]
+        problems += [f"  | {line}" for line in tail]
+        return problems, counts
+
+    # 3) 产物与 size 断言
+    for artifact in ("build/firmware.elf", "build/firmware.map", "build/size.txt"):
+        if not os.path.exists(os.path.join(fw, artifact)):
+            problems.append(f"缺产物 {artifact}")
+    try:
+        size_out = _read("firmware/build/size.txt")
+        m = re.search(r"^\s*(\d+)\s+(\d+)\s+(\d+)\s+\d+", size_out, re.MULTILINE)
+        if not m:
+            problems.append("size.txt 不可解析")
+        else:
+            text, data, bss = (int(m.group(i)) for i in (1, 2, 3))
+            counts.update({"text": text, "data": data, "bss": bss})
+            if text < TEXT_MIN_BYTES:
+                problems.append(f"text {text}B < 下限 {TEXT_MIN_BYTES}B(疑似空壳)")
+            if text + data > FLASH_MAX_BYTES:
+                problems.append(f"flash 占用 {text + data}B > 预算 {FLASH_MAX_BYTES}B")
+    except FileNotFoundError:
+        pass  # 缺产物已在上面报过
+    return problems, counts
+
+
 # 绿腿:现在就能真跑、能给绿灯的
 ACTIVE_LEGS = [
     ("scaffold-integrity", leg_scaffold_integrity),
     ("no-fake-verified", leg_no_fake_verified),
+    ("cross-compile", leg_cross_compile),
 ]
 
 # BLOCKED 腿:结构上要有,但等决策/实现解锁。诚实展示,绝不伪绿。
 BLOCKED_LEGS = [
-    ("cross-compile (arm-none-eabi headless)", "阻塞于 Q1 (MCU/工具链;卡 F1 开源基线可先做)"),
-    ("static-analysis MISRA (cppcheck+clang-tidy)", "待 F1 之后实现"),
-    ("host-unit-test (Ceedling/Unity/CMock)", "待电机领域包 G1 (阻塞于 Q1)"),
-    ("renode-sim (map, not territory)", "待 F1 产出二进制后"),
-    ("iec60730-selftest-table (L0)", "阻塞于 Q2/Q4 (卡 B2)"),
+    ("static-analysis MISRA (cppcheck+clang-tidy)", "F1 已立,此腿下一张卡实现"),
+    ("host-unit-test (Ceedling/Unity/CMock)", "protection.c 已具备可测面,待单测卡"),
+    ("renode-sim (map, not territory)", "待 Renode 环境接入"),
+    ("iec60730-selftest-table (L0)", "阻塞于 Q2 样例(卡 B2;D-004 已定全球合规面)"),
     ("provenance-check 中英等强 (L1)", "待卡 D1 实现"),
 ]
 

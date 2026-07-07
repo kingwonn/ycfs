@@ -1,7 +1,7 @@
 # BACKLOG — swe-agent 任务卡(唯一计划真源)
 
 > 无时间线。只有优先级(自上而下)、状态、依赖、机器可查的验收。
-> 首批 11 卡由盲点扫描合成。5 张**决策无关**可立即开工;6 张**阻塞于** PENDING_HUMAN 的 Q1–Q6。
+> 首批 11 卡由盲点扫描合成。2026-07-07 立法(D-001/003/004,见 docs/DECISIONS.md)后:F1/G1/H1 解锁;B2 等 Q2 样例;D2 等 Q5;E2 等 Q4b/Q6。
 
 状态:`ready` 可做 | `in-progress` 进行中 | `blocked-on-human` 等人 | `done` 验收已过 | `dropped` 放弃(留理由)
 
@@ -38,7 +38,7 @@
 ## Lane B · 验证门禁(阻塞于 Q2/Q4)
 
 ### B2 · IEC 60730 Class B 自检覆盖表 L0
-- 状态:`blocked-on-human`(Q2 表语义/真值锚来源;Q4 认证目标/安全等级)
+- 状态:`blocked-on-human`(等 Q2 老项目自测表样例——原话"会有测试表格以后说";Q4 已立法 D-004:全球市场,合规矩阵按最宽立)
 - 原话:"可以完成一些表格自测"
 - 翻译:把 Annex H 表 H.11.12.7 编码为规格符合性对照表,真值锚取**标准条款 + 厂商认证 STL**,真值列与被测生成物**物理隔离**。
 - 依赖:Q2、Q4;L0 真值管道(A1 事件流)
@@ -109,7 +109,7 @@
 ## Lane E · 观测审计(阻塞于 Q4/Q6)
 
 ### E2 · 真机测试证据结构化回流
-- 状态:`blocked-on-human`(Q4 签字人/HIL 资源;Q6 审计面是否物理分离)
+- 状态:`blocked-on-human`(Q4b 签字人/HIL 资源未答;Q6 审计面是否物理分离未答)
 - 原话:"然后由人来上真机测试"
 - 翻译:真机报告(示波器截图/量测数据/签字表)按 schema 结构化进 trajectory,成为 `verified` 唯一真值锚。
 - 依赖:Q4、Q6;C1 状态机
@@ -121,25 +121,29 @@
 
 ---
 
-## Lane F · 固件 CI 沙箱(开源基线可做 / 专有路径阻塞于 Q1)
+## Lane F · 固件 CI 沙箱(D-001 已解锁:STM32+GCC)
 
 ### F1 · arm-none-eabi headless 交叉编译门禁
-- 状态:`ready`(开源 GCC 基线);专有工具链路径 `blocked-on-human`(Q1)
+- 状态:`done`(第 R2 轮。STM32G474 种子工程:最小裸机启动+链接脚本+**应用层保护状态机** protection.c(过温降额/跳闸闩锁/堵转/读数无效即 TRIP——D-001 划定的 agent coding 表面积样例);`build.sh` 一条命令 headless 构建产 .elf/.map/size;gate `cross-compile` 腿激活:toolchain.lock 版本校验+text 下限+flash 预算;负向自测×2 证明非空绿(版本篡改→红,text 下限→红)。阈值全标 PROVENANCE: PLACEHOLDER,待 D1 溯源管道。CI 工作流接线拆到新卡 F2。)
 - 原话:"coding后CI,验证方案考虑可编译通过"
-- 翻译:Docker 镜像固定 toolchain 版本,CMake headless 构建 CubeMX 工程产 .elf/.map/size 报告。开源 GCC 基线先立。
-- 依赖:Q1(若目标 MCU 强制 IAR/Keil,需 license server + 本地沙箱方案)
+- 翻译:固定 toolchain 版本,CMake headless 构建 STM32G4 工程产 .elf/.map/size 报告,gate 交叉编译腿激活。
+- 验收记录:gate 3/3 绿,cross-compile 腿 gcc=13.2.1 text=856B data=8B;负向自测 2/2。
+
+### F2 · GitHub Actions CI 接线(gate 上云)
+- 状态:`ready`
+- 原话:"coding后CI"
+- 翻译:workflow 装 arm-none-eabi-gcc(版本与 toolchain.lock 一致)+ 跑 `python3 swe-agent/gate.py`,任一腿红即 CI 红;后续腿(静态分析/单测)加进来自动生效。
+- 依赖:F1(done);仓库写权限(推送后才能触发)
 - 验收(机器可查):
-  - 一条命令在容器内**可复现构建**,产出 .elf 且 size/section 报告解析成断言
-  - 工具链版本锁定校验通过
-  - 若 Q1 确认专有工具链,此卡标注「**阻塞于 license 方案**」而非伪绿
-- 证伪/回退:若目标 MCU 无法用开源 GCC 且专有编译器不能容器化 → 「可编译通过」门禁无法自动化,退到本地气隙 runner,标注阻塞,**绝不伪绿**。
+  - PR 上 CI 状态检查出现且绿;人为制造一次红(如改 toolchain.lock)CI 变红后还原
+- 证伪/回退:无架构风险;纯接线。
 
 ---
 
-## Lane G · 电机领域包(阻塞于 Q1)
+## Lane G · 电机领域包(D-001 已解锁)
 
 ### G1 · 电机控制拓扑分叉卡结构(热安全包 / 电池-BMS 包)
-- 状态:`blocked-on-human`(Q1 MCU 平台 + 手写 vs 生成边界)
+- 状态:`ready`(D-001:STM32G4+MCSDK 生成路线 → 验证器审 workbench 配置/生成物 diff + 应用层保护状态机)
 - 原话:"吹风机和吸尘器类产品,产品level follow 顶级品牌"
 - 翻译:按 Q1 结果建对应验证器包:**吹风机热安全包**(温度闭环/OTP 阈值/热熔断逻辑/加热丝 PWM 上限)与**吸尘器电池包**(BMS 状态机/OV-UV-OC-OT 窗口/均衡/握手协议)。两套不同拓扑与合规面,不用一套通用模板通吃。
 - 依赖:Q1;D1 溯源
@@ -150,13 +154,13 @@
 
 ---
 
-## Lane H · 数据治理(阻塞于 Q3)
+## Lane H · 数据治理(D-003 已解锁:云默认 + 可收紧)
 
-### H1 · 数据门禁 denylist:NDA 规格书外传硬停
-- 状态:`blocked-on-human`(Q3 数据出域策略)
-- 原话:"会提前给一些老项目资料" + NDA 语境
-- 翻译:PreToolUse 结构性拦截把原理图/NDA 规格书送外部 LLM/云沙箱的动作,**逐一具名确认,概括授权无效**;按 Q3 结果路由本地/云模型。
-- 依赖:Q3
+### H1 · 数据门禁 denylist:按项目红线可收紧的路由层
+- 状态:`ready`(D-003:数据可上云,SOTA 优先;门禁保留——denylist + 逐一具名确认机制仍要建,只是默认路由=云)
+- 原话:"Q3,数据都可以,先追求SOTA效果"
+- 翻译:路由层默认云(SOTA 模型);保留按项目收紧开关(未来 NDA 严格客户可切本地);denylist 机制照建,**逐一具名确认,概括授权无效**。
+- 依赖:无(D-003 已解除)
 - 验收(机器可查):
   - 模拟外传敏感文档动作被**硬停**(单测)
   - 一次 blanket allow **不能**放行下一个具名产物

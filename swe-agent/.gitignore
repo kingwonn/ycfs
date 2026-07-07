@@ -2,3 +2,4 @@
 __pycache__/
 *.pyc
 gate_history.jsonl
+firmware/build/

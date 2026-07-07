@@ -5,6 +5,7 @@
 | 轮 | 卡 | 做了什么 | 验收 | 卡点/下一步 |
 |---|---|---|---|---|
 | R1 | 建库 | 5 视角互盲盲点扫描 + 开源生态调研 + 架构合成;落 v0 脚手架(架构/固件验证器/复用短名单/未知地图 4 文档 + BACKLOG 11 卡 + DIGEST + PENDING_HUMAN 6 问 + 可跑 gate) | ✅ gate 绿(scaffold-integrity 腿:11 卡字段完整 / 4 文档齐 / DIGEST 有行);其余门禁腿诚实标 BLOCKED 不伪绿 | 6 个架构级问题待人答(见 PENDING_HUMAN Q1–Q6);5 张决策无关卡(A1/B1/C1/D1/E1/F1)ready 可开工。**关键未知**:Q1 MCU/工具链(手写 vs 生成边界)、Q3 数据出域(云 vs 气隙)是最大分叉。 |
+| R2 | 立法+F1 | 人立法 Q1=STM32+MCSDK+GCC / Q2=样例后置 / Q3=云可用 SOTA 优先 / Q4=全球市场,落 docs/DECISIONS.md(D-001~004,带原话出生证);解锁 F1/G1/H1;实现 F1:STM32G474 种子工程(裸机启动+保护状态机)+headless 构建+gate cross-compile 腿激活(版本锁+size 断言) | ✅ gate 3/3 绿(cross-compile: gcc=13.2.1 text=856B);负向自测 2/2(版本篡改→红,text 下限→红) | 推送仍被 403 挡(等仓库写权限);Q2 样例、Q4b 签字人/HIL、Q5 老资料、Q6 前端受众待答。下一张:A1 执行脊柱或 D1 溯源核验。 |
 
 写法:
 - **一行讲清一轮**:做了什么、验收结果(带数字)、有没有卡点。
