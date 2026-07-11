@@ -17,6 +17,7 @@
 | R11 | G3 | 软件框架骨架落地:firmware/ 重构为 bsp/platform/products/tests/tools 分层(git mv);裸机任务表调度器(过载计数/防雪崩/回绕安全)+OSAL 接缝;board const-ops 表;gate 新增 host-unit-test(9 断言)与 layer-deps(6 文件)两腿;修复 .su 过滤器与 bench 路径连带 | ✅ gate 8/8 绿;host 单测 9/9;负向自测过 | G3 done。G5(温控联锁)ready 可继续;G4 等 Q9;D1/I1/J1/H1 仍 ready。11 提交待推。 |
 | R12 | G5 | 温控 PI+前馈(条件积分抗饱和+115°C 硬顶)与电机-加热联锁(三态/闩锁/恢复需风量+冷却双条件/无效读数即切)落地并接入 50Hz 任务;bench 增联锁埋 bug 题(恢复缺冷却确认),run_bench 泛化每题自带被测/判题;**-Werror 抓出真域宽 bug:speed_rpm uint16 在 110k RPM 回绕会骗过联锁,全链改 uint32** | ✅ gate 8/8 绿(host 25 断言含炉温仿真过冲≤5°C;bench 3 题;text=1660B) | G5 done(done≠verified,60335-2-23 异常工况待真机)。PID 拼图:温度环✅/电流+速度环随 G4 等 Q9。12 提交待推。 |
 | R13 | D1 | L1 溯源核验落地 provenance/:「引用解析得到该值」语义(非「有引用」),NFKC 归一化中英等强;单测 16/16——真值 16 放行零误伤、篡改 16/16 拦截且 EN=CN、伪造页/缺出处硬阻断、真 PDF 回环(reportlab STSong 中文→pdfplumber);gate 第 9 腿激活 | ✅ gate 9/9 绿(provenance=16);BLOCKED 剩 3 | D1 done——零编造护栏立起。零依赖 ready 剩 I1(DVP&R)/J1(OTA 占位)/H1;等人:Q7/Q9/写权限(13 提交)。 |
+| R14 | Q9立法+G2结案+I1/I3 | 人立法:吹风机电机**确认三相**(原话入 DECISIONS),D-001 修订案生效、G2 done、G4 阻塞收窄为 Q9b(转速/极对数/R-L-Ke);单相认知 primer 调研后台进行。I1/I3 落地 dvpr/:DVP&R 15 行(限值全带出处或诚实 PLACEHOLDER,含声学 77dBA/ErP 0.5W/闪变 61000-3-3 行)+DFMEA 6 条,check_dvpr 校验高 RPN 必有验证链接、L-real 有证据必须有签字;gate 第 10 腿 | ✅ gate 10/10 绿(rows=15,dfmea=6);负向自测 3/3 | 零依赖 ready 剩 J1(OTA 占位)/H1。等人:Q9b、Q7、写权限(15 提交)。 |
 
 写法:
 - **一行讲清一轮**:做了什么、验收结果(带数字)、有没有卡点。

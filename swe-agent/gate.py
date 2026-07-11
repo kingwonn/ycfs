@@ -29,6 +29,8 @@ STATEMACHINE_MIN = 10          # C1 状态机单测断言数下限(防测试静�
 HOST_TEST_MIN = 25             # 固件 host 单测断言总数下限(sched 9 + thermal/interlock 16;只紧不松)
 LAYER_FILES_MIN = 6            # 分层检查扫描文件数下限(防目录改名后静默空转)
 PROVENANCE_MIN = 16            # D1 溯源核验断言数下限(含真 PDF 回环与中英等强 property)
+DVPR_ROWS_MIN = 15             # DVP&R 行数下限(骨架不许被掏空)
+DFMEA_MIN = 6                  # DFMEA 条目下限
 RAM_BUDGET_BYTES = 4096        # data+bss 静态 RAM 预算(只紧不松)
 BANNED_SYMBOLS = ("malloc", "free", "calloc", "realloc", "_sbrk", "sbrk")  # 禁动态分配
 REQUIRED_DOCS = [
@@ -369,6 +371,26 @@ def leg_provenance():
     return problems, {"asserts": n_pass}
 
 
+# ── 已实现的绿腿:DVP&R/DFMEA 完整性(I1) ──
+def leg_dvpr():
+    """DVP&R 行完整(limit+出处+证据/签字槽)+ 高 RPN 必有验证链接 + 行数下限。"""
+    import subprocess
+    p = subprocess.run(
+        [sys.executable, os.path.join(HERE, "dvpr", "check_dvpr.py")],
+        capture_output=True, text=True, timeout=60,
+    )
+    try:
+        data = json.loads(p.stdout)
+    except json.JSONDecodeError:
+        return [f"check_dvpr 输出不可解析: {p.stdout[-150:]}"], {}
+    problems = list(data.get("problems", []))
+    if data.get("dvpr_rows", 0) < DVPR_ROWS_MIN:
+        problems.append(f"DVP&R 行数 {data.get('dvpr_rows')} < 下限 {DVPR_ROWS_MIN}")
+    if data.get("dfmea_entries", 0) < DFMEA_MIN:
+        problems.append(f"DFMEA 条目 {data.get('dfmea_entries')} < 下限 {DFMEA_MIN}")
+    return problems, {"rows": data.get("dvpr_rows"), "dfmea": data.get("dfmea_entries")}
+
+
 # 绿腿:现在就能真跑、能给绿灯的
 ACTIVE_LEGS = [
     ("scaffold-integrity", leg_scaffold_integrity),
@@ -380,6 +402,7 @@ ACTIVE_LEGS = [
     ("host-unit-test", leg_host_unit_test),
     ("layer-deps", leg_layer_deps),
     ("provenance-check", leg_provenance),
+    ("dvpr-check", leg_dvpr),
 ]
 
 # BLOCKED 腿:结构上要有,但等决策/实现解锁。诚实展示,绝不伪绿。

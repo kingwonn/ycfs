@@ -1,0 +1,14 @@
+{
+  "product": "hairdryer",
+  "version": "seed-R14",
+  "rpn_threshold": 100,
+  "note": "DFMEA 种子。铁律:RPN ≥ 阈值的条目必须牵出 ≥1 条 DVP&R 验证行(check_dvpr.py 机器查),否则红。S/O/D 为工程预估,评审后修订。",
+  "entries": [
+    {"id": "FM-01", "failure_mode": "风量丧失而加热持续(风道过热/起火)", "effect": "起火/外壳熔化/烫伤", "cause": "进风口堵塞/电机失速而联锁失效", "S": 10, "O": 4, "D": 3, "rpn": 120, "mitigation": "软件联锁(interlock.c)+硬件双热保护", "verification": ["DV-T03", "DV-T04", "DV-S01"]},
+    {"id": "FM-02", "failure_mode": "温度/转速传感器失效被当正常值", "effect": "失去温控/保护盲区", "cause": "NTC 断线/短路,信号链故障", "S": 9, "O": 3, "D": 4, "rpn": 108, "mitigation": "无效读数=最危险假设(立即安全态)+60730 ADC 自检", "verification": ["DV-E02", "DV-S02"]},
+    {"id": "FM-03", "failure_mode": "电机堵转未跳闸", "effect": "绕组/功率级过热损毁", "cause": "堵转检测阈值错/计时逻辑缺陷", "S": 7, "O": 4, "D": 4, "rpn": 112, "mitigation": "protection.c 堵转累计跳闸(闩锁);bench 埋 bug 题守护", "verification": ["DV-E01"]},
+    {"id": "FM-04", "failure_mode": "出风温度过冲越过伤发线", "effect": "头发/皮肤热损伤,投诉召回", "cause": "PI 参数不当/前馈缺失/测温滞后", "S": 8, "O": 5, "D": 3, "rpn": 120, "mitigation": "PI+风量前馈+115°C 硬顶;真机标定", "verification": ["DV-T01", "DV-T02"]},
+    {"id": "FM-05", "failure_mode": "高速失步/启动失败", "effect": "无风或异响,功能失效", "cause": "观测器高速失锁/启动策略不适配电机", "S": 5, "O": 5, "D": 4, "rpn": 100, "mitigation": "HSO 直闭环+I/F 后备(G4);真机启动成功率验收", "verification": ["DV-M01", "DV-M02"]},
+    {"id": "FM-06", "failure_mode": "外壳可触及温度偏高(非烫伤级)", "effect": "舒适性抱怨", "cause": "散热设计余量不足", "S": 4, "O": 4, "D": 5, "rpn": 80, "mitigation": "热设计评审(低 RPN,验证链接可选)", "verification": []}
+  ]
+}
