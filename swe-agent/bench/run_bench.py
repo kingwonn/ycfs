@@ -25,16 +25,29 @@ TEST = os.path.join(HERE, "cases", "bug_fix", "test_protection.c")
 SHA_FILE = os.path.join(HERE, "manifest.sha256")
 
 # ── 硬门槛(只紧不松) ──
-BUGFIX_MIN = 2
+BUGFIX_MIN = 3
 SPECQA_MIN = 6
 
 
-def _compile_and_run(impl_path):
+def _case_paths(manifest):
+    """每题可自带 ref/test/includes(REPO 相对);缺省=protection 三件套。"""
+    ref = os.path.join(REPO, manifest["ref"]) if "ref" in manifest else REF_IMPL
+    test = os.path.join(REPO, manifest["test"]) if "test" in manifest else TEST
+    incs = [os.path.join(REPO, d) for d in manifest.get("includes", [])] or [INCLUDE]
+    return ref, test, incs
+
+
+def _compile_and_run(impl_path, test_path=None, includes=None):
     """host gcc 编译 测试+被测实现,返回 (exit_code, output)。"""
+    test_path = test_path or TEST
+    includes = includes or [INCLUDE]
     with tempfile.TemporaryDirectory() as td:
         exe = os.path.join(td, "t")
+        inc_args = []
+        for d in includes:
+            inc_args += ["-I", d]
         p = subprocess.run(
-            ["gcc", "-std=c11", "-Wall", "-I", INCLUDE, TEST, impl_path, "-o", exe],
+            ["gcc", "-std=c11", "-Wall", *inc_args, test_path, impl_path, "-lm", "-o", exe],
             capture_output=True, text=True, timeout=120,
         )
         if p.returncode != 0:
@@ -49,11 +62,21 @@ def _sha(path):
 
 
 def _truth_files():
-    files = [TEST, REF_IMPL, os.path.join(HERE, "cases", "spec_qa.jsonl")]
+    files = {TEST, REF_IMPL, os.path.join(HERE, "cases", "spec_qa.jsonl")}
     for case in sorted(_bugfix_cases()):
-        files.append(os.path.join(case, "manifest.json"))
-        files.append(os.path.join(case, "protection_buggy.c"))
-    return files
+        mpath = os.path.join(case, "manifest.json")
+        files.add(mpath)
+        try:
+            m = json.load(open(mpath, encoding="utf-8"))
+            ref, test, _ = _case_paths(m)
+            files.add(ref)
+            files.add(test)
+        except Exception:  # noqa: BLE001  哈希锁尽量全;manifest 坏由 self_check 报
+            pass
+        for fn in os.listdir(case):
+            if fn.endswith("_buggy.c"):
+                files.add(os.path.join(case, fn))
+    return sorted(files)
 
 
 def _bugfix_cases():
@@ -72,18 +95,11 @@ def write_hashes():
 def self_check():
     problems, n_bugfix, n_specqa = [], 0, 0
 
-    # 1) 参考实现必须让测试全绿(题目可判)
-    rc, out = _compile_and_run(REF_IMPL)
-    if rc != 0:
-        problems.append(f"参考实现未过判定测试(rc={rc}):题目本身不可判\n{out[-400:]}")
-    ref_hash = _sha(REF_IMPL)
-
-    # 2) 每道 bug_fix:出生证完整 + buggy 必须变红 + 非同源
+    # 每道 bug_fix:参考实现必绿(题目可判)+ 出生证完整 + buggy 必红 + 非同源
     for case in _bugfix_cases():
         n_bugfix += 1
         cid = os.path.basename(case)
         mpath = os.path.join(case, "manifest.json")
-        bpath = os.path.join(case, "protection_buggy.c")
         try:
             m = json.load(open(mpath, encoding="utf-8"))
             prov = m["provenance"]
@@ -93,10 +109,20 @@ def self_check():
         except Exception as e:  # noqa: BLE001
             problems.append(f"{cid}: manifest 不可读 {e}")
             continue
-        if _sha(bpath) == ref_hash:
+        ref, test, incs = _case_paths(m)
+        bpath = next((os.path.join(case, f) for f in sorted(os.listdir(case))
+                      if f.endswith("_buggy.c")), None)
+        if bpath is None:
+            problems.append(f"{cid}: 缺 *_buggy.c 被测源")
+            continue
+        rc, out = _compile_and_run(ref, test, incs)
+        if rc != 0:
+            problems.append(f"{cid}: 参考实现未过判定测试(rc={rc}):题目不可判\n{out[-300:]}")
+            continue
+        if _sha(bpath) == _sha(ref):
             problems.append(f"{cid}: buggy 与参考实现字节同源——没埋 bug(自证探针)")
             continue
-        rc, out = _compile_and_run(bpath)
+        rc, out = _compile_and_run(bpath, test, incs)
         if rc == 0:
             problems.append(f"{cid}: buggy 竟然全绿——bug 不可检出,废题")
         elif rc == 100:

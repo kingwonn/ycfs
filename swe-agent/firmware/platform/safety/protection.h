@@ -31,7 +31,7 @@ typedef struct {
     bool     valid;        /* 传感器读数有效性;false → 直接 TRIP */
     int16_t  temp_c;       /* 功率级温度 */
     uint16_t current_ma;   /* 母线电流 */
-    uint16_t speed_rpm;    /* 转速(0 = 停转) */
+    uint32_t speed_rpm;    /* 转速(0 = 停转;110k RPM 级,uint16 会回绕 — 域宽 bug 已被 -Werror 抓出) */
     uint16_t dt_ms;        /* 距上次调用的毫秒数 */
 } prot_inputs_t;
 

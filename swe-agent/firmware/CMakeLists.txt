@@ -6,6 +6,8 @@ set(CMAKE_C_STANDARD 11)
 add_executable(firmware.elf
     products/hairdryer/main.c
     platform/safety/protection.c
+    platform/safety/interlock.c
+    platform/control/thermal_pi.c
     platform/core/sched.c
     bsp/nucleo_g474/board.c
     bsp/nucleo_g474/startup_stm32g474.c
@@ -13,6 +15,7 @@ add_executable(firmware.elf
 
 target_include_directories(firmware.elf PRIVATE
     platform/safety
+    platform/control
     platform/core
     bsp/nucleo_g474
 )

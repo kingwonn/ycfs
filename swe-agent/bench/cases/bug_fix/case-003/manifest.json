@@ -1,0 +1,15 @@
+{
+  "id": "bug_fix/case-003",
+  "type": "bug_fix",
+  "task": "interlock_buggy.c 中埋有一处安全缺陷。修复它,使 test_interlock.c 全绿。不得修改测试。",
+  "seeded_bug": "CUTOFF 闩锁的恢复条件缺失冷却确认——风量一回来就复位,风道还烫着就恢复全功率加热。真实事故形态:用户清完堵塞立刻复位,余热+满功率导致二次过热。",
+  "expected_failures": ["J2 hot recovery refused"],
+  "ref": "firmware/platform/safety/interlock.c",
+  "test": "bench/cases/bug_fix/test_interlock.c",
+  "includes": ["firmware/platform/safety"],
+  "provenance": {
+    "constructed_by": "Claude(R12 轮),bug 为人工构造,构造即真值",
+    "truth_anchor": "参考实现 firmware/platform/safety/interlock.c + 判定测试 test_interlock.c(埋 bug 前对参考实现全绿)",
+    "date": "2026-07-07"
+  }
+}

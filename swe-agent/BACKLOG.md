@@ -195,15 +195,10 @@
 - 证伪/回退:Q9 答单相 → 本卡换 B/C 路线重写,G3/G5 不动。
 
 ### G5 · 温控 PI+前馈 与 电机-加热联锁(软件安全核心)
-- 状态:`ready`(逻辑先行,阈值全标 PROVENANCE 待 D1 溯源)
+- 状态:`done`(第 R12 轮。platform/control/thermal_pi.c:PI+风量前馈+条件积分抗饱和+硬顶(测温≥115°C 强制 0,先于联锁);platform/safety/interlock.c:OK/DERATE/CUTOFF 三态,风量丧失持续超时切断、闩锁、**恢复需「风量+冷却」双条件**、读数无效即切;经 board const-ops(heater_permille 存根=TRIAC 过零调功落位)接入 products 50Hz 任务。host 单测 16/16(含一阶炉温仿真:收敛±3°C 且过冲≤5°C);bench 增 case-003(埋 bug=恢复缺冷却确认,run_bench 泛化每题自带 ref/test/includes,BUGFIX_MIN 2→3);HOST_TEST_MIN 9→25。**副产物:-Werror 抓出真域宽 bug——speed_rpm 原用 uint16,110k RPM 会回绕成 44464 骗过联锁,已全链改 uint32**。阈值全标 PROVENANCE 待 D1/真机标定。)
 - 原话:"FOC和PID等算法规划实现" + 60335-2-23 联锁要求
-- 翻译:出风温度 PI+风量前馈纯函数模块(20–100Hz 任务);联锁状态机:转速/风量低→加热先降档后切断、恢复需冷却确认(US4003388A 语义);TRIAC 过零周波调功接口抽象(bsp ops);湿发 151°C 角蛋白阈值为限温锚。
-- 依赖:G3(目录);阈值溯源待 D1
-- 验收(机器可查):
-  - host 单测:过冲防护/联锁触发与恢复时序断言 ≥N,进 gate
-  - 阈值全标 PROVENANCE: PLACEHOLDER,溯源缺失即 gate 红(D1 落地后)
-  - 联锁逻辑进 bench 埋 bug 题库 ≥1 题(K1 扩容)
-- 证伪/回退:承重卡——联锁失效=风道过热起火风险,真机异常工况测试(60335-2-23)是最终裁决。
+- 翻译:温度 PI+前馈纯函数 + 联锁状态机 + TRIAC 接口抽象;151°C 角蛋白锚。
+- 验收记录:gate 8/8 绿(host asserts=25;bench bug_fix=3);真机异常工况(60335-2-23)仍待 L-real 签字——本卡 done ≠ verified。
 
 ---
 

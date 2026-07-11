@@ -26,7 +26,7 @@ FLASH_MAX_BYTES = 512 * 1024   # STM32G474RE flash 预算(text+data 超出即红
 TEXT_MIN_BYTES = 200           # text 段下限:防"编译了个空壳"充数
 STACK_FRAME_MAX_BYTES = 256    # 单函数最坏栈帧上限(-fstack-usage;只紧不松)
 STATEMACHINE_MIN = 10          # C1 状态机单测断言数下限(防测试静默变少)
-HOST_TEST_MIN = 9              # 固件 host 单测断言数下限(只紧不松)
+HOST_TEST_MIN = 25             # 固件 host 单测断言总数下限(sched 9 + thermal/interlock 16;只紧不松)
 LAYER_FILES_MIN = 6            # 分层检查扫描文件数下限(防目录改名后静默空转)
 RAM_BUDGET_BYTES = 4096        # data+bss 静态 RAM 预算(只紧不松)
 BANNED_SYMBOLS = ("malloc", "free", "calloc", "realloc", "_sbrk", "sbrk")  # 禁动态分配
@@ -293,26 +293,38 @@ def leg_state_machine():
 
 # ── 已实现的绿腿:固件 host 单测(G3,激活原 BLOCKED 的 host-unit-test) ──
 def leg_host_unit_test():
-    """host gcc 编译并运行固件纯逻辑单测(调度器等);断言数 ≥ 下限且零失败。"""
+    """host gcc 编译并运行全部固件纯逻辑单测;断言总数 ≥ 下限且零失败。"""
     import subprocess
     fw = os.path.join(HERE, "firmware")
-    cmd = ["gcc", "-std=c11", "-Wall", "-Werror", "-I", os.path.join(fw, "platform", "core"),
-           os.path.join(fw, "tests", "host", "test_sched.c"),
-           os.path.join(fw, "platform", "core", "sched.c"), "-o", "/tmp/gate_tsched"]
-    p = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
-    if p.returncode != 0:
-        return [f"host 单测编译失败: {p.stderr[-200:]}"], {}
-    r = subprocess.run(["/tmp/gate_tsched"], capture_output=True, text=True, timeout=60)
-    m = re.search(r"RESULT: (\d+) passed, (\d+) failed", r.stdout)
-    problems = []
-    if not m:
-        return ["未见 RESULT 行(测试可能被跳过)"], {}
-    n_pass, n_fail = int(m.group(1)), int(m.group(2))
-    if n_fail != 0 or r.returncode != 0:
-        problems.append(f"失败 {n_fail},退出码 {r.returncode}")
-    if n_pass < HOST_TEST_MIN:
-        problems.append(f"通过 {n_pass} < 硬门槛 {HOST_TEST_MIN}")
-    return problems, {"asserts": n_pass}
+    inc = ["-I", os.path.join(fw, "platform", "core"),
+           "-I", os.path.join(fw, "platform", "control"),
+           "-I", os.path.join(fw, "platform", "safety")]
+    suites = [
+        ("sched", ["tests/host/test_sched.c", "platform/core/sched.c"]),
+        ("thermal", ["tests/host/test_thermal.c", "platform/control/thermal_pi.c",
+                     "platform/safety/interlock.c"]),
+    ]
+    problems, total = [], 0
+    for name, srcs in suites:
+        exe = f"/tmp/gate_t_{name}"
+        cmd = ["gcc", "-std=c11", "-Wall", "-Werror", *inc,
+               *[os.path.join(fw, s) for s in srcs], "-lm", "-o", exe]
+        p = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+        if p.returncode != 0:
+            problems.append(f"{name}: 编译失败 {p.stderr[-150:]}")
+            continue
+        r = subprocess.run([exe], capture_output=True, text=True, timeout=60)
+        m = re.search(r"RESULT: (\d+) passed, (\d+) failed", r.stdout)
+        if not m:
+            problems.append(f"{name}: 未见 RESULT 行(测试可能被跳过)")
+            continue
+        n_pass, n_fail = int(m.group(1)), int(m.group(2))
+        total += n_pass
+        if n_fail != 0 or r.returncode != 0:
+            problems.append(f"{name}: 失败 {n_fail},退出码 {r.returncode}")
+    if total < HOST_TEST_MIN:
+        problems.append(f"断言总数 {total} < 硬门槛 {HOST_TEST_MIN}(测试静默变少?)")
+    return problems, {"asserts": total}
 
 
 # ── 已实现的绿腿:分层依赖检查(G3) ──
