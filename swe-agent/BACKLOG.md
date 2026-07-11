@@ -53,15 +53,10 @@
 ## Lane C · 状态机治理(决策无关)
 
 ### C1 · 「待真机」结构性终态断言
-- 状态:`ready`
+- 状态:`done`(第 R9 轮。governance/statemachine.py:转移白名单**结构上不含任何 (*,verified) 边**;唯一入口 `transition_verified(signoff)` 要求 done 态 + 有效 RealMachineSignoff(签字人/角色/日期/声明/**非空证据引用**,卡号必须匹配——概括授权无效);gate_green 被单测证明开不了门。audit() 扫描伪造 verified(直改存储绕过转移函数)即报 P0,并枚举 done 卡为待真机队列。单测 10/10;gate 新增 state-machine 腿(断言数下限 10 防静默变少)。签字 schema 为最小集,E2 按 Q4b 扩展只加不减。)
 - 原话:"然后由人来上真机测试"
-- 翻译:在状态机上**删除**「gate 全绿 → verified」直达边,任何卡进 `verified` 必须携带一行**人-真机签字**。
-- 依赖:无(签字产物 schema 与 K1 对接)
-- 验收(机器可查):
-  - 单测:无签字行的卡尝试转 `verified` 被状态机拒绝(抛**结构性**错误)
-  - 审计脚本扫全部终态卡,报告任一 `verified` 卡缺签字行即失败
-  - PENDING_HUMAN 队列可枚举所有「待真机」卡
-- 证伪/回退:若出现一张 `verified` 却无签字行的卡 → 状态机存在绕过边,视为 P0 缺陷。承重卡,不可回退式放宽。
+- 翻译:状态机上删除「gate 全绿 → verified」直达边,verified 唯一入口携带人-真机签字。
+- 验收记录:gate 6/6 绿(state-machine asserts=10);伪造 verified 被审计抓(T8)。
 
 ---
 

@@ -25,6 +25,7 @@ INTERVIEW_Q_MIN = 6    # PENDING_HUMAN 架构级问题数下限(已答的归档�
 FLASH_MAX_BYTES = 512 * 1024   # STM32G474RE flash 预算(text+data 超出即红)
 TEXT_MIN_BYTES = 200           # text 段下限:防"编译了个空壳"充数
 STACK_FRAME_MAX_BYTES = 256    # 单函数最坏栈帧上限(-fstack-usage;只紧不松)
+STATEMACHINE_MIN = 10          # C1 状态机单测断言数下限(防测试静默变少)
 RAM_BUDGET_BYTES = 4096        # data+bss 静态 RAM 预算(只紧不松)
 BANNED_SYMBOLS = ("malloc", "free", "calloc", "realloc", "_sbrk", "sbrk")  # 禁动态分配
 REQUIRED_DOCS = [
@@ -263,6 +264,31 @@ def leg_bench_self_check():
     return problems, counts
 
 
+# ── 已实现的绿腿:C1 状态机结构性断言 ──
+def leg_state_machine():
+    """「gate 绿→verified」边结构性不存在的单测;断言数 ≥ 下限且零失败。"""
+    import subprocess
+    p = subprocess.run(
+        [sys.executable, "test_statemachine.py"],
+        capture_output=True, text=True, timeout=120,
+        cwd=os.path.join(HERE, "governance"),
+    )
+    out = (p.stdout or "") + (p.stderr or "")
+    m = re.search(r"RESULT: (\d+) passed, (\d+) failed", out)
+    problems = []
+    if p.returncode != 0:
+        problems.append(f"退出码 {p.returncode} ≠ 0")
+    if not m:
+        problems.append("未见 RESULT 行(测试可能被跳过)")
+        return problems, {}
+    n_pass, n_fail = int(m.group(1)), int(m.group(2))
+    if n_fail != 0:
+        problems.append(f"失败 {n_fail} ≠ 0")
+    if n_pass < STATEMACHINE_MIN:
+        problems.append(f"通过 {n_pass} < 硬门槛 {STATEMACHINE_MIN}(测试静默变少?)")
+    return problems, {"asserts": n_pass}
+
+
 # 绿腿:现在就能真跑、能给绿灯的
 ACTIVE_LEGS = [
     ("scaffold-integrity", leg_scaffold_integrity),
@@ -270,6 +296,7 @@ ACTIVE_LEGS = [
     ("cross-compile", leg_cross_compile),
     ("resource-budget", leg_resource_budget),
     ("bench-self-check", leg_bench_self_check),
+    ("state-machine", leg_state_machine),
 ]
 
 # BLOCKED 腿:结构上要有,但等决策/实现解锁。诚实展示,绝不伪绿。
