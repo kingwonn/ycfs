@@ -16,7 +16,7 @@
    - 电机 ODM 件均三相。
 3. **大厂参考设计**:ST 无吹风机专用 STEVAL/AN(仅通用三相板);**Infineon 有 REF-HAIRDRYER-C101-6ED**:
    IMC101T 无感 FOC,明确标注 "up to 100kRPM" 吹风机参考设计(infineon.com)。
-4. **Dyson 单相 = 专利孤岛**:V9 单相无感 BLDC、115k RPM、2-FET,US10110102 等专利保护
+4. **Dyson 单相 = 专利孤岛**:V9 单相无感 BLDC、115k RPM、2-FET,核心专利 US8988021(换相时序)/US9515588B2(无感控制)等,Dyson 电机类申请 535 件(2005–2026,PatSnap)。~~US10110102~~(**R15 溯源更正**:该专利同族证据指向 Johnson Electric 而非 Dyson,详见 single-phase-primer.md §四——但 Johnson Electric 同样在单相吹风机电机布防,「专利孤岛」结论不变且更强)
    (Electronics Weekly 2016;USPTO)。国产量产高速风筒无一采用。
 
 ## 三条路线
