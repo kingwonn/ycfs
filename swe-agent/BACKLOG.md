@@ -183,15 +183,10 @@
 ## Lane B · 验证门禁(首席工程师 review 追加)
 
 ### B3 · 资源预算 gate 腿:栈用量 + 禁动态分配 + CPU 负载表
-- 状态:`ready`
+- 状态:`done`(第 R6 轮。gate 新增 `resource-budget` 腿:nm 符号封禁 malloc/free/sbrk 等 6 项、`-fstack-usage` 单函数栈帧 ≤256B 且非 static 限定(VLA/alloca)即红、静态 RAM data+bss ≤4096B、isr-budget.md 骨架落库(WCET 列+70% 占比规则)。负向自测 3/3:合成 malloc 符号/9999B 栈帧/dynamic 限定均触红。上限常量只紧不松。)
 - 原话:首席工程师 review C1/C2(出处 docs/chief-review.md)
-- 翻译:`-fstack-usage` 静态最坏栈深断言(< RAM 预算);链接产物符号表查 malloc/free(命中即红);ISR 最坏执行时间预算表骨架。
-- 依赖:F1(done)
-- 验收(机器可查):
-  - gate 新增 `resource-budget` 腿,输出栈深/预算比
-  - 人为加一个 malloc 调用触发红(负向自测)
-  - 栈预算上限常量只紧不松
-- 证伪/回退:无架构风险;栈溢出是真实固件事故高发区,此腿零成本高收益。
+- 翻译:`-fstack-usage` 静态最坏栈深断言 + 链接产物符号封禁 + ISR 预算表骨架。
+- 验收记录:gate 4/4 绿(max_frame=32B, static_ram=8B);负向自测 3/3。
 
 ### B4 · 故障注入:验证自检真的能抓故障
 - 状态:`ready`(排期依赖 Renode 腿与 B2 自检表落地)

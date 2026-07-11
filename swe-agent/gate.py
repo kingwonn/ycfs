@@ -24,6 +24,9 @@ CARD_MIN = 11          # BACKLOG 首批卡数下限
 INTERVIEW_Q_MIN = 6    # PENDING_HUMAN 架构级问题数下限(已答的归档仍计入)
 FLASH_MAX_BYTES = 512 * 1024   # STM32G474RE flash 预算(text+data 超出即红)
 TEXT_MIN_BYTES = 200           # text 段下限:防"编译了个空壳"充数
+STACK_FRAME_MAX_BYTES = 256    # 单函数最坏栈帧上限(-fstack-usage;只紧不松)
+RAM_BUDGET_BYTES = 4096        # data+bss 静态 RAM 预算(只紧不松)
+BANNED_SYMBOLS = ("malloc", "free", "calloc", "realloc", "_sbrk", "sbrk")  # 禁动态分配
 REQUIRED_DOCS = [
     "docs/ARCHITECTURE.md",
     "docs/verifier-firmware.md",
@@ -156,11 +159,96 @@ def leg_cross_compile():
     return problems, counts
 
 
+# ── 资源预算腿的可测试内核(负向自测直接喂合成输入) ──
+def _find_banned_symbols(nm_output):
+    hits = []
+    for line in nm_output.splitlines():
+        parts = line.split()
+        if parts and parts[-1] in BANNED_SYMBOLS:
+            hits.append(parts[-1])
+    return sorted(set(hits))
+
+
+def _check_su(text, src_only=True):
+    """解析 -fstack-usage 输出。返回 (problems, max_frame)。
+    非 static 限定(dynamic/bounded = VLA/alloca)即红;超帧上限即红。"""
+    problems, max_frame = [], 0
+    for line in text.strip().splitlines():
+        cols = line.split("\t")
+        if len(cols) < 3:
+            continue
+        loc, size_s, qual = cols[0], cols[1], cols[2]
+        if src_only and "/src/" not in loc:
+            continue  # 跳过 CMake 编译器探测等非工程源文件
+        size = int(size_s)
+        max_frame = max(max_frame, size)
+        if qual != "static":
+            problems.append(f"{loc} 栈帧非静态({qual}):疑似 VLA/alloca")
+        if size > STACK_FRAME_MAX_BYTES:
+            problems.append(f"{loc} 栈帧 {size}B > 上限 {STACK_FRAME_MAX_BYTES}B")
+    return problems, max_frame
+
+
+# ── 已实现的绿腿:资源预算(B3) ──
+def leg_resource_budget():
+    """禁动态分配(nm 符号封禁)+ 最坏栈帧上限(-fstack-usage)+ 静态 RAM 预算 + ISR 预算表存在。"""
+    import subprocess
+    problems, counts = [], {}
+    fw = os.path.join(HERE, "firmware")
+    elf = os.path.join(fw, "build", "firmware.elf")
+    if not os.path.exists(elf):
+        return ["缺 firmware.elf(先跑 cross-compile 腿)"], counts
+
+    # 1) 动态分配符号封禁
+    try:
+        nm = subprocess.run(["arm-none-eabi-nm", elf], capture_output=True, text=True, timeout=60).stdout
+    except FileNotFoundError:
+        return ["arm-none-eabi-nm 未安装(无法验证≠通过)"], counts
+    banned = _find_banned_symbols(nm)
+    if banned:
+        problems.append(f"检出动态分配符号: {', '.join(banned)}(固件禁 malloc)")
+
+    # 2) 栈帧上限(.su)
+    su_text = []
+    for root, _dirs, files in os.walk(os.path.join(fw, "build")):
+        for fn in files:
+            if fn.endswith(".su"):
+                with open(os.path.join(root, fn), encoding="utf-8") as f:
+                    su_text.append(f.read())
+    if not su_text:
+        problems.append("未找到 .su 文件(-fstack-usage 未生效?)")
+    else:
+        su_problems, max_frame = _check_su("\n".join(su_text))
+        problems += su_problems
+        counts["max_frame"] = max_frame
+
+    # 3) 静态 RAM 预算(data+bss)
+    try:
+        m = re.search(r"^\s*(\d+)\s+(\d+)\s+(\d+)\s+\d+", _read("firmware/build/size.txt"), re.MULTILINE)
+        if m:
+            static_ram = int(m.group(2)) + int(m.group(3))
+            counts["static_ram"] = static_ram
+            if static_ram > RAM_BUDGET_BYTES:
+                problems.append(f"静态 RAM {static_ram}B > 预算 {RAM_BUDGET_BYTES}B")
+    except FileNotFoundError:
+        problems.append("缺 size.txt")
+
+    # 4) ISR 预算表骨架存在且含规则行
+    try:
+        isr = _read("firmware/isr-budget.md")
+        if "WCET" not in isr:
+            problems.append("isr-budget.md 缺 WCET 列")
+    except FileNotFoundError:
+        problems.append("缺 firmware/isr-budget.md")
+    return problems, counts
+
+
 # 绿腿:现在就能真跑、能给绿灯的
 ACTIVE_LEGS = [
     ("scaffold-integrity", leg_scaffold_integrity),
     ("no-fake-verified", leg_no_fake_verified),
     ("cross-compile", leg_cross_compile),
+    ("resource-budget", leg_resource_budget),
 ]
 
 # BLOCKED 腿:结构上要有,但等决策/实现解锁。诚实展示,绝不伪绿。
