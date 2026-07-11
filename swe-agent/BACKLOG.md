@@ -175,6 +175,43 @@
 
 ---
 
+## Lane G · 吹风机领域(R10 规划落卡,方案见 docs/hairdryer-tech-plan.md)
+
+### G3 · 软件框架骨架:platform/products 分层 + 裸机调度(D-006)
+- 状态:`ready`
+- 原话:"软件框架搭建…多项目兼容,便于移植" + "可能优先要考虑裸机代码实现"
+- 翻译:落 monorepo 分层(bsp/hal/middleware-mcsdk/platform/products);bsp 用 const ops 表(Zephyr device model 式);裸机主循环任务表调度 + 薄 OSAL 接缝;protection.c 迁入 platform/safety;电机无关,可先行。
+- 依赖:无
+- 验收(机器可查):
+  - 目录与接口头文件落库;firmware 构建仍绿(gate cross-compile)
+  - 分层依赖检查脚本:products 不得 include 芯片头/hal 头,违规即红(进 gate)
+  - 任务表调度器 host 单测:时间片错开/过载检测断言 ≥N
+- 证伪/回退:若后续需 RTOS(BLE/OTA),OSAL 接缝限定改动面;回退成本低(D-006 证伪条件)。
+
+### G4 · FOC 集成与启动策略(MCSDK 参数包)
+- 状态:`blocked-on-human`(Q9:电机拓扑三相 ODM vs 单相定制、目标转速/极对数)
+- 原话:"FOC和PID等算法规划实现…要到戴森顶级级别"
+- 翻译:Workbench 工程 + 参数包(pmsm_motor_parameters.h/drive_parameters.h 入版本控制,只经 Workbench 改参);三电阻采样首版;PWM 40–50kHz、FOC=PWM/2;启动首选 HSO 直接闭环、I/F 斜坡后备;弱磁按电机参数评估;开工首日核实死区补偿模块存在性。
+- 依赖:Q9;G3
+- 验收(机器可查):
+  - 生成工程容器内构建绿;参数头文件每值带溯源(规格书/Profiler 报告)
+  - 启动策略文档带证伪判据(真机启动成功率/到速时间)
+  - [真机线] 400ms 级到 100k rpm 为目标非承诺,实测签字
+- 证伪/回退:Q9 答单相 → 本卡换 B/C 路线重写,G3/G5 不动。
+
+### G5 · 温控 PI+前馈 与 电机-加热联锁(软件安全核心)
+- 状态:`ready`(逻辑先行,阈值全标 PROVENANCE 待 D1 溯源)
+- 原话:"FOC和PID等算法规划实现" + 60335-2-23 联锁要求
+- 翻译:出风温度 PI+风量前馈纯函数模块(20–100Hz 任务);联锁状态机:转速/风量低→加热先降档后切断、恢复需冷却确认(US4003388A 语义);TRIAC 过零周波调功接口抽象(bsp ops);湿发 151°C 角蛋白阈值为限温锚。
+- 依赖:G3(目录);阈值溯源待 D1
+- 验收(机器可查):
+  - host 单测:过冲防护/联锁触发与恢复时序断言 ≥N,进 gate
+  - 阈值全标 PROVENANCE: PLACEHOLDER,溯源缺失即 gate 红(D1 落地后)
+  - 联锁逻辑进 bench 埋 bug 题库 ≥1 题(K1 扩容)
+- 证伪/回退:承重卡——联锁失效=风道过热起火风险,真机异常工况测试(60335-2-23)是最终裁决。
+
+---
+
 ## Lane B · 验证门禁(首席工程师 review 追加)
 
 ### B3 · 资源预算 gate 腿:栈用量 + 禁动态分配 + CPU 负载表
