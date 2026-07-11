@@ -28,6 +28,7 @@ STACK_FRAME_MAX_BYTES = 256    # 单函数最坏栈帧上限(-fstack-usage;只�
 STATEMACHINE_MIN = 10          # C1 状态机单测断言数下限(防测试静默变少)
 HOST_TEST_MIN = 25             # 固件 host 单测断言总数下限(sched 9 + thermal/interlock 16;只紧不松)
 LAYER_FILES_MIN = 6            # 分层检查扫描文件数下限(防目录改名后静默空转)
+PROVENANCE_MIN = 16            # D1 溯源核验断言数下限(含真 PDF 回环与中英等强 property)
 RAM_BUDGET_BYTES = 4096        # data+bss 静态 RAM 预算(只紧不松)
 BANNED_SYMBOLS = ("malloc", "free", "calloc", "realloc", "_sbrk", "sbrk")  # 禁动态分配
 REQUIRED_DOCS = [
@@ -346,6 +347,28 @@ def leg_layer_deps():
     return problems, {"files": checked}
 
 
+# ── 已实现的绿腿:L1 溯源核验(D1) ──
+def leg_provenance():
+    """引用解析核验单测:真值放行/篡改与伪造页 100% 拦/中英等强/无出处硬阻断/真 PDF 回环。"""
+    import subprocess
+    p = subprocess.run(
+        [sys.executable, "test_provenance.py"],
+        capture_output=True, text=True, timeout=180,
+        cwd=os.path.join(HERE, "provenance"),
+    )
+    out = (p.stdout or "") + (p.stderr or "")
+    m = re.search(r"RESULT: (\d+) passed, (\d+) failed", out)
+    problems = []
+    if not m:
+        return [f"未见 RESULT 行(rc={p.returncode}): {out[-200:]}"], {}
+    n_pass, n_fail = int(m.group(1)), int(m.group(2))
+    if n_fail != 0 or p.returncode != 0:
+        problems.append(f"失败 {n_fail},退出码 {p.returncode}")
+    if n_pass < PROVENANCE_MIN:
+        problems.append(f"通过 {n_pass} < 硬门槛 {PROVENANCE_MIN}")
+    return problems, {"asserts": n_pass}
+
+
 # 绿腿:现在就能真跑、能给绿灯的
 ACTIVE_LEGS = [
     ("scaffold-integrity", leg_scaffold_integrity),
@@ -356,6 +379,7 @@ ACTIVE_LEGS = [
     ("state-machine", leg_state_machine),
     ("host-unit-test", leg_host_unit_test),
     ("layer-deps", leg_layer_deps),
+    ("provenance-check", leg_provenance),
 ]
 
 # BLOCKED 腿:结构上要有,但等决策/实现解锁。诚实展示,绝不伪绿。
@@ -363,7 +387,6 @@ BLOCKED_LEGS = [
     ("static-analysis MISRA (cppcheck+clang-tidy)", "F1 已立,此腿下一张卡实现"),
     ("renode-sim (map, not territory)", "待 Renode 环境接入"),
     ("iec60730-selftest-table (L0)", "阻塞于 Q2 样例(卡 B2;D-004 已定全球合规面)"),
-    ("provenance-check 中英等强 (L1)", "待卡 D1 实现"),
 ]
 
 

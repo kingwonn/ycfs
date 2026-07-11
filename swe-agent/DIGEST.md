@@ -16,6 +16,7 @@
 | R10 | 吹风机规划 | 4 路并行调研(Dyson 拆解对标/高速 FOC/加热温控安规/可移植架构)合成 docs/hairdryer-tech-plan.md:戴森级量化基线(110k rpm/13L·s×3/77dBA 移频/≤100°C·40 次秒)、功率架构(电机仅 60-105W,大头加热丝)、软件分层(bsp ops 表/MCSDK 参数包切面/platform+products)、FOC 规划(三电阻/PWM 40-50k/HSO 直闭环+I/F 后备)、三环 PID+温度前馈、电机-加热联锁(专利语义);**人立法 D-006 裸机优先**(原话落 DECISIONS);落卡 G3(ready)/G4(等 Q9)/G5(ready) | ✅ 调研 4/4 带 URL 溯源;诚实空白 4 处标注(死区补偿/20vs40Hz/控制律无公开/400ms 系厂商宣称);gate 6/6 绿(卡 23→26) | 等 Q9(电机拓扑两问)解锁 G4;小白讲解版 artifact 随后发布。 |
 | R11 | G3 | 软件框架骨架落地:firmware/ 重构为 bsp/platform/products/tests/tools 分层(git mv);裸机任务表调度器(过载计数/防雪崩/回绕安全)+OSAL 接缝;board const-ops 表;gate 新增 host-unit-test(9 断言)与 layer-deps(6 文件)两腿;修复 .su 过滤器与 bench 路径连带 | ✅ gate 8/8 绿;host 单测 9/9;负向自测过 | G3 done。G5(温控联锁)ready 可继续;G4 等 Q9;D1/I1/J1/H1 仍 ready。11 提交待推。 |
 | R12 | G5 | 温控 PI+前馈(条件积分抗饱和+115°C 硬顶)与电机-加热联锁(三态/闩锁/恢复需风量+冷却双条件/无效读数即切)落地并接入 50Hz 任务;bench 增联锁埋 bug 题(恢复缺冷却确认),run_bench 泛化每题自带被测/判题;**-Werror 抓出真域宽 bug:speed_rpm uint16 在 110k RPM 回绕会骗过联锁,全链改 uint32** | ✅ gate 8/8 绿(host 25 断言含炉温仿真过冲≤5°C;bench 3 题;text=1660B) | G5 done(done≠verified,60335-2-23 异常工况待真机)。PID 拼图:温度环✅/电流+速度环随 G4 等 Q9。12 提交待推。 |
+| R13 | D1 | L1 溯源核验落地 provenance/:「引用解析得到该值」语义(非「有引用」),NFKC 归一化中英等强;单测 16/16——真值 16 放行零误伤、篡改 16/16 拦截且 EN=CN、伪造页/缺出处硬阻断、真 PDF 回环(reportlab STSong 中文→pdfplumber);gate 第 9 腿激活 | ✅ gate 9/9 绿(provenance=16);BLOCKED 剩 3 | D1 done——零编造护栏立起。零依赖 ready 剩 I1(DVP&R)/J1(OTA 占位)/H1;等人:Q7/Q9/写权限(13 提交)。 |
 
 写法:
 - **一行讲清一轮**:做了什么、验收结果(带数字)、有没有卡点。
