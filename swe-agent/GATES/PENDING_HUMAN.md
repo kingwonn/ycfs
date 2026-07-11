@@ -11,6 +11,10 @@
 
 ## ⏳ 仍等人的问题
 
+### Q8 · 首席工程师 review 追加的资源/信息项(详见 [docs/chief-review.md](../docs/chief-review.md))
+- **等什么**:① 成本/供应链数据源——有无内部优选器件库/成本库/元器件平台账号(解锁 I2);② 自动化台架预算与场地拍板(解锁 J3);③ 若手头已有吹风机单相驱动的老方案资料,直接提供可让 G2 免调研。
+- **解锁**:I2、J3;加速 G2。
+
 ### Q7 · 执行脊柱组合签字(D-005 提案,完整对比见 [docs/spine-comparison.md](../docs/spine-comparison.md))
 - **背景**:立法者对 OpenHands 路线不满意,点名六方重审(2026-07-07 六路并行调研完成)。
 - **提案**:执行脊柱 = **opencode server(主,MIT/183k★/模型无关/真 C-S)+ 可插拔适配层**(保留切换 Claude Agent SDK/Codex);沙箱 = 自建 Docker(F1 已验证)为基线;前端 = Vercel AI SDK 7 + AI Elements(InlineCitation 溯源)+ 抄 coding-agent-template 骨架;Hermes 排除;AWS 取素材(IDT 测试套件/Kiro spec 流程)不取脊柱。
