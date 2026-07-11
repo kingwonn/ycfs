@@ -143,7 +143,7 @@
 - 证伪/回退:若用一套「通用电机 agent」模板 → 吹风机单相高速 2-FET 与吸尘器三相 PMSM+BMS 的差异被抹平,埋隐患。承重卡。
 
 ### G2 · 吹风机电机驱动路线核实(单相高速拓扑 vs MCSDK)
-- 状态:`blocked-on-human`(调研已完成,报告落 docs/g2-hairdryer-drive.md;等 Q9 两问定案 + D-001 修订案签字)
+- 状态:`done`(第 R14 轮结案。调研报告 docs/g2-hairdryer-drive.md;**人签字:电机确认三相**(原话"目前是三相的"),D-001 修订案生效,路线 A 固化;单相仅作认知储备另出 primer。)
 - 原话:"fable5 站在顶级品牌首席工程师重新review下,假如需要补充列出来"(review 发现 A1)
 - 翻译:核实完成——MCSDK 仅三相但 HSO 实测 5kHz 电频覆盖 100kRPM;Dyson 单相为专利孤岛,国产/ODM 趋同三相高速 PMSM;三路线 A(G4+MCSDK 三相,推荐)/B(峰岹类引擎)/C(单相自研,不建议)带利弊与 coding 表面积影响。
 - 依赖:Q9(电机拓扑与转速/极对数两问)
@@ -179,7 +179,7 @@
 - 验收记录:gate 8/8 绿(cross-compile text=1100B;host-unit-test 9/9;layer-deps files=6);负向自测过(芯片头被抓/平台头不误伤)。
 
 ### G4 · FOC 集成与启动策略(MCSDK 参数包)
-- 状态:`blocked-on-human`(Q9:电机拓扑三相 ODM vs 单相定制、目标转速/极对数)
+- 状态:`blocked-on-human`(拓扑已定三相 ✅;仍等 **Q9b:目标转速/极对数/电机电气参数**(R/L/Ke 或 Profiler 实测)——Workbench 参数包没有这些无法生成)
 - 原话:"FOC和PID等算法规划实现…要到戴森顶级级别"
 - 翻译:Workbench 工程 + 参数包(pmsm_motor_parameters.h/drive_parameters.h 入版本控制,只经 Workbench 改参);三电阻采样首版;PWM 40–50kHz、FOC=PWM/2;启动首选 HSO 直接闭环、I/F 斜坡后备;弱磁按电机参数评估;开工首日核实死区补偿模块存在性。
 - 依赖:Q9;G3
