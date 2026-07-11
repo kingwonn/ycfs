@@ -178,15 +178,10 @@
 ## Lane G · 吹风机领域(R10 规划落卡,方案见 docs/hairdryer-tech-plan.md)
 
 ### G3 · 软件框架骨架:platform/products 分层 + 裸机调度(D-006)
-- 状态:`ready`
+- 状态:`done`(第 R11 轮。firmware/ 重构为 bsp(nucleo_g474: board const-ops 表+启动+链接脚本)/platform(core: 裸机任务表调度器 sched.c+薄 OSAL 接缝 osal.h;safety: protection.c 迁入;control 留位)/products(hairdryer: 任务表 1kHz 速度/50Hz 温控/10Hz HMI)/tests/tools,git mv 保留历史。调度器语义:到期跑一次、过载计数、防雪崩重同步、tick 回绕安全,host 单测 9/9(修过一处测试设计错误:过载场景需隔离调度器)。gate 新增两腿:host-unit-test(激活原 BLOCKED,断言下限 9)/layer-deps(芯片头 include 检查+扫描数下限防空转)。修复重构连带:.su 过滤器改分层目录、bench 参考实现路径+重签哈希锁。)
 - 原话:"软件框架搭建…多项目兼容,便于移植" + "可能优先要考虑裸机代码实现"
-- 翻译:落 monorepo 分层(bsp/hal/middleware-mcsdk/platform/products);bsp 用 const ops 表(Zephyr device model 式);裸机主循环任务表调度 + 薄 OSAL 接缝;protection.c 迁入 platform/safety;电机无关,可先行。
-- 依赖:无
-- 验收(机器可查):
-  - 目录与接口头文件落库;firmware 构建仍绿(gate cross-compile)
-  - 分层依赖检查脚本:products 不得 include 芯片头/hal 头,违规即红(进 gate)
-  - 任务表调度器 host 单测:时间片错开/过载检测断言 ≥N
-- 证伪/回退:若后续需 RTOS(BLE/OTA),OSAL 接缝限定改动面;回退成本低(D-006 证伪条件)。
+- 翻译:monorepo 分层 + const ops 表 + 裸机任务表调度 + OSAL 接缝;电机无关先行。
+- 验收记录:gate 8/8 绿(cross-compile text=1100B;host-unit-test 9/9;layer-deps files=6);负向自测过(芯片头被抓/平台头不误伤)。
 
 ### G4 · FOC 集成与启动策略(MCSDK 参数包)
 - 状态:`blocked-on-human`(Q9:电机拓扑三相 ODM vs 单相定制、目标转速/极对数)

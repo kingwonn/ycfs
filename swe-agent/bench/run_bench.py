@@ -19,8 +19,8 @@ import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
-REF_IMPL = os.path.join(REPO, "firmware", "src", "protection.c")
-INCLUDE = os.path.join(REPO, "firmware", "src")
+REF_IMPL = os.path.join(REPO, "firmware", "platform", "safety", "protection.c")
+INCLUDE = os.path.join(REPO, "firmware", "platform", "safety")
 TEST = os.path.join(HERE, "cases", "bug_fix", "test_protection.c")
 SHA_FILE = os.path.join(HERE, "manifest.sha256")
 

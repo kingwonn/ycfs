@@ -26,6 +26,8 @@ FLASH_MAX_BYTES = 512 * 1024   # STM32G474RE flash 预算(text+data 超出即红
 TEXT_MIN_BYTES = 200           # text 段下限:防"编译了个空壳"充数
 STACK_FRAME_MAX_BYTES = 256    # 单函数最坏栈帧上限(-fstack-usage;只紧不松)
 STATEMACHINE_MIN = 10          # C1 状态机单测断言数下限(防测试静默变少)
+HOST_TEST_MIN = 9              # 固件 host 单测断言数下限(只紧不松)
+LAYER_FILES_MIN = 6            # 分层检查扫描文件数下限(防目录改名后静默空转)
 RAM_BUDGET_BYTES = 4096        # data+bss 静态 RAM 预算(只紧不松)
 BANNED_SYMBOLS = ("malloc", "free", "calloc", "realloc", "_sbrk", "sbrk")  # 禁动态分配
 REQUIRED_DOCS = [
@@ -179,8 +181,8 @@ def _check_su(text, src_only=True):
         if len(cols) < 3:
             continue
         loc, size_s, qual = cols[0], cols[1], cols[2]
-        if src_only and "/src/" not in loc:
-            continue  # 跳过 CMake 编译器探测等非工程源文件
+        if src_only and not any(d in loc for d in ("/platform/", "/products/", "/bsp/")):
+            continue  # 只统计工程源(分层目录);跳过 CMake 编译器探测等
         size = int(size_s)
         max_frame = max(max_frame, size)
         if qual != "static":
@@ -289,6 +291,49 @@ def leg_state_machine():
     return problems, {"asserts": n_pass}
 
 
+# ── 已实现的绿腿:固件 host 单测(G3,激活原 BLOCKED 的 host-unit-test) ──
+def leg_host_unit_test():
+    """host gcc 编译并运行固件纯逻辑单测(调度器等);断言数 ≥ 下限且零失败。"""
+    import subprocess
+    fw = os.path.join(HERE, "firmware")
+    cmd = ["gcc", "-std=c11", "-Wall", "-Werror", "-I", os.path.join(fw, "platform", "core"),
+           os.path.join(fw, "tests", "host", "test_sched.c"),
+           os.path.join(fw, "platform", "core", "sched.c"), "-o", "/tmp/gate_tsched"]
+    p = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+    if p.returncode != 0:
+        return [f"host 单测编译失败: {p.stderr[-200:]}"], {}
+    r = subprocess.run(["/tmp/gate_tsched"], capture_output=True, text=True, timeout=60)
+    m = re.search(r"RESULT: (\d+) passed, (\d+) failed", r.stdout)
+    problems = []
+    if not m:
+        return ["未见 RESULT 行(测试可能被跳过)"], {}
+    n_pass, n_fail = int(m.group(1)), int(m.group(2))
+    if n_fail != 0 or r.returncode != 0:
+        problems.append(f"失败 {n_fail},退出码 {r.returncode}")
+    if n_pass < HOST_TEST_MIN:
+        problems.append(f"通过 {n_pass} < 硬门槛 {HOST_TEST_MIN}")
+    return problems, {"asserts": n_pass}
+
+
+# ── 已实现的绿腿:分层依赖检查(G3) ──
+def leg_layer_deps():
+    """platform/products 不得 include 芯片头;扫描数低于下限即红(防静默空转)。"""
+    import subprocess
+    p = subprocess.run(
+        [sys.executable, os.path.join(HERE, "firmware", "tools", "check_layers.py")],
+        capture_output=True, text=True, timeout=60,
+    )
+    try:
+        data = json.loads(p.stdout)
+    except json.JSONDecodeError:
+        return [f"check_layers 输出不可解析: {p.stdout[-150:]}"], {}
+    problems = list(data.get("violations", []))
+    checked = data.get("checked", 0)
+    if checked < LAYER_FILES_MIN:
+        problems.append(f"扫描文件数 {checked} < 下限 {LAYER_FILES_MIN}(目录空转?)")
+    return problems, {"files": checked}
+
+
 # 绿腿:现在就能真跑、能给绿灯的
 ACTIVE_LEGS = [
     ("scaffold-integrity", leg_scaffold_integrity),
@@ -297,12 +342,13 @@ ACTIVE_LEGS = [
     ("resource-budget", leg_resource_budget),
     ("bench-self-check", leg_bench_self_check),
     ("state-machine", leg_state_machine),
+    ("host-unit-test", leg_host_unit_test),
+    ("layer-deps", leg_layer_deps),
 ]
 
 # BLOCKED 腿:结构上要有,但等决策/实现解锁。诚实展示,绝不伪绿。
 BLOCKED_LEGS = [
     ("static-analysis MISRA (cppcheck+clang-tidy)", "F1 已立,此腿下一张卡实现"),
-    ("host-unit-test (Ceedling/Unity/CMock)", "protection.c 已具备可测面,待单测卡"),
     ("renode-sim (map, not territory)", "待 Renode 环境接入"),
     ("iec60730-selftest-table (L0)", "阻塞于 Q2 样例(卡 B2;D-004 已定全球合规面)"),
     ("provenance-check 中英等强 (L1)", "待卡 D1 实现"),

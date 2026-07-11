@@ -14,6 +14,7 @@
 | R8 | K1 | agent 评测基准落地 bench/:2 道埋 bug 修复题(构造即真值,host gcc 可判)+6 道 spec_qa(真值锚本会话核实事实带 URL)+run_bench 自检(参考必绿/buggy 必红/出生证/哈希锁/题数下限);gate 新增 bench-self-check 腿 | ✅ gate 5/5 绿(bug_fix=2, spec_qa=6);负向自测 2/2(篡改触红/同源探针触红) | K1 done。~~零依赖 ready 卡告罄~~(**R9 更正:错报**——C1/D1/I1/J1/H1 仍 ready)。 |
 | R9 | C1 | 「待真机」结构性终态断言落地 governance/:转移白名单无任何 (*,verified) 边;唯一入口要求 done+有效真机签字(非空证据/卡号匹配/概括授权无效);audit 抓伪造 verified(P0)+枚举待真机队列;gate 第 6 腿 state-machine(断言下限 10) | ✅ gate 6/6 绿(asserts=10/10);gate_green 开不了 verified 的门被单测证明 | C1 done(YCFS 最承重不变量落地)。剩余零依赖 ready:D1(L1 溯源)/I1(DVP&R)/J1(OTA 占位)/H1。等人:Q7/Q9 最紧;写权限(9 提交待推)。下一张:D1。 |
 | R10 | 吹风机规划 | 4 路并行调研(Dyson 拆解对标/高速 FOC/加热温控安规/可移植架构)合成 docs/hairdryer-tech-plan.md:戴森级量化基线(110k rpm/13L·s×3/77dBA 移频/≤100°C·40 次秒)、功率架构(电机仅 60-105W,大头加热丝)、软件分层(bsp ops 表/MCSDK 参数包切面/platform+products)、FOC 规划(三电阻/PWM 40-50k/HSO 直闭环+I/F 后备)、三环 PID+温度前馈、电机-加热联锁(专利语义);**人立法 D-006 裸机优先**(原话落 DECISIONS);落卡 G3(ready)/G4(等 Q9)/G5(ready) | ✅ 调研 4/4 带 URL 溯源;诚实空白 4 处标注(死区补偿/20vs40Hz/控制律无公开/400ms 系厂商宣称);gate 6/6 绿(卡 23→26) | 等 Q9(电机拓扑两问)解锁 G4;小白讲解版 artifact 随后发布。 |
+| R11 | G3 | 软件框架骨架落地:firmware/ 重构为 bsp/platform/products/tests/tools 分层(git mv);裸机任务表调度器(过载计数/防雪崩/回绕安全)+OSAL 接缝;board const-ops 表;gate 新增 host-unit-test(9 断言)与 layer-deps(6 文件)两腿;修复 .su 过滤器与 bench 路径连带 | ✅ gate 8/8 绿;host 单测 9/9;负向自测过 | G3 done。G5(温控联锁)ready 可继续;G4 等 Q9;D1/I1/J1/H1 仍 ready。11 提交待推。 |
 
 写法:
 - **一行讲清一轮**:做了什么、验收结果(带数字)、有没有卡点。
