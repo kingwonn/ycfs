@@ -11,6 +11,7 @@
 | R5 | 首席review落卡 | 首席工程师视角 review 全蓝图,17 项补充落 docs/chief-review.md;新增 10 卡(G2 吹风机路线核实/B3 资源预算腿/B4 故障注入/B5 MISRA 登记册/I1 DVP&R/I2 BOM-WCCA/I3 声学-ErP/J1 OTA占位/J2 标定-EOL/J3 台架/K1 agent 基准);D-001 加审查附注(吹风机线待核实);PENDING_HUMAN 增 Q8 | ✅ gate 3/3 绿(卡数 12→22,字段完整性全过) | 等人:Q7(D-005 签字,卡 M1)、Q8(资源)、Q2/Q4b/Q5/Q6;写权限仍未开(5 提交待推)。下一张建议:G2 或 B3。 |
 | R6 | B3 | 资源预算腿激活:nm 封禁动态分配符号(6 项)/-fstack-usage 栈帧≤256B 且禁 VLA/静态 RAM≤4096B/isr-budget.md 骨架;推送错误层级变化(代理 403→GitHub 端 denied),权限差最后一步 | ✅ gate 4/4 绿(max_frame=32B, static_ram=8B);负向自测 3/3 | B3 done。等人项不变(Q7 最紧);下一张:K1 agent 基准 或 G2 吹风机路线调研。 |
 | R7 | G2 | 吹风机驱动路线核实完成,报告落 docs/g2-hairdryer-drive.md:MCSDK 仅三相但 HSO 实测 5kHz 电频覆盖 100kRPM;Dyson 单相=专利孤岛(US10110102),国产供应链趋同三相高速 PMSM(峰岹 11 万转方案/灵动 100kRPM 方案/Infineon 100kRPM 参考设计);D-001 修订案:补「三相+极频≤5kHz」前提则全线成立 | ✅ 结论全部带厂商溯源;gate 4/4 绿 | review A1 从「决策危机」降级为「加前提条件」。等 Q9 两问(电机拓扑/转速极对数)+ D-001 修订签字;Q7(D-005)仍是 M1 闸门。下一张:K1。 |
+| R8 | K1 | agent 评测基准落地 bench/:2 道埋 bug 修复题(构造即真值,host gcc 可判)+6 道 spec_qa(真值锚本会话核实事实带 URL)+run_bench 自检(参考必绿/buggy 必红/出生证/哈希锁/题数下限);gate 新增 bench-self-check 腿 | ✅ gate 5/5 绿(bug_fix=2, spec_qa=6);负向自测 2/2(篡改触红/同源探针触红) | K1 done。零依赖 ready 卡告罄——M1 等 Q7 签字,其余等 Q2/Q4b/Q5/Q6/Q8/Q9。写权限仍未开(8 提交待推)。 |
 
 写法:
 - **一行讲清一轮**:做了什么、验收结果(带数字)、有没有卡点。

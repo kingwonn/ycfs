@@ -1,0 +1,12 @@
+{
+  "id": "bug_fix/case-002",
+  "type": "bug_fix",
+  "task": "protection_buggy.c 中埋有一处逻辑缺陷。修复它,使 test_protection.c 全绿。不得修改测试。",
+  "seeded_bug": "转速恢复后堵转计时器 stall_ms 未清零(删掉了 else 分支)——间歇性短暂堵转会跨事件累计,最终误跳闸。真实事故形态:吸尘器滚刷偶发缠绕导致整机频繁误保护,用户投诉『用着用着就停』。",
+  "expected_failures": ["T4 intermittent-stall no false trip"],
+  "provenance": {
+    "constructed_by": "Claude(R8 轮),bug 为人工构造,构造即真值",
+    "truth_anchor": "参考实现 firmware/src/protection.c + 判定测试 test_protection.c(埋 bug 前对参考实现全绿)",
+    "date": "2026-07-07"
+  }
+}

@@ -243,12 +243,33 @@ def leg_resource_budget():
     return problems, counts
 
 
+# ── 已实现的绿腿:bench 题目质量自检(K1) ──
+def leg_bench_self_check():
+    """agent 评测基准的题目质量自检:参考实现全绿/buggy 必红/出生证齐/哈希锁一致/题数下限。"""
+    import subprocess
+    p = subprocess.run(
+        [sys.executable, os.path.join(HERE, "bench", "run_bench.py")],
+        capture_output=True, text=True, timeout=300,
+    )
+    counts = {}
+    try:
+        data = json.loads(p.stdout)
+        counts = {"bug_fix": data["bug_fix"], "spec_qa": data["spec_qa"]}
+        problems = data["problems"]
+    except (json.JSONDecodeError, KeyError):
+        problems = [f"run_bench 输出不可解析(rc={p.returncode}): {p.stdout[-200:]}{p.stderr[-200:]}"]
+    if p.returncode != 0 and not problems:
+        problems = [f"run_bench 退出码 {p.returncode}"]
+    return problems, counts
+
+
 # 绿腿:现在就能真跑、能给绿灯的
 ACTIVE_LEGS = [
     ("scaffold-integrity", leg_scaffold_integrity),
     ("no-fake-verified", leg_no_fake_verified),
     ("cross-compile", leg_cross_compile),
     ("resource-budget", leg_resource_budget),
+    ("bench-self-check", leg_bench_self_check),
 ]
 
 # BLOCKED 腿:结构上要有,但等决策/实现解锁。诚实展示,绝不伪绿。

@@ -1,0 +1,12 @@
+{
+  "id": "bug_fix/case-001",
+  "type": "bug_fix",
+  "task": "protection_buggy.c 中埋有一处安全缺陷。修复它,使 test_protection.c 全绿。不得修改测试。",
+  "seeded_bug": "传感器读数无效(valid=false)时维持当前状态而非跳闸——把『最危险假设』写成了『乐观假设』。真实事故形态:热敏电阻断线后加热丝失控。",
+  "expected_failures": ["T1 invalid-sensor→TRIP"],
+  "provenance": {
+    "constructed_by": "Claude(R8 轮),bug 为人工构造,构造即真值",
+    "truth_anchor": "参考实现 firmware/src/protection.c + 判定测试 test_protection.c(埋 bug 前对参考实现全绿)",
+    "date": "2026-07-07"
+  }
+}
