@@ -23,6 +23,7 @@
 | R17 | B5+静态腿 | static-analysis 腿激活(BLOCKED→绿):plain cppcheck 零发现(修 const 指针;comparePointers 惯用法→DEV-001);MISRA 走 dump 两步法(--addon 集成在 2.13 静默失效,探针自证后绕行),违规 57→49(修 12.1×8/12.3×5/8.4×3),棘轮上限 49;登记册 9 条规则级偏差,未登记规则即红(负向:清空登记册→49 全触红);修复连带触发 bench 哈希锁红→重签复核 | ✅ gate 12/12 绿(plain=0,misra=49);BLOCKED 剩 2(renode/60730) | B5 done。PENDING_HUMAN 增 Q11(登记册批准)。等人清单不变+Q11;写权限(18 提交)。 |
 | R18 | B2骨架 | 60730 覆盖表骨架落地(D-002 授权):12 组件表(真值锚=标准条款+X-CUBE-STL 接入位,自检不自研)+selftest.c 表驱动调度(NOT_IMPL 显式上报,CRC32 已知向量 0xCBF43926 验证)+gate 第 13 腿(表↔代码一一对应/真值锚非空/IMPL 棘轮);新腿当场抓 2 处 12.1+表解析吞换行 bug,均修复 | ✅ gate 13/13 绿(misra=49 守住棘轮,host=31,rows=12);BLOCKED 仅剩 renode | B2 留等 Q2 校准。新任务:opencode 平台设计+资源清单、顶级品牌电机型号调查(双线调研中)。 |
 | R19 | 电机调查+opencode设计 | ① docs/motor-benchmark.md:Dyson/Shark/追觅/徕芬/米家电机对照(全行业三相 110k 同频,追觅 130k 量产/200k 认证/马达外供,米家电机=东莞联锋 310V/60W);目标规格提案挂 Q9b(105-120k/60-80W/2 对极 3.67kHz≤5kHz/310V)。② docs/opencode-platform-design.md:安装/serve/config(⚠默认全 allow 须收紧)/SDK 方法名/插件钩子签名(tool.execute.before throw 阻断;permission.ask 置 deny)——H1 内核执行点就绪;资源:无 GPU/4C8G 起步/API 轻用 $20-80 重用 $150-300 每人月/人力 1-3 人周(抄 coding-agent-template) | ✅ 两路调研均带源码级溯源;gate 13/13 绿 | 等拍板:Q9b(规格提案)/Q7(D-005,A1 按设计书实施)。21 提交待推。 |
+| R20 | 推送+方案一立法+A1起工 | **21 提交推上 GitHub**(写权限开通);方案一整体签字落法:D-005(opencode 脊柱)/D-007(电机规格按提案)/Q10 分区表/Q11 登记册全部转正;A1 增量一:opencode v1.17.18 落地,server 冒烟(OpenAPI 162 端点/会话创建/SSE 捕获),audit.py append-only 哈希链+防篡改自证 | ✅ 冒烟 5/5;gate 13/13 绿;推送成功 | A1 余下增量等 Q12(API key);G4 等供应商 R/L/Ke。下一阶段最有价值=M1 平台闭环(A1+E1+最小工作台)。 |
 
 写法:
 - **一行讲清一轮**:做了什么、验收结果(带数字)、有没有卡点。

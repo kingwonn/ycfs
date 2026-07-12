@@ -7,15 +7,15 @@
 
 | DEV | 规则 | 类别 | 范围 | 理由 | 批准 |
 |---|---|---|---|---|---|
-| DEV-001 | cppcheck `comparePointers` | 非 MISRA(plain) | startup 内联抑制 ×2 | 链接器符号跨对象比较是启动代码固有惯用法,无替代写法 | 待签(Q11) |
-| DEV-002 | 15.5 提前返回 | Advisory | platform/products | 保护/门禁逻辑用卫语句提前返回,单出口反而掩埋安全路径;项目风格明确 | 待签(Q11) |
-| DEV-003 | 8.9 对象可缩块作用域 | Advisory | 配置常量表 | k_th/k_tc/k_ic 等 const 配置表按约定置文件域(集中可查、便于溯源标注) | 待签(Q11) |
-| DEV-004 | 12.1 运算优先级括号 | Advisory | 存量代码 | **计划清零**:新代码必须全括号;存量渐进修(本轮已修 8 处,余 8) | 待签(Q11) |
-| DEV-005 | 8.4 定义前无声明 | Required | startup 处理器 | Reset/Default_Handler 与弱别名向量项为裸机启动惯用法 | 待签(Q11) |
-| DEV-006 | 10.8 复合表达式转换 | Required | main.c 档位映射 | 三目档位映射显式窄化,语义明确 | 待签(Q11) |
-| DEV-007 | 13.3 自增与副作用 | Advisory | startup 拷贝环/tick | `*dst++ = *src++` 启动拷贝与 `++s_ticks` 为最小惯用法 | 待签(Q11) |
-| DEV-008 | 15.7 else-if 无尾 else | Required | 滞回逻辑 | 温度滞回三分支语义完备,尾 else 为空徒增噪声 | 待签(Q11) |
-| DEV-009 | 14.2 for 循环形式 | Required | startup | bss 清零环非计数器形式,启动惯用法 | 待签(Q11) |
+| DEV-001 | cppcheck `comparePointers` | 非 MISRA(plain) | startup 内联抑制 ×2 | 链接器符号跨对象比较是启动代码固有惯用法,无替代写法 | ✅ 方案一(2026-07-08) |
+| DEV-002 | 15.5 提前返回 | Advisory | platform/products | 保护/门禁逻辑用卫语句提前返回,单出口反而掩埋安全路径;项目风格明确 | ✅ 方案一(2026-07-08) |
+| DEV-003 | 8.9 对象可缩块作用域 | Advisory | 配置常量表 | k_th/k_tc/k_ic 等 const 配置表按约定置文件域(集中可查、便于溯源标注) | ✅ 方案一(2026-07-08) |
+| DEV-004 | 12.1 运算优先级括号 | Advisory | 存量代码 | **计划清零**:新代码必须全括号;存量渐进修(本轮已修 8 处,余 8) | ✅ 方案一(2026-07-08) |
+| DEV-005 | 8.4 定义前无声明 | Required | startup 处理器 | Reset/Default_Handler 与弱别名向量项为裸机启动惯用法 | ✅ 方案一(2026-07-08) |
+| DEV-006 | 10.8 复合表达式转换 | Required | main.c 档位映射 | 三目档位映射显式窄化,语义明确 | ✅ 方案一(2026-07-08) |
+| DEV-007 | 13.3 自增与副作用 | Advisory | startup 拷贝环/tick | `*dst++ = *src++` 启动拷贝与 `++s_ticks` 为最小惯用法 | ✅ 方案一(2026-07-08) |
+| DEV-008 | 15.7 else-if 无尾 else | Required | 滞回逻辑 | 温度滞回三分支语义完备,尾 else 为空徒增噪声 | ✅ 方案一(2026-07-08) |
+| DEV-009 | 14.2 for 循环形式 | Required | startup | bss 清零环非计数器形式,启动惯用法 | ✅ 方案一(2026-07-08) |
 
 ## 棘轮记录(只降不升)
 

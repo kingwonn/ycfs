@@ -1,5 +1,19 @@
 # DECISIONS — 方向门禁立法记录(每条带出生证)
 
+## D-005 · 执行脊柱:opencode(主)+ 可插拔适配层 —— ✅ 已签字(方案一)
+
+- **出生证**:立法者=项目发起人;时间=2026-07-08;渠道=会话。
+- **原话**:"对于你列出来的,现作为方案一,开动下去。后面有问题,再考虑新方案"
+- **翻译**:采纳 R4 六方对比提案(docs/spine-comparison.md)与 R19 平台设计书(docs/opencode-platform-design.md):执行脊柱 = opencode server(MIT,每任务无状态容器)经适配层嵌入 BS 后端;前端 = Vercel AI SDK + AI Elements,骨架抄 coding-agent-template;沙箱 = 自建 Docker;治理接线 = 插件 tool.execute.before/permission.ask 调 data_gate 内核。**同批**:Q9b 电机规格按提案(见 D-007)、Q10 分区表、Q11 偏差登记册。
+- **证伪条件**(原话内建:"后面有问题,再考虑新方案"):若 PoC 实测暴露 opencode 钩子绕过路径/API 不稳定/资源超预期 → 适配层切 Claude Agent SDK(R4 备选),回退成本低。
+
+## D-007 · 吹风机电机目标规格(Q9b,按提案) —— ✅ 已签字(方案一)
+
+- **出生证**:同上(方案一整体签字)。
+- **内容**:目标 105–120k rpm(旗舰 130k)/ 60–80W / **2 对极**(电频 3.67kHz ≤ HSO 5kHz 域)/ 310V 整流母线;供应商首选东莞联锋,备选峰岹生态/追觅 BU;R/L/Ke 以**供应商规格书或 Profiler 实测**为准(此项仍开放,到货即闭环)。
+- **解锁**:G4 预备工作(Workbench 工程结构/参数文件布局);参数包最终生成等 R/L/Ke。
+- **证伪条件**:采样电机实测参数超出 HSO 域 → 换 1–2 对极型号或重估观测器,框架不动(见 motor-benchmark.md)。
+
 > YCFS:真值有出生证——谁、何时、原话、被翻译成什么。方向门禁上人签的字落在这里,卡引用这里。
 
 ## D-001 · MCU/电机控制平台:STM32 + X-CUBE-MCSDK 生成 FOC + GCC 全容器化

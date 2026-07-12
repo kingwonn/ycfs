@@ -10,7 +10,7 @@
 ## Lane A · 执行核心(决策无关)
 
 ### A1 · 执行脊柱 + 沙箱抽象 + 事件溯源骨架
-- 状态:`blocked-on-human`(Q7/D-005 执行脊柱签字;原 OpenHands 路线经六方重审后拟改为 opencode 主 + 可插拔适配层,见 docs/spine-comparison.md)
+- 状态:`in-progress`(**D-005 已签字(方案一)**;R20 增量一完成:opencode v1.17.18 npm 装入、server 起于 127.0.0.1:4096(OpenAPI 3.1/162 端点)、会话创建 ✓、SSE 事件流→agent_server/audit.py **append-only 哈希链**落盘、篡改历史行被链校验抓红——冒烟 5/5。**余下**:真实 LLM 任务+重放字节一致(等 Q12 API key)、YCFS 插件端到端、前端工作台。)
 - 原话:"系统可以先考虑BS架构" + "做成可观测,可追索,可审计,可验证的开发助手" + "我感觉不好,我希望考虑openai 或者anthropic agentsdk,vercel 的案例以及CF的" + "还有opencode+加上其沙箱功能是否也是一个好方案?"
 - 翻译:待 D-005 签字后:opencode server 经适配层嵌入 BS 后端,事件流(SSE)落**不可变**存储确定性回放;适配层保留换装 Claude Agent SDK/Codex。
 - 依赖:Q7 签字
@@ -174,7 +174,7 @@
 - 验收记录:gate 8/8 绿(cross-compile text=1100B;host-unit-test 9/9;layer-deps files=6);负向自测过(芯片头被抓/平台头不误伤)。
 
 ### G4 · FOC 集成与启动策略(MCSDK 参数包)
-- 状态:`blocked-on-human`(拓扑已定三相 ✅;仍等 **Q9b:目标转速/极对数/电机电气参数**(R/L/Ke 或 Profiler 实测)——Workbench 参数包没有这些无法生成)
+- 状态:`blocked-on-human`(规格已立法 D-007 ✅:105-120k/2 对极/310V;**仅剩供应商 R/L/Ke 规格书或样机 Profiler 实测**——参数包最终生成的唯一输入缺口;联锋询价动作在人侧)
 - 原话:"FOC和PID等算法规划实现…要到戴森顶级级别"
 - 翻译:Workbench 工程 + 参数包(pmsm_motor_parameters.h/drive_parameters.h 入版本控制,只经 Workbench 改参);三电阻采样首版;PWM 40–50kHz、FOC=PWM/2;启动首选 HSO 直接闭环、I/F 斜坡后备;弱磁按电机参数评估;开工首日核实死区补偿模块存在性。
 - 依赖:Q9;G3
