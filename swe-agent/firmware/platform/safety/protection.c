@@ -30,13 +30,13 @@ prot_state_t prot_step(const prot_thresholds_t *th, const prot_inputs_t *in, pro
     }
 
     /* 过温 / 过流跳闸 */
-    if (in->temp_c >= th->temp_trip_c || in->current_ma >= th->current_trip_ma) {
+    if ((in->temp_c >= th->temp_trip_c) || (in->current_ma >= th->current_trip_ma)) {
         enter_trip(ctx);
         return ctx->state;
     }
 
     /* 堵转:零转速且有电流,持续超时即跳闸 */
-    if (in->speed_rpm == 0u && in->current_ma > 0u) {
+    if ((in->speed_rpm == 0u) && (in->current_ma > 0u)) {
         ctx->stall_ms += in->dt_ms;
         if (ctx->stall_ms >= th->stall_trip_ms) {
             enter_trip(ctx);
@@ -61,7 +61,7 @@ bool prot_reset(const prot_thresholds_t *th, const prot_inputs_t *in, prot_ctx_t
     if (ctx->state != PROT_TRIP) {
         return true;
     }
-    if (!in->valid || in->temp_c > th->temp_recover_c) {
+    if ((!in->valid) || (in->temp_c > th->temp_recover_c)) {
         return false; /* 冷却不足或读数无效,拒绝复位 */
     }
     ctx->state = PROT_RUN;

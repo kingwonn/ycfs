@@ -20,6 +20,7 @@
 | R14 | Q9立法+G2结案+I1/I3 | 人立法:吹风机电机**确认三相**(原话入 DECISIONS),D-001 修订案生效、G2 done、G4 阻塞收窄为 Q9b(转速/极对数/R-L-Ke);单相认知 primer 调研后台进行。I1/I3 落地 dvpr/:DVP&R 15 行(限值全带出处或诚实 PLACEHOLDER,含声学 77dBA/ErP 0.5W/闪变 61000-3-3 行)+DFMEA 6 条,check_dvpr 校验高 RPN 必有验证链接、L-real 有证据必须有签字;gate 第 10 腿 | ✅ gate 10/10 绿(rows=15,dfmea=6);负向自测 3/3 | 零依赖 ready 剩 J1(OTA 占位)/H1。等人:Q9b、Q7、写权限(15 提交)。 |
 | R15 | 单相primer+溯源更正 | 单相认知储备落 docs/single-phase-primer.md(电机构造低极数上高速/2-4FET 换相/死点-脉动-无感三难题与解法/利弊/对三相 4 点启示);**溯源更正:US10110102 同族证据指向 Johnson Electric 非 Dyson**——g2 报告与 bench spec_qa/005 引用已更正(替换为 US8988021/US9515588B2),哈希锁重签;「专利孤岛」结论不变且更强(Dyson 535 件+Johnson Electric 布防) | ✅ gate 10/10 绿;更正走 L1 纪律留痕 | 认知任务闭环。等人:Q9b(G4 参数)、Q7(D-005)、写权限(16 提交)。 |
 | R16 | J1+H1 | J1 分区占位:BOOT 32K/APP 472K@0x08008000/PARAMS 4K 落链接脚本并构建绿,回滚语义=镜像活过看门狗才算,FLASH 预算收紧 512K→472K,gate 增分区断言;H1 数据门禁策略内核:NDA 无具名确认即硬停、概括授权结构性无效、approval 消耗式、restricted 无放行边,单测 10/10,gate 第 11 腿;PENDING_HUMAN 增 Q10(分区表签字) | ✅ gate 11/11 绿 | **零依赖 ready 卡清零**——26 卡:14 done,余下全部等人(Q7/Q9b/Q2/Q4b/Q5/Q6/Q8/Q10)或等依赖。写权限(17 提交)。 |
+| R17 | B5+静态腿 | static-analysis 腿激活(BLOCKED→绿):plain cppcheck 零发现(修 const 指针;comparePointers 惯用法→DEV-001);MISRA 走 dump 两步法(--addon 集成在 2.13 静默失效,探针自证后绕行),违规 57→49(修 12.1×8/12.3×5/8.4×3),棘轮上限 49;登记册 9 条规则级偏差,未登记规则即红(负向:清空登记册→49 全触红);修复连带触发 bench 哈希锁红→重签复核 | ✅ gate 12/12 绿(plain=0,misra=49);BLOCKED 剩 2(renode/60730) | B5 done。PENDING_HUMAN 增 Q11(登记册批准)。等人清单不变+Q11;写权限(18 提交)。 |
 
 写法:
 - **一行讲清一轮**:做了什么、验收结果(带数字)、有没有卡点。

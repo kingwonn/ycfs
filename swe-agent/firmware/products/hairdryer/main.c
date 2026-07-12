@@ -18,9 +18,9 @@ static const prot_thresholds_t k_th = {
     .stall_trip_ms   = 500u,
 };
 
-volatile int16_t  g_temp_c     = 25;
-volatile uint16_t g_current_ma = 1000u;
-volatile uint32_t g_speed_rpm  = 110000u;
+static volatile int16_t  g_temp_c     = 25;
+static volatile uint16_t g_current_ma = 1000u;
+static volatile uint32_t g_speed_rpm  = 110000u;
 
 /* PROVENANCE: PLACEHOLDER — 温控/联锁参数须真机标定+规格书溯源(L1) */
 static const thermal_cfg_t k_tc = {
@@ -47,7 +47,7 @@ static void task_speed_1khz(void)
 
 static void task_thermal_50hz(void)
 {
-    const uint8_t level = (g_speed_rpm >= 90000u) ? 2u : (g_speed_rpm >= 60000u) ? 1u : 0u;
+    const uint8_t level = (g_speed_rpm >= 90000u) ? (uint8_t)2u : ((g_speed_rpm >= 60000u) ? (uint8_t)1u : (uint8_t)0u);
     const float cmd = thermal_step(&k_tc, &s_therm, 80, g_temp_c, level, 20u);
     (void)ilk_step(&k_ic, &s_ilk, true, g_speed_rpm, g_temp_c, 20u);
     g_board.heater_permille(ilk_apply(&k_ic, &s_ilk, (uint16_t)cmd));

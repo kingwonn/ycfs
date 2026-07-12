@@ -16,8 +16,8 @@ int sched_tick(sched_t *s, uint32_t now)
     for (int i = 0; i < s->n; i++) {
         sched_task_t *t = &s->tasks[i];
         uint32_t elapsed = now - t->last_run;   /* 无符号回绕安全 */
-        if (t->period_ticks == 0u || elapsed >= t->period_ticks) {
-            if (t->period_ticks != 0u && elapsed >= 2u * t->period_ticks) {
+        if ((t->period_ticks == 0u) || (elapsed >= t->period_ticks)) {
+            if ((t->period_ticks != 0u) && (elapsed >= (2u * t->period_ticks))) {
                 s->overruns++;                  /* 过载:错过≥1个整周期 */
             }
             t->fn();

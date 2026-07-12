@@ -21,7 +21,7 @@ ilk_state_t ilk_step(const ilk_cfg_t *cfg, ilk_ctx_t *ctx,
 {
     /* CUTOFF 闩锁:恢复必须「风量满足 DERATE 线以上」且「已冷却」——双条件缺一不可 */
     if (ctx->state == ILK_CUTOFF) {
-        if (valid && speed_rpm >= cfg->rpm_derate && temp_c <= cfg->cool_c) {
+        if (valid && (speed_rpm >= cfg->rpm_derate) && (temp_c <= cfg->cool_c)) {
             ctx->state = ILK_OK;
             ctx->low_ms = 0u;
         }

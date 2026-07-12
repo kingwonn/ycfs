@@ -27,6 +27,8 @@ TEXT_MIN_BYTES = 200           # text 段下限:防"编译了个空壳"充数
 STACK_FRAME_MAX_BYTES = 256    # 单函数最坏栈帧上限(-fstack-usage;只紧不松)
 STATEMACHINE_MIN = 10          # C1 状态机单测断言数下限(防测试静默变少)
 DATA_GATE_MIN = 10             # H1 数据门禁单测断言数下限
+MISRA_CEILING = 49             # 登记内 MISRA 违规总数上限(R17 基线;只降不升)
+MISRA_ADDON = "/usr/lib/x86_64-linux-gnu/cppcheck/addons/misra.py"
 HOST_TEST_MIN = 25             # 固件 host 单测断言总数下限(sched 9 + thermal/interlock 16;只紧不松)
 LAYER_FILES_MIN = 6            # 分层检查扫描文件数下限(防目录改名后静默空转)
 PROVENANCE_MIN = 16            # D1 溯源核验断言数下限(含真 PDF 回环与中英等强 property)
@@ -378,6 +380,70 @@ def leg_provenance():
     return problems, {"asserts": n_pass}
 
 
+# ── 已实现的绿腿:静态分析 cppcheck+MISRA(激活原 BLOCKED 腿;B5 登记册) ──
+FW_SOURCES = [
+    "platform/core/sched.c", "platform/control/thermal_pi.c",
+    "platform/safety/protection.c", "platform/safety/interlock.c",
+    "products/hairdryer/main.c", "bsp/nucleo_g474/board.c",
+    "bsp/nucleo_g474/startup_stm32g474.c",
+]
+
+
+def _registered_rules():
+    """从偏差登记册解析已登记规则集(如 {'15.5','8.9',...});行缺理由即视为未登记。"""
+    rules = set()
+    text = _read("docs/misra-deviations.md")
+    for m in re.finditer(r"^\| DEV-\d+ \| ([\d.]+)[^|]*\|[^|]*\|[^|]*\|([^|]*)\|", text, re.MULTILINE):
+        if m.group(2).strip():
+            rules.add(m.group(1))
+    return rules
+
+
+def leg_static_analysis():
+    """plain cppcheck 零发现(内联抑制须登记)+ MISRA:未登记规则即红,登记内总数≤棘轮上限。"""
+    import subprocess
+    fw = os.path.join(HERE, "firmware")
+    inc = ["-I", "platform/core", "-I", "platform/control",
+           "-I", "platform/safety", "-I", "bsp/nucleo_g474"]
+    problems, counts = [], {}
+
+    # A) plain cppcheck:任何 severity 发现即红
+    p = subprocess.run(
+        ["cppcheck", "--enable=warning,style,performance,portability", "--std=c11",
+         "--inline-suppr", "-q", *inc, "platform", "products", "bsp"],
+        capture_output=True, text=True, timeout=300, cwd=fw,
+    )
+    findings = re.findall(r":\d+:\d+: (?:error|warning|style|performance|portability):.*", p.stderr)
+    if findings:
+        problems += [f"cppcheck: {f[:100]}" for f in findings[:5]]
+        if len(findings) > 5:
+            problems.append(f"cppcheck: …共 {len(findings)} 条")
+    counts["plain"] = len(findings)
+
+    # B) MISRA addon(经 dump 两步法;--addon 集成在 2.13 静默失效,已探针验证)
+    if not os.path.exists(MISRA_ADDON):
+        return problems + ["misra.py addon 缺失(无法验证≠通过)"], counts
+    allowed = _registered_rules()
+    total, unregistered = 0, {}
+    for src in FW_SOURCES:
+        subprocess.run(["cppcheck", "--dump", "--std=c11", *inc, src],
+                       capture_output=True, text=True, timeout=120, cwd=fw)
+        dump = os.path.join(fw, src + ".dump")
+        r = subprocess.run([sys.executable, MISRA_ADDON, dump],
+                           capture_output=True, text=True, timeout=120)
+        os.remove(dump)
+        for rule in re.findall(r"misra-c2012-([\d.]+)", r.stderr + r.stdout):
+            total += 1
+            if rule not in allowed:
+                unregistered[rule] = unregistered.get(rule, 0) + 1
+    counts["misra"] = total
+    if unregistered:
+        problems.append(f"未登记 MISRA 规则违规: {dict(sorted(unregistered.items()))}(先修或先登记)")
+    if total > MISRA_CEILING:
+        problems.append(f"MISRA 违规总数 {total} > 棘轮上限 {MISRA_CEILING}")
+    return problems, counts
+
+
 # ── 已实现的绿腿:数据门禁策略核心(H1) ──
 def leg_data_gate():
     """NDA 硬停/具名确认/概括授权无效/审批消耗式/restricted 路由 单测。"""
@@ -432,11 +498,11 @@ ACTIVE_LEGS = [
     ("provenance-check", leg_provenance),
     ("dvpr-check", leg_dvpr),
     ("data-gate", leg_data_gate),
+    ("static-analysis", leg_static_analysis),
 ]
 
 # BLOCKED 腿:结构上要有,但等决策/实现解锁。诚实展示,绝不伪绿。
 BLOCKED_LEGS = [
-    ("static-analysis MISRA (cppcheck+clang-tidy)", "F1 已立,此腿下一张卡实现"),
     ("renode-sim (map, not territory)", "待 Renode 环境接入"),
     ("iec60730-selftest-table (L0)", "阻塞于 Q2 样例(卡 B2;D-004 已定全球合规面)"),
 ]

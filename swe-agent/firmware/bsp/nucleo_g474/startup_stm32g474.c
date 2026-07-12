@@ -4,13 +4,21 @@
  */
 #include <stdint.h>
 
-extern uint32_t _sidata, _sdata, _edata, _sbss, _ebss, _estack;
+extern uint32_t _sidata;
+extern uint32_t _sdata;
+extern uint32_t _edata;
+extern uint32_t _sbss;
+extern uint32_t _ebss;
+extern uint32_t _estack;
 extern int main(void);
 
 void Reset_Handler(void)
 {
-    uint32_t *src = &_sidata, *dst = &_sdata;
+    const uint32_t *src = &_sidata;
+    uint32_t *dst = &_sdata;
+    /* cppcheck-suppress comparePointers ; DEV-001:链接器符号跨对象比较是启动代码固有惯用法 */
     while (dst < &_edata) { *dst++ = *src++; }
+    /* cppcheck-suppress comparePointers ; DEV-001 同上 */
     for (dst = &_sbss; dst < &_ebss; ) { *dst++ = 0u; }
     (void)main();
     for (;;) { }
