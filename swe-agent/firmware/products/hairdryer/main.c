@@ -7,6 +7,7 @@
 #include "interlock.h"
 #include "protection.h"
 #include "sched.h"
+#include "selftest.h"
 #include "thermal_pi.h"
 
 /* PROVENANCE: PLACEHOLDER — 真实阈值必须溯源规格书(L1,卡 D1) */
@@ -67,6 +68,7 @@ static sched_task_t s_tasks[] = {
 int main(void)
 {
     g_board.init();
+    (void)st_run_post();   /* 60730 POST 骨架:如实计数,STL 接入后变真自检(B2) */
     prot_init(&s_prot);
     thermal_init(&s_therm);
     ilk_init(&s_ilk);

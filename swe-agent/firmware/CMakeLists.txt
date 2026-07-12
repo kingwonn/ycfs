@@ -7,6 +7,7 @@ add_executable(firmware.elf
     products/hairdryer/main.c
     platform/safety/protection.c
     platform/safety/interlock.c
+    platform/safety/selftest.c
     platform/control/thermal_pi.c
     platform/core/sched.c
     bsp/nucleo_g474/board.c

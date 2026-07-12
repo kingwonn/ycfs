@@ -28,8 +28,9 @@ STACK_FRAME_MAX_BYTES = 256    # 单函数最坏栈帧上限(-fstack-usage;只�
 STATEMACHINE_MIN = 10          # C1 状态机单测断言数下限(防测试静默变少)
 DATA_GATE_MIN = 10             # H1 数据门禁单测断言数下限
 MISRA_CEILING = 49             # 登记内 MISRA 违规总数上限(R17 基线;只降不升)
+ST_IMPL_MIN = 1                # 60730 覆盖表 IMPL 数下限(棘轮只增)
 MISRA_ADDON = "/usr/lib/x86_64-linux-gnu/cppcheck/addons/misra.py"
-HOST_TEST_MIN = 25             # 固件 host 单测断言总数下限(sched 9 + thermal/interlock 16;只紧不松)
+HOST_TEST_MIN = 31             # 固件 host 单测断言总数下限(sched 9 + thermal/interlock 16;只紧不松)
 LAYER_FILES_MIN = 6            # 分层检查扫描文件数下限(防目录改名后静默空转)
 PROVENANCE_MIN = 16            # D1 溯源核验断言数下限(含真 PDF 回环与中英等强 property)
 DVPR_ROWS_MIN = 15             # DVP&R 行数下限(骨架不许被掏空)
@@ -315,6 +316,7 @@ def leg_host_unit_test():
         ("sched", ["tests/host/test_sched.c", "platform/core/sched.c"]),
         ("thermal", ["tests/host/test_thermal.c", "platform/control/thermal_pi.c",
                      "platform/safety/interlock.c"]),
+        ("selftest", ["tests/host/test_selftest.c", "platform/safety/selftest.c"]),
     ]
     problems, total = [], 0
     for name, srcs in suites:
@@ -380,10 +382,40 @@ def leg_provenance():
     return problems, {"asserts": n_pass}
 
 
+# ── 已实现的绿腿:IEC 60730 覆盖表骨架(B2;D-002 授权,Q2 样例到达后校准) ──
+def leg_iec60730_table():
+    """覆盖表 12 行结构完整+真值锚非空;表 ID ↔ selftest.c 调度表一一对应;IMPL 数棘轮。"""
+    problems, counts = [], {}
+    doc = _read("docs/iec60730-coverage.md")
+    rows = re.findall(r"^\| (\w+) \|[^|\n]+\|[^|\n]+\|[^|\n]+\|[^|\n]+\|[^|\n]+\|([^|\n]+)\|([^|\n]+)\|",
+                      doc, re.MULTILINE)
+    ids_doc = [r[0] for r in rows if r[0] != "组件"]
+    counts["rows"] = len(ids_doc)
+    if len(ids_doc) < 12:
+        problems.append(f"覆盖表行数 {len(ids_doc)} < 12")
+    n_impl = 0
+    for cid, status, anchor in rows:
+        if cid == "组件":
+            continue
+        if not anchor.strip():
+            problems.append(f"{cid}: 真值锚为空(零编造)")
+        if status.strip().startswith("IMPL"):
+            n_impl += 1
+    counts["impl"] = n_impl
+    if n_impl < ST_IMPL_MIN:
+        problems.append(f"IMPL 数 {n_impl} < 棘轮下限 {ST_IMPL_MIN}")
+    src = _read("firmware/platform/safety/selftest.c")
+    ids_src = re.findall(r'\{ "(\w+)"', src)
+    if sorted(ids_doc) != sorted(ids_src):
+        problems.append(f"覆盖表 ID 与 selftest.c 调度表不一致: 表={sorted(ids_doc)} 码={sorted(ids_src)}")
+    return problems, counts
+
+
 # ── 已实现的绿腿:静态分析 cppcheck+MISRA(激活原 BLOCKED 腿;B5 登记册) ──
 FW_SOURCES = [
     "platform/core/sched.c", "platform/control/thermal_pi.c",
     "platform/safety/protection.c", "platform/safety/interlock.c",
+    "platform/safety/selftest.c",
     "products/hairdryer/main.c", "bsp/nucleo_g474/board.c",
     "bsp/nucleo_g474/startup_stm32g474.c",
 ]
@@ -499,12 +531,12 @@ ACTIVE_LEGS = [
     ("dvpr-check", leg_dvpr),
     ("data-gate", leg_data_gate),
     ("static-analysis", leg_static_analysis),
+    ("iec60730-table", leg_iec60730_table),
 ]
 
 # BLOCKED 腿:结构上要有,但等决策/实现解锁。诚实展示,绝不伪绿。
 BLOCKED_LEGS = [
     ("renode-sim (map, not territory)", "待 Renode 环境接入"),
-    ("iec60730-selftest-table (L0)", "阻塞于 Q2 样例(卡 B2;D-004 已定全球合规面)"),
 ]
 
 
