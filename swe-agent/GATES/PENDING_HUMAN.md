@@ -22,8 +22,9 @@
 - **等什么**:认可 BOOT 32K / APP 472K / PARAMS 4K 分区表与 RDP L1 起步策略(详见 [docs/ota-partition-plan.md](../docs/ota-partition-plan.md);证伪条件已写:永不联网可回收 28K)。
 - **解锁**:分区表由「占位」转「已立法」,G4 生成工程按此布局。
 
-### Q9b · 电机参数(G4 参数包的最后输入)
-- **等什么**:目标转速、极对数、电机电气参数(相电阻 R / 电感 L / 反电动势常数 Ke,或给实物用 Motor Profiler 实测)。
+### Q9b · 电机参数(G4 参数包的最后输入)——**AI 提案已就绪,等拍板**
+- **提案**(完整对照与理由见 [docs/motor-benchmark.md](../docs/motor-benchmark.md)):目标 105–120k rpm(旗舰 130k)/ 60–80W / **2 对极**(电频 3.67kHz≤5kHz HSO 域校验过)/ 310V 母线;R/L/Ke 向**东莞联锋**(小米 H501 配套,首选)或峰岹生态电机厂索规格书,收样后 Profiler 复测。
+- **等什么**:① 规格档拍板(或直接说「按提案」);② 供应商接触结果/规格书(R/L/Ke)。
 - **解锁**:G4(Workbench 工程+参数包生成)。
 
 ### Q8 · 首席工程师 review 追加的资源/信息项(详见 [docs/chief-review.md](../docs/chief-review.md))
