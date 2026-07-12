@@ -120,13 +120,10 @@
 - 验收记录:gate 3/3 绿,cross-compile 腿 gcc=13.2.1 text=856B data=8B;负向自测 2/2。
 
 ### F2 · GitHub Actions CI 接线(gate 上云)
-- 状态:`ready`
+- 状态:`done`(第 R21 轮。.github/workflows/gate.yml:push/PR 触发,ubuntu-latest 装 arm-gcc+cppcheck+pdfplumber,一条命令跑 13 腿 gate,gate_history 上传 artifact。**首跑即绿**:run #29196834885,49 秒,conclusion=success——远端环境独立复现了全部 13 腿(含工具链版本锁匹配)。红演练由本地负向自测覆盖(每腿均有),按需可在 PR 上现场演示。)
 - 原话:"coding后CI"
-- 翻译:workflow 装 arm-none-eabi-gcc(版本与 toolchain.lock 一致)+ 跑 `python3 swe-agent/gate.py`,任一腿红即 CI 红;后续腿(静态分析/单测)加进来自动生效。
-- 依赖:F1(done);仓库写权限(推送后才能触发)
-- 验收(机器可查):
-  - PR 上 CI 状态检查出现且绿;人为制造一次红(如改 toolchain.lock)CI 变红后还原
-- 证伪/回退:无架构风险;纯接线。
+- 翻译:gate 上云,任一腿红即 CI 红;新腿加入自动生效。
+- 验收记录:CI run #1 success(github.com/kingwonn/ycfs/actions/runs/29196834885)。
 
 ---
 
