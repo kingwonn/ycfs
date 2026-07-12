@@ -22,10 +22,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # ── 硬门槛(只紧不松) ──
 CARD_MIN = 11          # BACKLOG 首批卡数下限
 INTERVIEW_Q_MIN = 6    # PENDING_HUMAN 架构级问题数下限(已答的归档仍计入)
-FLASH_MAX_BYTES = 512 * 1024   # STM32G474RE flash 预算(text+data 超出即红)
+FLASH_MAX_BYTES = 472 * 1024   # APP 分区预算(J1 分区表;由 512K 收紧,只紧不松)
 TEXT_MIN_BYTES = 200           # text 段下限:防"编译了个空壳"充数
 STACK_FRAME_MAX_BYTES = 256    # 单函数最坏栈帧上限(-fstack-usage;只紧不松)
 STATEMACHINE_MIN = 10          # C1 状态机单测断言数下限(防测试静默变少)
+DATA_GATE_MIN = 10             # H1 数据门禁单测断言数下限
 HOST_TEST_MIN = 25             # 固件 host 单测断言总数下限(sched 9 + thermal/interlock 16;只紧不松)
 LAYER_FILES_MIN = 6            # 分层检查扫描文件数下限(防目录改名后静默空转)
 PROVENANCE_MIN = 16            # D1 溯源核验断言数下限(含真 PDF 回环与中英等强 property)
@@ -144,7 +145,13 @@ def leg_cross_compile():
         problems += [f"  | {line}" for line in tail]
         return problems, counts
 
-    # 3) 产物与 size 断言
+    # 3) J1 分区占位存在性(链接脚本须含 BOOT/PARAMS 区,APP origin 正确)
+    ld = _read("firmware/bsp/nucleo_g474/stm32g474re.ld")
+    for token in ("BOOT", "PARAMS", "0x08008000"):
+        if token not in ld:
+            problems.append(f"链接脚本缺分区标记 {token}(J1 占位被移除?)")
+
+    # 4) 产物与 size 断言
     for artifact in ("build/firmware.elf", "build/firmware.map", "build/size.txt"):
         if not os.path.exists(os.path.join(fw, artifact)):
             problems.append(f"缺产物 {artifact}")
@@ -371,6 +378,27 @@ def leg_provenance():
     return problems, {"asserts": n_pass}
 
 
+# ── 已实现的绿腿:数据门禁策略核心(H1) ──
+def leg_data_gate():
+    """NDA 硬停/具名确认/概括授权无效/审批消耗式/restricted 路由 单测。"""
+    import subprocess
+    p = subprocess.run(
+        [sys.executable, "test_data_gate.py"],
+        capture_output=True, text=True, timeout=60,
+        cwd=os.path.join(HERE, "governance"),
+    )
+    m = re.search(r"RESULT: (\d+) passed, (\d+) failed", (p.stdout or "") + (p.stderr or ""))
+    if not m:
+        return [f"未见 RESULT 行(rc={p.returncode})"], {}
+    n_pass, n_fail = int(m.group(1)), int(m.group(2))
+    problems = []
+    if n_fail != 0 or p.returncode != 0:
+        problems.append(f"失败 {n_fail},退出码 {p.returncode}")
+    if n_pass < DATA_GATE_MIN:
+        problems.append(f"通过 {n_pass} < 硬门槛 {DATA_GATE_MIN}")
+    return problems, {"asserts": n_pass}
+
+
 # ── 已实现的绿腿:DVP&R/DFMEA 完整性(I1) ──
 def leg_dvpr():
     """DVP&R 行完整(limit+出处+证据/签字槽)+ 高 RPN 必有验证链接 + 行数下限。"""
@@ -403,6 +431,7 @@ ACTIVE_LEGS = [
     ("layer-deps", leg_layer_deps),
     ("provenance-check", leg_provenance),
     ("dvpr-check", leg_dvpr),
+    ("data-gate", leg_data_gate),
 ]
 
 # BLOCKED 腿:结构上要有,但等决策/实现解锁。诚实展示,绝不伪绿。
