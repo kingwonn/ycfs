@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>具身智能 · Physical AI 技术档案</title>
+<style>
+  :root {
+    --ground: #F5F6F3;
+    --surface: #FDFDFB;
+    --grid: rgba(28, 45, 60, 0.045);
+    --ink: #1C2126;
+    --ink-soft: #3A434C;
+    --steel: #5B6672;
+    --faint: #8A939C;
+    --line: #DCDFDA;
+    --line-strong: #C3C8C2;
+    --accent: #D95A0E;
+    --accent-ink: #B04708;
+    --accent-wash: rgba(217, 90, 14, 0.08);
+    --ok: #2F7D46;
+    --ok-wash: rgba(47, 125, 70, 0.10);
+    --pending: #A16D07;
+    --pending-wash: rgba(161, 109, 7, 0.10);
+    --info: #2B6CB0;
+    --info-wash: rgba(43, 108, 176, 0.10);
+    --serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "SimSun", serif;
+    --sans: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", -apple-system, sans-serif;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #14171A;
+      --surface: #1C2024;
+      --grid: rgba(190, 205, 220, 0.035);
+      --ink: #E6E8E3;
+      --ink-soft: #C4C9CD;
+      --steel: #939DA6;
+      --faint: #6E7880;
+      --line: #2C3237;
+      --line-strong: #3B4248;
+      --accent: #F2782B;
+      --accent-ink: #F58B4A;
+      --accent-wash: rgba(242, 120, 43, 0.12);
+      --ok: #56A96F;
+      --ok-wash: rgba(86, 169, 111, 0.13);
+      --pending: #CE9B2D;
+      --pending-wash: rgba(206, 155, 45, 0.13);
+      --info: #6AA3D8;
+      --info-wash: rgba(106, 163, 216, 0.13);
+    }
+  }
+  :root[data-theme="light"] {
+    --ground: #F5F6F3; --surface: #FDFDFB; --grid: rgba(28, 45, 60, 0.045);
+    --ink: #1C2126; --ink-soft: #3A434C; --steel: #5B6672; --faint: #8A939C;
+    --line: #DCDFDA; --line-strong: #C3C8C2;
+    --accent: #D95A0E; --accent-ink: #B04708; --accent-wash: rgba(217, 90, 14, 0.08);
+    --ok: #2F7D46; --ok-wash: rgba(47, 125, 70, 0.10);
+    --pending: #A16D07; --pending-wash: rgba(161, 109, 7, 0.10);
+    --info: #2B6CB0; --info-wash: rgba(43, 108, 176, 0.10);
+  }
+  :root[data-theme="dark"] {
+    --ground: #14171A; --surface: #1C2024; --grid: rgba(190, 205, 220, 0.035);
+    --ink: #E6E8E3; --ink-soft: #C4C9CD; --steel: #939DA6; --faint: #6E7880;
+    --line: #2C3237; --line-strong: #3B4248;
+    --accent: #F2782B; --accent-ink: #F58B4A; --accent-wash: rgba(242, 120, 43, 0.12);
+    --ok: #56A96F; --ok-wash: rgba(86, 169, 111, 0.13);
+    --pending: #CE9B2D; --pending-wash: rgba(206, 155, 45, 0.13);
+    --info: #6AA3D8; --info-wash: rgba(106, 163, 216, 0.13);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+  body {
+    font-family: var(--sans);
+    background-color: var(--ground);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+    color: var(--ink);
+    line-height: 1.75;
+    font-size: 16px;
+  }
+  a { color: var(--accent-ink); text-decoration: none; border-bottom: 1px solid transparent; }
+  a:hover, a:focus-visible { border-bottom-color: var(--accent-ink); }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .wrap { max-width: 1020px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---- masthead ---- */
+  header.masthead { padding: 56px 0 30px; border-bottom: 2px solid var(--ink); }
+  .mast-eyebrow {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.18em;
+    color: var(--steel); text-transform: uppercase; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .mast-eyebrow .dot { width: 8px; height: 8px; background: var(--accent); display: inline-block; }
+  h1.mast-title {
+    font-family: var(--serif); font-weight: 700; text-wrap: balance;
+    font-size: clamp(30px, 5.4vw, 46px); line-height: 1.25; letter-spacing: 0.01em;
+  }
+  h1.mast-title .en {
+    display: block; font-family: var(--mono); font-weight: 400;
+    font-size: clamp(12px, 1.6vw, 14px); letter-spacing: 0.22em;
+    color: var(--steel); margin-top: 10px; text-transform: uppercase;
+  }
+  .mast-desc { margin-top: 18px; max-width: 42em; color: var(--ink-soft); font-size: 15px; }
+  .mast-stats {
+    margin-top: 22px; display: flex; gap: 28px; flex-wrap: wrap;
+    font-family: var(--mono); font-size: 12.5px; color: var(--steel);
+  }
+  .mast-stats b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* ---- nav ---- */
+  nav.tabs {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--ground); border-bottom: 1px solid var(--line-strong);
+  }
+  nav.tabs .wrap { display: flex; gap: 4px; overflow-x: auto; }
+  nav.tabs button {
+    appearance: none; background: none; border: none; cursor: pointer;
+    font-family: var(--sans); font-size: 14.5px; color: var(--steel);
+    padding: 13px 16px 11px; border-bottom: 2px solid transparent;
+    margin-bottom: -1px; white-space: nowrap;
+  }
+  nav.tabs button:hover { color: var(--ink); }
+  nav.tabs button.active { color: var(--ink); border-bottom-color: var(--accent); font-weight: 600; }
+  nav.tabs button .n {
+    font-family: var(--mono); font-size: 11px; color: var(--faint); margin-left: 5px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  main { padding: 44px 0 80px; }
+  section.panel { display: none; }
+  section.panel.active { display: block; }
+
+  h2.sec-title {
+    font-family: var(--serif); font-size: 25px; font-weight: 700; text-wrap: balance;
+    display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px;
+  }
+  h2.sec-title .idx { font-family: var(--mono); font-size: 13px; color: var(--accent); font-weight: 400; }
+  .sec-desc { color: var(--steel); font-size: 14.5px; max-width: 46em; margin-bottom: 30px; }
+
+  /* ---- source cards ---- */
+  .src-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-left: 3px solid var(--accent); margin-bottom: 26px; padding: 24px 28px;
+  }
+  .src-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  .src-idx { font-family: var(--mono); font-size: 13px; color: var(--accent-ink); letter-spacing: 0.06em; }
+  .src-title { font-family: var(--serif); font-size: 19.5px; font-weight: 700; line-height: 1.45; flex: 1 1 22em; text-wrap: balance; }
+  .chip {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; padding: 3px 9px;
+    white-space: nowrap; align-self: center;
+  }
+  .chip.ok { color: var(--ok); background: var(--ok-wash); }
+  .chip.pending { color: var(--pending); background: var(--pending-wash); }
+  .chip.info { color: var(--info); background: var(--info-wash); }
+  .src-meta {
+    display: flex; gap: 20px; flex-wrap: wrap; margin-top: 10px;
+    font-family: var(--mono); font-size: 12px; color: var(--steel);
+  }
+  .src-meta a { font-family: var(--mono); }
+  .src-summary { margin-top: 16px; color: var(--ink-soft); font-size: 15px; max-width: 46em; }
+  .src-block { margin-top: 18px; }
+  .src-block-label {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.14em; color: var(--steel);
+    text-transform: uppercase; margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid var(--line);
+  }
+  .src-points { list-style: none; }
+  .src-points li { padding: 6px 0 6px 20px; position: relative; font-size: 14.5px; color: var(--ink-soft); }
+  .src-points li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+  .src-note { margin-top: 14px; font-size: 13px; color: var(--faint); border-top: 1px dashed var(--line); padding-top: 12px; }
+
+  /* ---- tech tree ---- */
+  .branch-legend { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 34px; }
+  .branch-tag {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.06em;
+    border: 1px solid var(--line-strong); padding: 4px 11px; color: var(--ink-soft); background: var(--surface);
+  }
+  .branch-tag b { color: var(--accent-ink); font-weight: 600; margin-right: 6px; }
+
+  .era { display: grid; grid-template-columns: 118px 1fr; gap: 0 26px; position: relative; padding-bottom: 40px; }
+  .era::before {
+    content: ""; position: absolute; left: 141px; top: 8px; bottom: 0;
+    width: 1px; background: var(--line-strong);
+  }
+  .era:last-child::before { bottom: 40px; }
+  .era-when { text-align: right; padding-top: 2px; }
+  .era-when .years { font-family: var(--mono); font-size: 13.5px; color: var(--accent-ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .era-when .label { font-size: 12px; color: var(--faint); margin-top: 3px; line-height: 1.5; }
+  .era-body { position: relative; }
+  .era-body::before {
+    content: ""; position: absolute; left: -30.5px; top: 9px;
+    width: 10px; height: 10px; background: var(--accent); border: 2px solid var(--ground);
+  }
+  .era-name { font-family: var(--serif); font-size: 20px; font-weight: 700; line-height: 1.4; text-wrap: balance; }
+  .era-thesis { color: var(--steel); font-size: 14px; margin: 6px 0 14px; max-width: 44em; }
+  .node {
+    background: var(--surface); border: 1px solid var(--line); padding: 13px 17px; margin-bottom: 10px;
+  }
+  .node-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .node-branch {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.08em; color: var(--accent-ink);
+    background: var(--accent-wash); padding: 2px 7px; white-space: nowrap;
+  }
+  .node-title { font-weight: 600; font-size: 14.5px; }
+  .node-year { font-family: var(--mono); font-size: 12px; color: var(--faint); font-variant-numeric: tabular-nums; }
+  .node-desc { font-size: 13.5px; color: var(--ink-soft); margin-top: 5px; max-width: 46em; }
+
+  /* ---- industry ---- */
+  .ind-group { margin-bottom: 40px; }
+  h3.ind-title {
+    font-family: var(--serif); font-size: 19px; font-weight: 700;
+    padding-bottom: 8px; border-bottom: 1px solid var(--line-strong); margin-bottom: 6px;
+  }
+  .ind-desc { font-size: 13.5px; color: var(--steel); margin-bottom: 16px; max-width: 46em; }
+  .ind-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 12px; }
+  .ind-card { background: var(--surface); border: 1px solid var(--line); padding: 14px 17px; }
+  .ind-name { font-weight: 600; font-size: 14.5px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .ind-name .sub { font-family: var(--mono); font-size: 11px; color: var(--faint); font-weight: 400; }
+  .ind-note { font-size: 13px; color: var(--ink-soft); margin-top: 5px; }
+  .debate { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--pending); padding: 16px 20px; margin-bottom: 12px; }
+  .debate-q { font-weight: 600; font-size: 15px; }
+  .debate-sides { font-size: 13.5px; color: var(--ink-soft); margin-top: 6px; max-width: 48em; }
+
+  /* ---- about ---- */
+  .about-body { max-width: 46em; color: var(--ink-soft); font-size: 15px; }
+  .about-body h3 { font-family: var(--serif); font-size: 18px; color: var(--ink); margin: 26px 0 8px; }
+  .about-body ul { padding-left: 22px; }
+  .about-body li { margin: 4px 0; }
+  .about-body code { font-family: var(--mono); font-size: 13px; background: var(--accent-wash); padding: 1px 6px; }
+
+  footer {
+    border-top: 2px solid var(--ink); padding: 22px 0 60px;
+    font-family: var(--mono); font-size: 12px; color: var(--faint);
+    display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  }
+
+  @media (max-width: 640px) {
+    .era { grid-template-columns: 1fr; gap: 6px; }
+    .era::before, .era-body::before { display: none; }
+    .era-when { text-align: left; display: flex; gap: 12px; align-items: baseline; }
+    header.masthead { padding-top: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="mast-eyebrow">
+      <span class="dot"></span>
+      <span>RESEARCH ARCHIVE</span>
+      <span id="mast-version"></span>
+    </div>
+    <h1 class="mast-title">具身智能 · Physical AI 技术档案
+      <span class="en">Embodied AI — Tech Tree &amp; Industry Record</span>
+    </h1>
+    <p class="mast-desc">一份持续更新的研究记录：逐一收录播客与文章源材料，从中重新梳理具身智能与 Physical AI 的技术树发展史与产业现状。每并入一份新材料，技术树与产业地图随之修订。</p>
+    <div class="mast-stats" id="mast-stats"></div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="栏目">
+  <div class="wrap">
+    <button data-panel="sources" class="active">源材料库<span class="n" id="n-sources"></span></button>
+    <button data-panel="tree">技术树发展史<span class="n" id="n-tree"></span></button>
+    <button data-panel="industry">产业地图<span class="n" id="n-industry"></span></button>
+    <button data-panel="about">说明</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <section class="panel active" id="panel-sources">
+    <h2 class="sec-title"><span class="idx">01</span>源材料库</h2>
+    <p class="sec-desc">按收录顺序编号。每份材料记录出处、状态、内容总结与关键论点，并标注它对技术树/产业地图哪些部分构成修订。</p>
+    <div id="sources-list"></div>
+  </section>
+
+  <section class="panel" id="panel-tree">
+    <h2 class="sec-title"><span class="idx">02</span>技术树发展史</h2>
+    <p class="sec-desc">按年代分段的主干时间线；每个节点标注其所属技术分支。基线版本由公开资料综合而成，随源材料并入持续修订。</p>
+    <div class="branch-legend" id="branch-legend"></div>
+    <div id="tree-list"></div>
+  </section>
+
+  <section class="panel" id="panel-industry">
+    <h2 class="sec-title"><span class="idx">03</span>产业地图</h2>
+    <p class="sec-desc">产业主体、平台生态、资本与政策，以及仍在进行中的路线争论。快照时间见页脚版本号。</p>
+    <div id="industry-list"></div>
+    <h3 class="ind-title" style="margin-top:8px">悬而未决的路线争论</h3>
+    <p class="ind-desc">这些争论没有共识答案，是后续源材料重点校对的对象。</p>
+    <div id="debate-list"></div>
+  </section>
+
+  <section class="panel" id="panel-about">
+    <h2 class="sec-title"><span class="idx">04</span>说明</h2>
+    <div class="about-body">
+      <p>这个站点是一个<strong>研究记录仓</strong>，不是结论。它的工作方式：</p>
+      <h3>收录流程</h3>
+      <ul>
+        <li>每份播客/文章按顺序编号为 <code>S-001</code>、<code>S-002</code>……收录进「源材料库」；</li>
+        <li>每份材料完成总结后，将其中可靠的技术史实并入「技术树」，产业信息并入「产业地图」，与基线冲突处显式标注修订；</li>
+        <li>技术树与产业地图的基线（v0.1）由公开资料综合而成，仅作脚手架——<strong>以源材料为准逐步替换</strong>。</li>
+      </ul>
+      <h3>数据结构</h3>
+      <p>页面全部内容由文件内嵌的 <code>DATA</code> 对象驱动。新增一份源材料，只需在 <code>DATA.sources</code> 追加一条记录；修订技术树/产业地图同理。</p>
+      <h3>诚实性约定</h3>
+      <ul>
+        <li>每条信息标注来源（基线综合 / 具体某份源材料）；</li>
+        <li>未经证实或存在争议的判断放入「路线争论」，不写成事实；</li>
+        <li>源材料的观点归属于讲者，不与档案的中立梳理混写。</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;width:100%">
+    <span id="foot-version"></span>
+    <span>EMBODIED AI RESEARCH ARCHIVE</span>
+  </div>
+</footer>
+
+<script>
+const DATA = {
+  version: "v0.2",
+  updated: "2026-07-12",
+  branches: [
+    { key: "brain",    name: "大脑 · 决策与学习" },
+    { key: "motion",   name: "小脑 · 运动控制" },
+    { key: "body",     name: "本体 · 硬件" },
+    { key: "data",     name: "数据 · 供给" },
+    { key: "infra",    name: "基建 · 仿真与算力" },
+    { key: "industry", name: "产业 · 商业化" }
+  ],
+
+  sources: [
+    {
+      id: "S-001",
+      title: "晚点聊 LateTalk 166：许华哲再次具身创业——不想错过最大的西瓜",
+      podcast: "晚点聊 LateTalk · 主播程曼祺 × 嘉宾许华哲",
+      url: "https://www.xiaoyuzhoufm.com/episode/6a13a0188b5c94538ea67b63",
+      date: "2026-05-25 · 约2.5小时",
+      status: "done",
+      statusLabel: "已归档",
+      summary: "嘉宾许华哲：清华叉院助理教授（具身智能实验室 TEA Lab 负责人）、UC Berkeley BAIR 博士（师从 Trevor Darrell）、斯坦福 SVL 博士后（合作导师吴佳俊），「伯克利归国四子」之一；2023 年联合创办星海图任首席科学家，2026 年 2 月离职、3 月创立家庭机器人公司「破壳机器人」（天使轮估值 4 亿美元，云启资本领投，小米战投/顺为/星海图等参投）。本期是他再次创业后的长访谈：为什么离开星海图做 to C 家庭机器人，以及他对具身智能技术谱系的重新划界——「具身智能不是机器人学、不是自动驾驶、也不是史前深度学习，是世界上的新物种」。",
+      points: [
+        "核心命题（三个否定）：具身智能不是 Robotics——传统机器人学做「超级酷但只解决一件事」的东西，波士顿动力翻跟头是其极致，「精妙的数学、精密的控制」但不是通用 physical AGI 之路。",
+        "不是自动驾驶——「先在小场景形成数据闭环再扩展」（先跑好五道口再扩到中关村）的思维做不出通用具身智能；原话：「永远不要指望叠 100 个小模型能变成一个大模型，小模型一开始就走错了。」",
+        "是新物种——未来会出现寒武纪式的机器人物种大爆发：各种本体由一个通用「大脑」控制；「通用才让具身成为必争之地，因为会真正改变生产力结构，而不是单纯降本增效。」",
+        "数据路线判断：「视频数据是终局」——以人为中心的视频比遥操作采集成本低得多、数据量大得多；他从 2021-22 年就在做让机器人从美食博主视频学习的工作。",
+        "强化学习可能被低估：他的技术赌注是规模化 RL 后训练（后训练之后仍保持泛化性、仍能多任务），并引 π*0.6 与自研 RL 工作在千次量级任务上的高成功率为依据；今年攻坚方向是把 RL scale 到上千台机器人 + 在线学习解决灾难性遗忘。",
+        "架构判断：顶层 VLM 可以分层，但与行为和动作相关的「干活」部分必须是统一模型。",
+        "未来 18-24 个月的三个确定性：数据往视频方向走且持续变大；模型能力随之变好；家庭对机器人的接受度上升（类比智能手机普及）。不确定的是模型结构与本体形态。",
+        "创业窗口期＝18-24 个月：大公司只能先驻小实验室，一旦确认潜力就全力入场，重资源竞争随之而来。",
+        "「最大的西瓜」：如果中国具身从业者只做「铁疙瘩」（本体）而不掌握通用智能的大脑，就错失最大的机会、错过定义未来的能力；「最好的会在中国发生，但别错过最大的西瓜」。",
+        "家庭场景的赌注：安全、隐私、成本、维修、交付、量产、售后每一项都能筛掉大部分公司，但做成后壁垒极高；破壳赌的不是某种硬件形态，而是家庭场景的数据飞轮。",
+        "宏观判断：具身智能与太空探索、量子计算、可控核聚变并列最具变革性技术，其中具身发生的确定性最高；约 5 年达到人类水平通用智能；「当大模型开始自己改进自己、机器人开始制造机器人，游戏基本就结束了」。",
+        "方法论自省：学术「时间检验奖」很少颁给当年的最佳论文——具身智能的「时间检验奖」还没出现，当前所有路线都未被时间检验；大多数科研是「噪音」。"
+      ],
+      revisions: "①技术树：为「三个否定」增补谱系区分——把机器人学（控制论路线）、自动驾驶（场景闭环路线）、深度学习（数据驱动路线）作为三条前史支流呈现，具身智能作为交汇后的新物种；②技术树 2025-26 段新增「RL 后训练与在线学习」「家庭 C 端赛道启动」节点；③产业地图新增破壳机器人，补充 Sunday、Generalist（家庭/通用赛道），更新星海图状态（估值超 200 亿元，49 天再融 20 亿）；④路线争论新增「模仿学习(VLA) vs 强化学习后训练」，「数据路线」争论并入许华哲的「视频终局论」立场。",
+      note: "识别依据：episode ID（MongoDB ObjectId）时间戳解码为 2026-05-25 09:04 北京时间，与 Scripod 标注的晚点聊 166 期发布日期、晚点聊更新节奏（165 期 5/20）、晚点 5/27 文字版《对许华哲：具身智能不是机器人学或自动驾驶，是世界上的新物种》多重吻合；同窗口其他头部播客单集已逐一排除。内容还原自晚点文字版与 36 氪、新浪科技等公开报道的交叉搜集（本环境无法直接访问小宇宙页面），个别时间轴后半段的时间戳对齐、「中国数十家估值超百亿具身公司」等背景数字建议以原始 show notes 复核。"
+    }
+  ],
+
+  eras: [
+    {
+      years: "1950–1986",
+      label: "前史",
+      name: "控制论、工业机械臂与「感知—规划—行动」",
+      thesis: "机器人作为可编程的位置控制机器诞生于工厂；学院派用符号主义规划驱动移动机器人，暴露了脱离身体的智能之局限。",
+      nodes: [
+        { branch: "body", title: "Unimate 进入 GM 产线", year: "1961", desc: "Devol 与 Engelberger 的第一台工业机械臂投产，确立「示教—重放」的位置控制范式；此后发那科、安川、库卡、ABB 四大家族统治工业臂市场数十年。" },
+        { branch: "brain", title: "Shakey：感知—规划—行动", year: "1966–72", desc: "SRI 的 Shakey 用符号逻辑（STRIPS 规划器）驱动移动机器人，是「先建模、再规划、后执行」流水线的原型，也暴露了其脆弱与迟缓。" },
+        { branch: "motion", title: "ZMP 步态理论", year: "1972", desc: "Vukobratović 提出零力矩点（ZMP）判据，成为此后三十年双足行走的主流控制理论。" }
+      ]
+    },
+    {
+      years: "1986–2000",
+      label: "具身转向",
+      name: "行为主义革命：「具身智能」概念的诞生",
+      thesis: "Rodney Brooks 反叛符号主义：智能不需要中心化表征，而从身体与环境的交互中涌现——「具身智能」由此得名，但长期处于 AI 的学术边缘。",
+      nodes: [
+        { branch: "brain", title: "Brooks 的包容式架构", year: "1986", desc: "《A Robust Layered Control System》提出行为分层的包容式架构（subsumption architecture）；1991 年《Intelligence without Representation》正式挑战符号主义，主张智能源于身体与世界的耦合。" },
+        { branch: "brain", title: "具身认知学派成形", year: "1990s", desc: "Pfeifer 等人将「身体塑造智能」发展成认知科学纲领（后集成为《How the Body Shapes the Way We Think》）；Embodied AI 作为学术流派确立，但在主流 AI 中长期边缘。" },
+        { branch: "body", title: "本田 P2 / ASIMO", year: "1996–2000", desc: "本田秘密研发十年的 P2 首次展示自持双足行走，2000 年 ASIMO 发布——ZMP 范式的巅峰，也是人形机器人第一次公众化。" }
+      ]
+    },
+    {
+      years: "2000–2012",
+      label: "概率时代",
+      name: "概率机器人学、SLAM 与动力学控制",
+      thesis: "不确定性被正面建模：贝叶斯滤波与 SLAM 让机器人能在真实世界定位与建图；波士顿动力把液压动力学控制推到极限；ROS 让研究可以复用。",
+      nodes: [
+        { branch: "brain", title: "概率机器人学成为正统", year: "2005", desc: "Thrun 等《Probabilistic Robotics》集大成；粒子滤波、EKF-SLAM 成为移动机器人标准件。" },
+        { branch: "brain", title: "DARPA 挑战赛", year: "2005–07", desc: "Stanley 夺冠沙漠挑战赛、Urban Challenge 接续——这条谱系直接孵化了此后的自动驾驶产业，也为具身智能储备了感知与规划人才。" },
+        { branch: "motion", title: "BigDog：液压动力学控制", year: "2005", desc: "波士顿动力展示崎岖地形上的动态平衡四足，证明「控制论路线」能做出惊人运动能力——但离商业化极远。" },
+        { branch: "infra", title: "PR2 与 ROS", year: "2009–10", desc: "Willow Garage 的 PR2 平台与 ROS 开源生态，让机器人研究第一次有了共享的软件基建与标准本体。" }
+      ]
+    },
+    {
+      years: "2012–2017",
+      label: "深度学习进场",
+      name: "视觉革命外溢到机器人：端到端的最初证据",
+      thesis: "AlexNet 之后，深度网络先接管机器人视觉（抓取检测），随后 Levine 等证明视觉—动作可以端到端联合训练，「用学习替代建模」路线开始积累证据。",
+      nodes: [
+        { branch: "brain", title: "深度抓取检测", year: "2013–17", desc: "Cornell 抓取数据集、Dex-Net 系列把抓取从几何解析变成数据驱动的学习问题。" },
+        { branch: "brain", title: "端到端视觉运动策略", year: "2015–16", desc: "Levine 等《End-to-End Training of Deep Visuomotor Policies》首次把感知到扭矩的完整策略用一个网络训练；Google「机械臂农场」用 14 台机械臂并行收集抓取数据，是真机规模化数据的最早尝试。" },
+        { branch: "motion", title: "Atlas 与 DRC", year: "2013–15", desc: "DARPA 机器人挑战赛（DRC）以液压 Atlas 为标准平台，暴露了远程操控人形机器人的艰难；赛后多支队伍人才流入工业界。" },
+        { branch: "brain", title: "深度强化学习浪潮", year: "2013–16", desc: "DQN、AlphaGo 点燃 DRL；机器人社区开始尝试把 RL 从游戏搬到真机，发现样本效率是根本瓶颈——这个瓶颈决定了后来十年的路线分歧。" }
+      ]
+    },
+    {
+      years: "2017–2022",
+      label: "仿真与前夜",
+      name: "Sim2Real、四足量产与 Transformer 前夜",
+      thesis: "大规模并行仿真 + 域随机化让 RL 真正落到真机（灵巧手、四足）；与此同时 Transformer 在 NLP 的成功开始外溢，机器人学习进入「大模型前夜」。",
+      nodes: [
+        { branch: "infra", title: "并行仿真基建", year: "2017–21", desc: "MuJoCo、Isaac Gym 让单卡数千环境并行成为可能，RL 训练从数月压缩到数小时。" },
+        { branch: "brain", title: "OpenAI Dactyl / 魔方手", year: "2018–19", desc: "域随机化 + 大规模仿真训练的灵巧手在真机上单手复原魔方，是 sim2real 路线的标志性证据（OpenAI 随后解散机器人团队，转向纯语言模型——一个历史性的分岔）。" },
+        { branch: "motion", title: "四足 RL 走向产品", year: "2019–22", desc: "ETH ANYmal、MIT Cheetah 的 RL 步态论文密集出现；宇树等公司把四足做成万元级消费品，中国硬件供应链在这一波完成成熟。" },
+        { branch: "brain", title: "QT-Opt 与规模化真机 RL", year: "2018", desc: "Google 用 58 万次真机抓取训练 Q 函数，证明真机数据规模化可行但极其昂贵——为「数据从哪来」的争论埋下伏笔。" },
+        { branch: "brain", title: "Transformer 外溢", year: "2021–22", desc: "Decision Transformer 把控制变成序列建模；DeepMind Gato 用单一 Transformer 跨游戏/文本/机械臂；Google SayCan 让 LLM 首次给机器人做任务规划；2022 年末 RT-1 用 13 万条真机演示训练出多任务操作 Transformer。" }
+      ]
+    },
+    {
+      years: "2023",
+      label: "VLA 元年",
+      name: "RT-2 确立 VLA 范式，创业潮点火",
+      thesis: "「把互联网级视觉—语言预训练接到动作输出上」被 RT-2 证明可行，VLA（视觉—语言—动作模型）成为具身智能大脑的主导范式；资本同步涌入人形本体。",
+      nodes: [
+        { branch: "brain", title: "PaLM-E → RT-2", year: "2023.3–7", desc: "PaLM-E 证明多模态大模型能理解机器人场景；RT-2 直接把动作 token 化并与 VLM 联合微调，「VLA」概念正式确立，泛化能力肉眼可见地超越 RT-1。" },
+        { branch: "data", title: "Open X-Embodiment", year: "2023.10", desc: "34 个实验室汇集 22 种本体、百万级轨迹的跨本体数据集；RT-X 证明跨本体联合训练提升单本体性能——「数据联邦」路线的开端。" },
+        { branch: "brain", title: "模仿学习低成本化", year: "2023", desc: "斯坦福 ALOHA/ACT 用几万美元的遥操作台架 + 行为克隆做出惊人双臂操作；Diffusion Policy 用扩散模型建模多峰动作分布——两者共同把「采演示 + 模仿」变成人人可复现的路线。" },
+        { branch: "body", title: "人形本体创业潮", year: "2023", desc: "Tesla Optimus 迭代、Figure 01 亮相并获巨额融资、1X 获 OpenAI 投资；国内宇树 H1、智元远征 A1 发布；「大模型 + 人形」叙事成立。" },
+        { branch: "industry", title: "政策入场", year: "2023.11", desc: "工信部《人形机器人创新发展指导意见》：2025 年初步建立创新体系、2027 年综合实力达到世界先进水平——中国把人形机器人定为国家级赛道。" }
+      ]
+    },
+    {
+      years: "2024",
+      label: "基础模型军备",
+      name: "机器人基础模型军备竞赛与数据金字塔共识",
+      thesis: "π0、GR00T 等「机器人基座模型」相继发布；行业形成数据金字塔共识：互联网视频（量大、无动作）→ 仿真合成（中量、可控）→ 真机遥操作（少量、最贵）分层供给。",
+      nodes: [
+        { branch: "brain", title: "Physical Intelligence π0", year: "2024.10", desc: "π0 以 VLM 骨干 + flow matching 动作头，在叠衣服等长程灵巧任务上刷新认知；PI 融资 4 亿美元，成为「大脑公司」路线的旗手。" },
+        { branch: "infra", title: "NVIDIA 全栈入场", year: "2024.3", desc: "GTC 2024 发布 GR00T 人形基座模型计划 + Isaac Lab + Jetson Thor；黄仁勋宣告「Physical AI 时代到来」，NVIDIA 确立平台层卖铲人地位。" },
+        { branch: "data", title: "数据三层金字塔共识", year: "2024", desc: "真机遥操作（高质量、极贵）、仿真合成（银河通用等主打）、互联网视频学习（潜力最大、gap 最大）三条数据路线分化，成为各家公司的核心差异点。" },
+        { branch: "body", title: "本体量产启动", year: "2024", desc: "宇树 G1 以 9.9 万元把人形本体打到消费级价位；智元通用机器人量产下线；Figure 02 进入宝马工厂试点。" }
+      ]
+    },
+    {
+      years: "2025–2026",
+      label: "量产与攻坚",
+      name: "量产元年 × 智能攻坚：从演示走向交付",
+      thesis: "具身智能写入中国政府工作报告，春晚秧歌舞出圈，IPO 与百亿融资并行；但「肢体灵活、大脑不足」成为共识瓶颈，行业从拼本体转向拼智能与场景交付。",
+      nodes: [
+        { branch: "industry", title: "国家叙事确立", year: "2025.2–3", desc: "宇树人形春晚舞蹈出圈；「具身智能」首次写入政府工作报告，成为国家战略方向。" },
+        { branch: "brain", title: "端侧 VLA 与双系统", year: "2025", desc: "Figure 与 OpenAI 分手后发布 Helix（快慢双系统 VLA，完全端侧运行）；GR00T N1 开源；Gemini Robotics 及 1.5 版将前沿 VLM 能力接入机器人，「双系统/分层 VLA」成为主流架构。" },
+        { branch: "brain", title: "世界模型路线升温", year: "2025–26", desc: "NVIDIA Cosmos、GEAR 实验室 DreamDojo/DreamZero、各家视频生成世界模型入场：用生成式世界模型做数据合成与策略评估，被视为跨越数据瓶颈的下一张牌；破壳等新公司直接以「视频—动作」世界模型替代主流 VLA 基座。〔S-001〕" },
+        { branch: "brain", title: "RL 后训练与在线学习", year: "2025–26", desc: "在 VLA/世界模型基座上做规模化强化学习后训练成为新前沿：π*0.6 与清华系工作在千次量级任务上保持高成功率；攻坚点是把 RL 扩展到上千台机器人并用在线学习克服灾难性遗忘（许华哲：「强化学习可能被低估了」）。〔S-001〕" },
+        { branch: "industry", title: "资本与 IPO 潮", year: "2025–26", desc: "2024–2026 全球赛道累计融资超 500 亿美元；2026Q1 人形机器人单季融资超 120 亿美元；中国出现 324 起融资/超 390 亿元人民币规模（2026 产业报告口径），宇树等头部启动 IPO 进程。" },
+        { branch: "industry", title: "从演示到交付", year: "2026", desc: "行业共识转向「量产元年 + 智能攻坚年」：工厂物流场景率先商用（搬运、上下料、质检），家用与开放场景仍受限于可靠性与安全；「灵活的肢体」领先「智能的大脑」的剪刀差是当前主要矛盾。" },
+        { branch: "industry", title: "家庭 C 端赛道启动", year: "2026", desc: "通用机器人第一次认真押注家庭场景：破壳机器人（许华哲，轮式底盘+双臂，先做传递/收纳等 10 件事）、1X NEO、Sunday（轮式人形家庭服务）等；逻辑是家庭任务比工厂更混乱随机，是训练通用模型的最佳土壤，且做成后壁垒极高。〔S-001〕" }
+      ]
+    }
+  ],
+
+  industry: [
+    {
+      group: "大脑公司（模型优先）",
+      desc: "赌注：智能是瓶颈，本体会商品化。做跨本体基座模型，向本体厂输出大脑。",
+      items: [
+        { name: "Physical Intelligence", sub: "美国", note: "π0 / π0.5 系列，flow matching VLA 旗手；OpenAI、软银等投资。" },
+        { name: "Skild AI", sub: "美国", note: "CMU 系，主打跨本体通用大脑。" },
+        { name: "Google DeepMind", sub: "美国", note: "RT 系列 → Gemini Robotics 1.5，前沿 VLM 反哺机器人的代表。" },
+        { name: "自变量机器人", sub: "中国", note: "端到端统一大模型路线的国内代表之一。" },
+        { name: "千寻智能", sub: "中国", note: "VLA + 真机数据闭环。" }
+      ]
+    },
+    {
+      group: "全栈公司（本体 + 大脑）",
+      desc: "赌注：数据闭环必须自己掌握本体才能形成。软硬一体，自建场景交付。",
+      items: [
+        { name: "Tesla Optimus", sub: "美国", note: "复用 FSD 技术栈与超级工厂制造能力，目标自有工厂内部署。" },
+        { name: "Figure", sub: "美国", note: "Helix 双系统 VLA 完全端侧；宝马工厂试点；估值最高的人形创业公司之一。" },
+        { name: "1X Technologies", sub: "挪威/美国", note: "NEO 主打家用场景，轮式→双足路线。" },
+        { name: "Agility Robotics", sub: "美国", note: "Digit 在 GXO 物流仓实际部署，商业交付最早的一批。" },
+        { name: "Boston Dynamics", sub: "美国", note: "电动 Atlas 转向学习路线，现代汽车场景落地。" },
+        { name: "宇树 Unitree", sub: "中国", note: "四足→人形，硬件成本杀手（G1 9.9 万元起）；春晚出圈；IPO 进程中。" },
+        { name: "智元机器人", sub: "中国", note: "远征/灵犀系列量产下线，稚晖君号召力 + 上海供应链。" },
+        { name: "银河通用", sub: "中国", note: "王鹤创立；合成数据驱动路线旗手，零售/药房场景交付。" },
+        { name: "星海图", sub: "中国", note: "高继扬创立，赵行等联创；本体 + 数据采集一体，主打真机数据规模化；2026 年估值超 200 亿元、49 天内再融 20 亿。〔S-001〕" },
+        { name: "破壳机器人", sub: "中国 · 家庭 C 端", note: "许华哲 2026.3 创立（星海图孵化+投资）；轮式双臂本体，「视频—动作」世界模型 + 规模化 RL 后训练，32B 具身模型已完成首轮训练；天使轮估值 4 亿美元（云启领投，小米/顺为/星海图等）。〔S-001〕" },
+        { name: "Sunday / Generalist", sub: "美国 · 新锐", note: "Sunday 做轮式人形家庭服务机器人（许华哲认为其产品设计有意思）；Generalist 走通用操作大脑路线。〔S-001〕" },
+        { name: "星动纪元 / 傅利叶 / 乐聚 / 优必选", sub: "中国", note: "清华系星动纪元；傅利叶康复场景；优必选已上市，教育/展演/工业多线。" }
+      ]
+    },
+    {
+      group: "平台与基建（卖铲人）",
+      desc: "不直接下场做本体，向全行业输出算力、仿真、世界模型与开发栈。",
+      items: [
+        { name: "NVIDIA", sub: "全栈平台", note: "Isaac Sim/Lab（仿真）+ GR00T（开源基座）+ Cosmos（世界模型）+ Jetson Thor（端侧算力），Physical AI 叙事的定义者。" },
+        { name: "华为", sub: "中国", note: "具身智能产业创新中心，昇腾算力 + 盘古具身模型。" },
+        { name: "遥操作/数据服务商", sub: "数据层", note: "数据采集工厂、众包遥操作平台成为独立生态位（国内多地建「数据采集基地」）。" }
+      ]
+    },
+    {
+      group: "资本与政策（2026 年中快照）",
+      desc: "口径各异，取公开报道区间，待源材料校准。",
+      items: [
+        { name: "全球融资", sub: "2024–2026 累计", note: "赛道累计融资超 500 亿美元；2026Q1 人形机器人单季超 120 亿美元。" },
+        { name: "中国市场", sub: "规模", note: "2025 年具身智能市场约 440 亿元人民币，2030 年预测超 1600 亿元（CAGR ~39%）。" },
+        { name: "中国政策", sub: "国家战略", note: "2023 工信部指导意见 → 2025 写入政府工作报告 → 各地产业基金、中试基地、数据基地密集落地。" }
+      ]
+    }
+  ],
+
+  debates: [
+    { q: "Scaling Law 在机器人领域是否成立？", sides: "乐观派认为数据到位后 VLA 会复现 LLM 的涌现；怀疑派（如清华高阳）指出机器人领域尚未观察到清晰的 scaling law，数据异构性可能使「大力出奇迹」失效。" },
+    { q: "数据主路线：真机遥操作 vs 仿真合成 vs 互联网视频？", sides: "真机派（星海图、PI）认为分布匹配不可替代；仿真派（银河通用、NVIDIA）认为合成数据是唯一能规模化的路径；视频派认为人类视频 + 世界模型才是数据金字塔的塔基——许华哲直言「视频数据是终局」，遥操作像「老师手把手教你写字」〔S-001〕。三条路线正在收敛为分层混合，但配比是各家核心机密。" },
+    { q: "模仿学习（VLA 基座）vs 强化学习后训练？", sides: "主流 VLA 路线以海量演示做模仿学习为主；许华哲等押注规模化 RL 后训练——模仿只能逼近数据分布上限，RL 才能在千次量级任务上把成功率推到可用，难点是保持泛化与克服灾难性遗忘〔S-001〕。" },
+    { q: "人形是不是正确的本体形态？", sides: "支持者：为人类环境设计的世界只有人形能通吃，且利于数据共享。反对者：轮式底盘 + 双臂在 90% 商用场景更便宜可靠，人形溢价是资本叙事。" },
+    { q: "大脑与本体是否会解耦（Android 时刻）？", sides: "大脑公司赌会出现「机器人安卓」；全栈公司赌数据闭环让软硬一体者赢。取决于跨本体迁移的工程成熟度。" },
+    { q: "当前是不是泡沫？", sides: "泡沫论：估值远超交付能力，多数公司无真实营收。反方：与互联网泡沫不同，硬件供应链与场景需求真实存在，出清后头部会更强。" }
+  ]
+};
+
+/* ---------- render ---------- */
+function el(html) { const t = document.createElement("template"); t.innerHTML = html.trim(); return t.content.firstChild; }
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+const branchName = Object.fromEntries(DATA.branches.map(b => [b.key, b.name]));
+
+function renderSources() {
+  const box = document.getElementById("sources-list");
+  box.innerHTML = "";
+  const chipCls = { done: "ok", pending: "pending", progress: "info" };
+  DATA.sources.forEach(s => {
+    const points = (s.points || []).map(p => `<li>${esc(p)}</li>`).join("");
+    box.appendChild(el(`
+      <article class="src-card">
+        <div class="src-head">
+          <span class="src-idx">${esc(s.id)}</span>
+          <h3 class="src-title">${esc(s.title)}</h3>
+          <span class="chip ${chipCls[s.status] || "pending"}">${esc(s.statusLabel || s.status)}</span>
+        </div>
+        <div class="src-meta">
+          <span>${esc(s.podcast || "")}</span>
+          <span>${esc(s.date || "")}</span>
+          <a href="${esc(s.url)}" target="_blank" rel="noopener">原始链接 ↗</a>
+        </div>
+        ${s.summary ? `<p class="src-summary">${esc(s.summary)}</p>` : ""}
+        ${points ? `<div class="src-block"><div class="src-block-label">关键论点</div><ul class="src-points">${points}</ul></div>` : ""}
+        ${s.revisions ? `<div class="src-block"><div class="src-block-label">对档案的修订</div><p class="src-summary">${esc(s.revisions)}</p></div>` : ""}
+        ${s.note ? `<p class="src-note">${esc(s.note)}</p>` : ""}
+      </article>`));
+  });
+}
+
+function renderTree() {
+  document.getElementById("branch-legend").innerHTML =
+    DATA.branches.map(b => `<span class="branch-tag"><b>${esc(b.key.toUpperCase())}</b>${esc(b.name)}</span>`).join("");
+  const box = document.getElementById("tree-list");
+  box.innerHTML = "";
+  DATA.eras.forEach(e => {
+    const nodes = e.nodes.map(n => `
+      <div class="node">
+        <div class="node-head">
+          <span class="node-branch">${esc((branchName[n.branch] || n.branch).split(" · ")[0])}</span>
+          <span class="node-title">${esc(n.title)}</span>
+          <span class="node-year">${esc(n.year)}</span>
+        </div>
+        <p class="node-desc">${esc(n.desc)}</p>
+      </div>`).join("");
+    box.appendChild(el(`
+      <div class="era">
+        <div class="era-when"><div class="years">${esc(e.years)}</div><div class="label">${esc(e.label)}</div></div>
+        <div class="era-body">
+          <h3 class="era-name">${esc(e.name)}</h3>
+          <p class="era-thesis">${esc(e.thesis)}</p>
+          ${nodes}
+        </div>
+      </div>`));
+  });
+}
+
+function renderIndustry() {
+  const box = document.getElementById("industry-list");
+  box.innerHTML = "";
+  DATA.industry.forEach(g => {
+    const items = g.items.map(i => `
+      <div class="ind-card">
+        <div class="ind-name">${esc(i.name)}<span class="sub">${esc(i.sub || "")}</span></div>
+        <p class="ind-note">${esc(i.note)}</p>
+      </div>`).join("");
+    box.appendChild(el(`
+      <div class="ind-group">
+        <h3 class="ind-title">${esc(g.group)}</h3>
+        <p class="ind-desc">${esc(g.desc || "")}</p>
+        <div class="ind-grid">${items}</div>
+      </div>`));
+  });
+  document.getElementById("debate-list").innerHTML = DATA.debates.map(d => `
+    <div class="debate">
+      <div class="debate-q">${esc(d.q)}</div>
+      <p class="debate-sides">${esc(d.sides)}</p>
+    </div>`).join("");
+}
+
+function renderMeta() {
+  const nSources = DATA.sources.length;
+  const nNodes = DATA.eras.reduce((a, e) => a + e.nodes.length, 0);
+  const nCompanies = DATA.industry.reduce((a, g) => a + g.items.length, 0);
+  document.getElementById("mast-version").textContent = `${DATA.version} · ${DATA.updated}`;
+  document.getElementById("mast-stats").innerHTML =
+    `<span>源材料 <b>${nSources}</b></span><span>技术树节点 <b>${nNodes}</b></span>` +
+    `<span>年代分段 <b>${DATA.eras.length}</b></span><span>产业主体 <b>${nCompanies}</b></span>`;
+  document.getElementById("n-sources").textContent = nSources;
+  document.getElementById("n-tree").textContent = nNodes;
+  document.getElementById("n-industry").textContent = nCompanies;
+  document.getElementById("foot-version").textContent = `${DATA.version} · UPDATED ${DATA.updated}`;
+}
+
+/* tabs */
+document.querySelectorAll("nav.tabs button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("nav.tabs button").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll("section.panel").forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("panel-" + btn.dataset.panel).classList.add("active");
+    history.replaceState(null, "", "#" + btn.dataset.panel);
+    window.scrollTo({ top: 0 });
+  });
+});
+const hash = location.hash.replace("#", "");
+if (hash && document.getElementById("panel-" + hash)) {
+  document.querySelector(`nav.tabs button[data-panel="${hash}"]`).click();
+}
+
+renderSources(); renderTree(); renderIndustry(); renderMeta();
+</script>
+
+</body>
+</html>
