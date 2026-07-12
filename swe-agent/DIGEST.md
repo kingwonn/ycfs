@@ -22,6 +22,7 @@
 | R16 | J1+H1 | J1 分区占位:BOOT 32K/APP 472K@0x08008000/PARAMS 4K 落链接脚本并构建绿,回滚语义=镜像活过看门狗才算,FLASH 预算收紧 512K→472K,gate 增分区断言;H1 数据门禁策略内核:NDA 无具名确认即硬停、概括授权结构性无效、approval 消耗式、restricted 无放行边,单测 10/10,gate 第 11 腿;PENDING_HUMAN 增 Q10(分区表签字) | ✅ gate 11/11 绿 | **零依赖 ready 卡清零**——26 卡:14 done,余下全部等人(Q7/Q9b/Q2/Q4b/Q5/Q6/Q8/Q10)或等依赖。写权限(17 提交)。 |
 | R17 | B5+静态腿 | static-analysis 腿激活(BLOCKED→绿):plain cppcheck 零发现(修 const 指针;comparePointers 惯用法→DEV-001);MISRA 走 dump 两步法(--addon 集成在 2.13 静默失效,探针自证后绕行),违规 57→49(修 12.1×8/12.3×5/8.4×3),棘轮上限 49;登记册 9 条规则级偏差,未登记规则即红(负向:清空登记册→49 全触红);修复连带触发 bench 哈希锁红→重签复核 | ✅ gate 12/12 绿(plain=0,misra=49);BLOCKED 剩 2(renode/60730) | B5 done。PENDING_HUMAN 增 Q11(登记册批准)。等人清单不变+Q11;写权限(18 提交)。 |
 | R18 | B2骨架 | 60730 覆盖表骨架落地(D-002 授权):12 组件表(真值锚=标准条款+X-CUBE-STL 接入位,自检不自研)+selftest.c 表驱动调度(NOT_IMPL 显式上报,CRC32 已知向量 0xCBF43926 验证)+gate 第 13 腿(表↔代码一一对应/真值锚非空/IMPL 棘轮);新腿当场抓 2 处 12.1+表解析吞换行 bug,均修复 | ✅ gate 13/13 绿(misra=49 守住棘轮,host=31,rows=12);BLOCKED 仅剩 renode | B2 留等 Q2 校准。新任务:opencode 平台设计+资源清单、顶级品牌电机型号调查(双线调研中)。 |
+| R19 | 电机调查+opencode设计 | ① docs/motor-benchmark.md:Dyson/Shark/追觅/徕芬/米家电机对照(全行业三相 110k 同频,追觅 130k 量产/200k 认证/马达外供,米家电机=东莞联锋 310V/60W);目标规格提案挂 Q9b(105-120k/60-80W/2 对极 3.67kHz≤5kHz/310V)。② docs/opencode-platform-design.md:安装/serve/config(⚠默认全 allow 须收紧)/SDK 方法名/插件钩子签名(tool.execute.before throw 阻断;permission.ask 置 deny)——H1 内核执行点就绪;资源:无 GPU/4C8G 起步/API 轻用 $20-80 重用 $150-300 每人月/人力 1-3 人周(抄 coding-agent-template) | ✅ 两路调研均带源码级溯源;gate 13/13 绿 | 等拍板:Q9b(规格提案)/Q7(D-005,A1 按设计书实施)。21 提交待推。 |
 
 写法:
 - **一行讲清一轮**:做了什么、验收结果(带数字)、有没有卡点。
