@@ -1,0 +1,32 @@
+name: swe-agent gate
+
+on:
+  push:
+    branches: ["main", "claude/**"]
+    paths: ["swe-agent/**", ".github/workflows/gate.yml"]
+  pull_request:
+    paths: ["swe-agent/**", ".github/workflows/gate.yml"]
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装门禁工具链(版本须与 toolchain.lock 一致,不一致 gate 自会红)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq gcc-arm-none-eabi cmake cppcheck
+          python3 -m pip install --quiet pdfplumber reportlab
+
+      - name: 运行 YCFS 门禁(13 腿,任一红即失败)
+        run: python3 swe-agent/gate.py
+
+      - name: 上传门禁历史(观测,失败不拦截)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-history
+          path: swe-agent/gate_history.jsonl
+          if-no-files-found: ignore
