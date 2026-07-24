@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+runtime/gate_history.jsonl
+GATES/OUTBOX/
+GATES/APPROVALS/
