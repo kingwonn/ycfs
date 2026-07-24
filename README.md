@@ -137,6 +137,8 @@ YCFS 不是框架,是一组约定 + 几个可查的文件。落地只需要:
 
 业界/技术的哪些新进展能接进这套体系、哪些永远替代不了人,见 [docs/tech-radar-2026.md](docs/tech-radar-2026.md)(含按"边际价值 × 落地成本"排序的优先采纳路线图)。
 
+路线图正在本仓库自举落地:[runtime/](runtime/) 是对外门禁的可跑参考实现(choke-point 状态机 + deny-by-default hook + `python3 runtime/gate.py` 一条命令验收);进展见 [DIGEST.md](DIGEST.md),等人签字的事见 [GATES/PENDING_HUMAN.md](GATES/PENDING_HUMAN.md)。
+
 ---
 
 ## 名字

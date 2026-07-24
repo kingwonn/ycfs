@@ -1,0 +1,13 @@
+{
+  "_comment": "法:对外动作 deny-by-default。此文件只能人改(hook 拒 agent 写入)。allow 规则只减不加宽:target_pattern 必须锚定(fullmatch)。",
+  "default": "deny",
+  "allow": [
+    { "kind": "email",   "target_pattern": "review@example\\.com" },
+    { "kind": "publish", "target_pattern": "preview://.*" }
+  ],
+  "deny_payload_patterns": [
+    "BEGIN [A-Z ]*PRIVATE KEY",
+    "(?i)password\\s*[:=]",
+    "\\b\\d{17}[0-9Xx]\\b"
+  ]
+}

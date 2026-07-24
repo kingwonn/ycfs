@@ -1,0 +1,15 @@
+{
+  "_comment": "抄进项目 .claude/settings.json 即生效。deny-by-default 的对外拦截 + 法保护。",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{ "type": "command", "command": "python3 runtime/hooks/pre_tool_use.py" }]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+        "hooks": [{ "type": "command", "command": "python3 runtime/hooks/pre_tool_use.py" }]
+      }
+    ]
+  }
+}
