@@ -1,0 +1,13 @@
+{"result": "FAIL", "legs": 3, "failed": ["choke-point-static"], "duration_s": 0.3}
+{"result": "PASS", "legs": 3, "failed": [], "duration_s": 0.4}
+{"result": "PASS", "legs": 3, "failed": [], "duration_s": 0.2}
+{"result": "PASS", "legs": 3, "failed": [], "duration_s": 0.2}
+{"result": "PASS", "legs": 3, "failed": [], "duration_s": 0.2}
+{"result": "PASS", "legs": 3, "failed": [], "duration_s": 0.1}
+{"result": "PASS", "legs": 3, "failed": [], "duration_s": 0.2}
+{"result": "PASS", "legs": 3, "failed": [], "duration_s": 0.2}
+{"result": "PASS", "legs": 3, "failed": [], "duration_s": 0.2}
+{"result": "PASS", "legs": 3, "failed": [], "duration_s": 0.2}
+{"result": "PASS", "legs": 3, "failed": [], "duration_s": 0.1}
+{"result": "PASS", "legs": 4, "failed": [], "duration_s": 0.2}
+{"result": "PASS", "legs": 4, "failed": [], "duration_s": 0.2}

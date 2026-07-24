@@ -20,6 +20,7 @@ ROOT = os.path.dirname(HERE)
 OUTBOUND_MIN = 50   # 对外状态机行为断言数下限
 STATIC_MIN = 13     # choke-point 结构断言数下限
 SECRET_FILES_MIN = 10  # 密钥扫描覆盖文件数下限
+SELF_CERT_MIN = 10     # 自证通道检测断言数下限
 
 
 class Leg:
@@ -57,6 +58,13 @@ def v_min(pat, floor, fail_must_zero=True):
     return v
 
 
+# ── 门禁只拦「诚实性」,不拦「能力」 ──
+#
+# 能力(断言数、工具数、覆盖面)去 runtime/scale.py 当刻度量,不阻塞。
+# 门禁只保留四条:不可逆、对外、不泄密、不自证。理由:
+#   · 拦能力需要门槛,门槛可被放宽,于是需要棘轮保护棘轮——无穷回退。
+#   · 拦诚实性不需要门槛,只需要"有没有"——布尔量,无处可松。
+# 这个划分让治理层深度停在 1,锚在系统外(现实 / 人的签字)。
 LEGS = [
     Leg("outbound-tests", [sys.executable, "runtime/legs/leg_outbound_tests.py"],
         verify=v_min(r"结果: (\d+) 通过, (\d+) 失败", OUTBOUND_MIN)),
@@ -64,6 +72,9 @@ LEGS = [
         verify=v_min(r"结果: (\d+) 通过, (\d+) 失败", STATIC_MIN)),
     Leg("secret-scan", [sys.executable, "runtime/legs/leg_secret_scan.py"],
         verify=v_min(r"结果: (\d+) 文件, (\d+) 命中", SECRET_FILES_MIN)),
+    # 铁律「被测不能自证」的可执行形态。此前它在仓库里出现 8 次、执行 0 次。
+    Leg("no-self-certification", [sys.executable, "runtime/legs/leg_no_self_certification.py"],
+        verify=v_min(r"结果: (\d+) 通过, (\d+) 失败", SELF_CERT_MIN)),
 ]
 
 

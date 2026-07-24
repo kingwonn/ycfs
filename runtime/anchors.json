@@ -1,0 +1,34 @@
+{
+  "_comment": "真值锚声明。L0 的出生证在这里。被 leg_no_self_certification.py 强制检查。",
+  "_why": "没有这个文件,'被测不能自证'只是一句话。有了它,自等式变成可执行断言。",
+
+  "truth_anchors": [
+    "PRECEDENTS.md",
+    "GATES/REALITY.jsonl"
+  ],
+
+  "system_outputs": [
+    "runtime/scale_history.jsonl",
+    "DIGEST.md",
+    "BACKLOG.md"
+  ],
+
+  "provenance": {
+    "PRECEDENTS.md": {
+      "who": "人(项目所有者)口述,AI 逐字转录「原话」字段",
+      "when": "持续追加,自 2026-07",
+      "accepted_by": "人 —— 每条判例的「原话」字段可由人随时逐字核对",
+      "error_rate": "未测量。「原话」为逐字转录,「判旨」为 AI 提炼,后者错误率未知",
+      "generated_by_system_under_test": false,
+      "_known_risk": "结构性自证风险:本文件由 AI(被测系统)撰写,而它被当作真值锚。缓解措施是「原话」字段必须逐字、可被人核对;但「判旨」字段是 AI 的解释,不具备真值锚地位。任何依赖判旨而非原话的推理,都不算锚定。"
+    },
+    "GATES/REALITY.jsonl": {
+      "who": "现实(事故/对账差异/回滚/用户追问/下游拒收/人工纠错)",
+      "when": "持续追加,自 2026-07",
+      "accepted_by": "现实本身 —— 信号不由被测系统产生,这是它作为锚的全部资格",
+      "error_rate": "不适用:现实不会错,只会被记错。记录准确性由人核对",
+      "generated_by_system_under_test": false,
+      "_note": "这是整套体系里唯一无条件合格的外部锚。probe 来源的信号来自独立系统,人工记录的信号来自人的直接观察。"
+    }
+  }
+}

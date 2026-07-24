@@ -1,0 +1,2 @@
+{"id": "28032498", "ts": "2026-07-24T21:04:13+00:00", "channel": "人工纠错", "signal": "重大纠错全部由人的对抗性提问触发,无一由门禁抓到", "caught_by_assertion": false, "landed_as": null, "cost": "每次都要人亲自发现"}
+{"id": "4f0b9fcb", "ts": "2026-07-24T21:04:13+00:00", "channel": "对账差异", "signal": "所谓6份人工基线实为旧系统凌晨脚本输出,3000+断言本质是自等式", "caught_by_assertion": false, "landed_as": "leg_no_self_certification.py::check_tautology", "cost": "整栈最强结论失效", "closed_ts": "2026-07-24T21:06:14+00:00"}
