@@ -27,10 +27,34 @@ OUTBOUND_BASH = [
     r"outbound\.py\s+(approve|release)\b",
 ]
 
+# 法与人签名区:agent 一律不可写。
+# 教训(实测穿透):此前只列三条,gate.py / legs/ / hook 自身 / anchors.json 全在
+# 执行者写域内——执法者可以改写自己。
 PROTECTED_PATHS = [
     r"GATES/APPROVALS/",
     r"GATES/OUTBOX/released/",
+    r"GATES/REALITY\.jsonl$",        # 历练台账:唯一外部锚,不许被测改
     r"runtime/policy\.json$",
+    r"runtime/anchors\.json$",       # 真值锚声明
+    r"runtime/floor\.lock\.json$",   # 棘轮基线
+    r"runtime/gate\.py$",            # 执法者本身
+    r"runtime/legs/",                # 断言本身
+    r"runtime/hooks/",               # hook 此前连自己都不保护
+    r"runtime/scale_history\.jsonl$",  # 趋势(哈希链另有校验,双保险)
+]
+
+# Bash 写入通道。教训(实测穿透):此前 Bash 分支只查对外原语、完全不查文件写入,
+# 于是 `echo {} > runtime/policy.json` 畅通无阻——"此文件只能人改"是一句假话。
+BASH_WRITE = [
+    r">>?\s*\S*(?:policy|anchors|floor\.lock)\.json",
+    r">>?\s*\S*runtime/(?:gate\.py|legs/|hooks/)",
+    r">>?\s*\S*(?:GATES/APPROVALS|GATES/REALITY|scale_history)",
+    r"\bsed\b[^|;]*-i",                    # 原地编辑
+    r"\btee\b[^|;]*\s(?:runtime|GATES)/",
+    r"\b(?:cp|mv|install)\b[^|;]*\s(?:runtime|GATES)/\S*(?:policy|anchors|gate\.py|legs/|hooks/|floor\.lock)",
+    r"\btruncate\b|\bshred\b",
+    r"python3?\s+-c\b[^|;]*open\([^)]*['\"](?:w|a)",   # python 单行写文件
+    r"\bgit\s+checkout\b[^|;]*\bruntime/",  # 用 git 回滚绕过保护
 ]
 
 
@@ -62,6 +86,10 @@ def main():
             if re.search(pat, cmd):
                 deny("对外/自批动作被门禁拦截:必须走 runtime/outbound.py 的 "
                      "submit → 人审(GATES/PENDING_HUMAN)→ release。命中: " + pat)
+        for pat in BASH_WRITE:
+            if re.search(pat, cmd):
+                deny("经 Bash 写入法/人签名区被拦截。法只能人改,且不得绕道 shell。"
+                     "命中: " + pat)
 
     if tool in ("Write", "Edit", "MultiEdit", "NotebookEdit"):
         path = ti.get("file_path", "") or ti.get("notebook_path", "")

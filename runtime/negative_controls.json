@@ -1,0 +1,31 @@
+[
+  {
+    "_why_this_file": "每条腿的已知坏输入。一个从不变红的检查,与一个根本没跑的检查,信息上不可区分。gate.py --selftest 在仓库副本上施加这些扰动,要求对应的腿必须红。对照本身会腐坏(find 失效),所以未命中也判红。",
+    "leg": "outbound-tests",
+    "file": "runtime/outbound.py",
+    "find": "if not approval_path\\.exists\\(\\):",
+    "replace": "if False:",
+    "why": "拆掉「无人审批即硬阻断」"
+  },
+  {
+    "leg": "choke-point-static",
+    "file": "runtime/outbound.py",
+    "find": "^import hashlib",
+    "replace": "import time\nimport hashlib",
+    "why": "给 choke-point 引入时间基放行的可能"
+  },
+  {
+    "leg": "secret-scan",
+    "file": "BACKLOG.md",
+    "find": "^# BACKLOG",
+    "replace": "# BACKLOG\n\nAKIAIOSFODNN7EXAMPLE\n",
+    "why": "把一个 AWS 形态的密钥提交进仓库"
+  },
+  {
+    "leg": "no-self-certification",
+    "file": "runtime/anchors.json",
+    "find": "\"generated_by_system_under_test\": false,\n      \"_known_risk\"",
+    "replace": "\"generated_by_system_under_test\": true,\n      \"_known_risk\"",
+    "why": "把真值锚改成由被测系统生成(自等式)"
+  }
+]

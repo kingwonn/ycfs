@@ -1,0 +1,9 @@
+{
+  "_comment": "水位棘轮基线。gate 自动上调,永不下调(_ratchet 无调低分支)。由 hook 保护,agent 不可写。要下调只能人手改,且该动作会留在 git 历史里。",
+  "legs": {
+    "outbound-tests": 50,
+    "choke-point-static": 26,
+    "secret-scan": 25,
+    "no-self-certification": 28
+  }
+}

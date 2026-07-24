@@ -79,6 +79,21 @@ def main():
     check(re.search(r"policy\\?\.json", hook_src) is not None, "hook 必须保护 runtime/policy.json(法只能人改)")
     check(re.search(r"approve", hook_src) is not None, "hook 必须拦 agent 自批 approve")
 
+    # ── 出处(历练→内力):外部审计实测穿透 ──
+    # "hook 的 Bash 分支只查对外原语、完全不检查文件写入,所以 policy.json 那句
+    #  『此文件只能人改』对 Edit 成立,对 `echo {} > runtime/policy.json` 不成立。"
+    # 该逃逸记于 GATES/REALITY.jsonl。以下断言让它不会再回来。
+    check("BASH_WRITE" in hook_src, "hook 必须有 Bash 写入通道防线(仅防 Edit 不够)")
+    # 用字面子串查,不做"正则里查正则"——那层转义本身就是个坑(这两条断言第一次写就踩了)
+    for chan, desc in [("sed", "sed -i 原地编辑"), ("tee", "tee 写入"),
+                       ("truncate", "truncate/shred 清空"),
+                       ("checkout", "git checkout 回滚绕过"),
+                       ("open\\(", "python -c 单行写文件")]:
+        check(chan in hook_src, f"Bash 写入防线必须覆盖通道: {desc}")
+    for law in ["gate\\.py", "legs/", "hooks/", "anchors\\.json", "floor\\.lock\\.json"]:
+        check(law in hook_src, f"法典自身必须在保护面内: {law}")
+    check("REALITY" in hook_src, "历练台账必须受保护(唯一外部锚,不许被测改)")
+
     print(f"结果: {PASSED} 通过, {FAILED} 失败")
     sys.exit(0 if FAILED == 0 else 1)
 
