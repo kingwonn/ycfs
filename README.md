@@ -135,6 +135,8 @@ YCFS 不是框架,是一组约定 + 几个可查的文件。落地只需要:
 
 模板见 [templates/](templates/)。把它们放进任何项目,配一个能跑循环的 AI agent(如 Claude Code 的 `/loop`),就跑起来了。
 
+业界/技术的哪些新进展能接进这套体系、哪些永远替代不了人,见 [docs/tech-radar-2026.md](docs/tech-radar-2026.md)(含按"边际价值 × 落地成本"排序的优先采纳路线图)。
+
 ---
 
 ## 名字
