@@ -95,10 +95,13 @@ def check_escapes():
     check(bool(rows), "历练台账不得为空——零现实信号=无外部锚")
 
     # 收集全仓真实存在的断言名(腿文件 + 其中的 check 描述)
+    # 可执行检查不止住在 legs/:loop_audit.py 这类针对外部仓库的审计器住在 runtime/,
+    # 同样是真实断言。扫描面窄会把真编码误判成空头注销(本条由一次误报催生)。
     existing = set()
-    for leg in (ROOT / "runtime" / "legs").glob("leg_*.py"):
-        existing.add(leg.name)
-        existing.add(leg.stem)
+    for d in [(ROOT / "runtime" / "legs"), (ROOT / "runtime")]:
+        for f in d.glob("*.py"):
+            existing.add(f.name)
+            existing.add(f.stem)
     for r in rows:
         landed = r.get("landed_as")
         if not landed:
