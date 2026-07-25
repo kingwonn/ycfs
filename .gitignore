@@ -2,3 +2,4 @@ __pycache__/
 *.pyc
 GATES/OUTBOX/
 practice/errors.jsonl
+practice/learned.jsonl
