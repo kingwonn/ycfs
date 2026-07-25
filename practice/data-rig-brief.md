@@ -1,0 +1,105 @@
+# 数据采集设备 · 开工前的设计简报
+
+> 给 physicalAI 新分支用。按本仓库纪律:**先立法(什么算做对了),再干活。**
+> 硬件的坑是它有无限个"再做好看一点"的兔子洞,而其中大部分与成败无关。
+
+---
+
+## 一、别从零设计:主干已经被验证了
+
+**UMI(Universal Manipulation Interface,Stanford + Columbia)** 是这条路的主干:
+手持夹爪 + 鱼眼相机 + 编码器,人直接在真实环境里演示,记录末端位姿与夹持状态。
+**它把数据采集和机器人解耦了**——不需要机器人在场,采完再重定向到不同本体。
+
+2026 年最重要的验证:**RDT2(清华)用增强版 UMI 采了 1 万+ 小时、100+ 室内场景,
+训出 7B VLM 基座,做到了对未见物体/场景/指令/**甚至未见机器人平台**的零样本泛化。**
+
+这条路走通了。你要做的不是重新发明,是**在已验证的主干上找没被占的位置**。
+
+## 二、变体家族已经占满的方向(别撞车)
+
+| 变体 | 它解决的约束 |
+|---|---|
+| **Fast-UMI** | 用板载 VIO 取代 SLAM(部署更简单、更稳) |
+| **DexUMI** | 从夹爪扩到手部外骨骼(灵巧手) |
+| **TacUMI** | 加视触觉传感 |
+| **MV-UMI** | 多视角采集 |
+| **ActiveUMI** | 头戴主动感知 |
+| **TRumi**(Trossen) | 商业化成品 |
+| **FastUMI-100K** | 十万级 UMI 风格数据集 |
+| **Strawberry ROI** | 农业草莓采摘专用(领域特化的样板) |
+| **FeasibleCap** | **采集时实时提示"这个动作机器人做不到"** |
+
+对照 teleop 路线:**ALOHA / ALOHA 2**(双臂主从遥操作,<$20k),
+优点是没有本体差异,缺点是贵、必须有机器人、采集速度受限。
+
+## 三、一条数学事实,它决定你的全部设计
+
+> **1 万小时 ≈ 一个人全职采 5 年**(按每天 8 小时 × 每年 250 天)。
+
+所以如果采集者只有你自己:
+
+- **通用操作数据这条路在数学上走不通。** RDT2 那个位置已经被万小时占了,你追不上。
+- 只剩两条活路:
+  1. **领域特化** —— 找一个几十到几百小时就够用的窄域(Strawberry ROI 是样板)
+  2. **设计成能众包的** —— 那么"便宜、能寄出去、傻瓜化、自动质检"成为第一约束,
+     而不是"精度高"
+
+**这个岔路必须在画第一张图之前定下来,因为两边的设计几乎没有共同零件。**
+
+## 四、唯一合法的验收判据
+
+设备本身的指标——重量、精度、采集速率、外观——**全部是自证**。
+它们衡量的是"我做了个东西",不是"这个东西有用"。
+
+> **唯一算数的判据:用这台设备采的数据,能不能训出比不用它更好的策略。**
+
+写成机器可查的形式(开工前就要定下来):
+
+```
+在 <某个具体任务> 上:
+  用本设备采 N 小时数据微调 → 成功率 ≥ X%
+  不用(或用现成公开数据同等量) → 成功率 ≤ Y%
+  且 X - Y ≥ 显著性阈值
+```
+
+**证伪条件**:如果换成同等小时数的公开 UMI 数据能达到同样效果,那这台设备没有存在价值——
+它没有采到别人采不到的东西。**这一条要在开工时就写下来,不是做完再找理由。**
+
+## 五、三个"答案会改变架构"的问题(先答再动手)
+
+1. **有没有目标机器人实体?**
+   有 → teleop(ALOHA 系)可行,零本体差异
+   没有 → 只能走 UMI 系,必须处理本体差异
+
+2. **通用还是特化?**
+   通用 → 需要万小时级,一个人做不到(见第三节)
+   特化 → 选哪个域?判据是"这个域有没有一个你能拿到的现实反馈"
+
+3. **谁来采?**
+   只有你 → 小时数上限约 500-1000,设计必须服从"小数据也能用"
+   众包 → 成本、鲁棒性、自动质检成为第一约束,精度让位
+
+## 六、和 ycfs 的接法
+
+这个分支天然带一个别的项目都没有的东西:**不可自证的现实锚。**
+
+数据要么能训出策略,要么不能;夹爪要么抓得起来,要么抓不起来。物理不迁就人。
+
+所以接法很简单:
+
+- 每一次"以为能采、实际采不到"的情况 → `runtime/reality.py record --escaped`
+- 每一条逃逸 → 变成设备规格里的一条硬约束
+- 刻度看两个数:**采集小时数** 和 **下游策略成功率**——只有第二个算数
+
+---
+
+*事实截至 2026-07,来自公开论文与产品页;按本仓库纪律,引用时说"某某报告称",不说"事实是"。*
+
+Sources:
+- [RDT2: Exploring the Scaling Limit of UMI Data Towards Zero-Shot Cross-Embodiment Generalization](https://arxiv.org/abs/2602.03310) · [项目页](https://rdt-robotics.github.io/rdt2/) · [代码](https://github.com/thu-ml/RDT2)
+- [FastUMI-100K: Advancing Data-driven Robotic Manipulation with a Large-scale UMI-style Dataset](https://arxiv.org/pdf/2510.08022)
+- [FeasibleCap: Real-Time Embodiment Constraint Guidance for In-the-Wild Robot Demonstration Collection](https://arxiv.org/pdf/2603.07580)
+- [Strawberry Robotic Operation Interface (领域特化样板)](https://arxiv.org/pdf/2501.16717)
+- [Embodied AI Data Collection: Teleoperation Guide (2026)](https://www.evsint.com/embodied-ai-data-collection-teleoperation-sim-to-real-2026/)
+- [TRumi Handheld Manipulation Data Collection System — Trossen Robotics](https://www.trossenrobotics.com/trumi)
