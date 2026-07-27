@@ -13,3 +13,4 @@
 | R8 | 矩阵 | 4路技术路线穷举全回库(触觉8条/力9条/位姿7+同步4/动作5+视觉5),各落 practice/research/route-0*.md;填 practice/routes/*.json 喂决策矩阵;跑出三档产品选型;合成 PRODUCT-MATRIX.md(3机型×4模态+roadmap) | ✅ gate 6/6;tradeoff腿164断言;4处纠错入台账 | 铺量档Go先做(M0);M2跨本体力迁移仍是最致命验证 |
 | R9 | HTML | 产品定义可视化:m0/build_dashboard.py 从 routes/*.json 经引擎实时算出→site/product.html(三档产品+模态得分条+roadmap+风险表,自包含明暗自适应);dashboard腿绑死HTML与引擎。阴性对照抓到首版"每次重生成=验不出陈旧"缺陷并修正 | ✅ gate 7/7;阴性对照7/7 | M2跨本体力迁移脚手架 |
 | R10 | M2 | 跨本体力迁移验证骨架:m2/ablation.py 力消融框架(同/跨本体×有力/无力,合成contact世界力+0.10跨本体保留、null世界-0.01正确识别噪声)+ leg_ablation接gate锁判别力;m2/README写死判决规则与诚实边界;数据可得性调查并行 | ✅ gate 8/8;阴性对照8/8 | 等调查确认公开真机力数据集,接入替换合成 | 
+| R11 | M2裂 | 数据可得性调查回库:M2劈成两半——M2a力有没有用(RDP/DexUMI公开可验,多篇+33~54pp一致)/ M2b力能否跨本体(硬缺口:最大跨本体数据全纯视觉无力,唯DexUMI双手小规模)。产品头号风险恰落在验不了那半。更新PRODUCT风险表+North-star,BACKLOG拆M2a/M2b卡 | ✅ gate 8/8 | M2a可立即做(下RDP);M2b需自采强证据=与"要不要造设备"绑定 |
