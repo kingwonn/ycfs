@@ -55,5 +55,19 @@
     "find": "logit = 1.5 \\* vis_signal \\+ 0.0 \\* latent_contact    # 力无关",
     "replace": "logit = 1.5 * vis_signal + 1.3 * latent_contact    # 力无关",
     "why": "让null世界的力也携带信息(框架失去区分力有用/无用的能力)"
+  },
+  {
+    "leg": "bom",
+    "file": "m0/bom.json",
+    "find": "\"unit_cny\": 40",
+    "replace": "\"unit_cny\": 400",
+    "why": "PCB涨价10倍使BOM总价超¥150预算(超预算必被抓)"
+  },
+  {
+    "leg": "provenance",
+    "file": "m0/fixtures/prov_fixture.md",
+    "find": "PROV_MARK \\[有据\\]",
+    "replace": "PROV_MARK none",
+    "why": "删 fixture 唯一来源标记([有据]/出处)→该文档无来源→provenance必红"
   }
 ]

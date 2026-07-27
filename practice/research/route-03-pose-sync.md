@@ -33,3 +33,11 @@
 
 1. **"傻瓜化"技术路径明确**:VIO 方案 = 板载实时鱼眼 VIO,不是双目图优化。PRODUCT.md 的"双目+IMU VIO 200Hz 后处理图优化"应改为**板载增量 VIO**(傻瓜化优先),精度让位。
 2. **同步指标要现实**:亚毫秒是"高动态接触任务"的高端档,不是通用门槛。**关键取舍浮现**:要亚毫秒同步(接触力事件)必须放弃 GoPro 换全局快门工业相机——这与"低成本铺量"直接冲突。**这是产品矩阵旗舰档 vs 铺量档的分界线。**
+
+## 来源(P14 引用纪律)
+[有据] 项出处:UMI arXiv 2402.10329 · Fast-UMI 2409.19499 · LF-VIO/Sphere-VIO 2606.29910 ·
+RealSense T265(已EOL)· OptiTrack docs.optitrack.com · PTP vs NTP mikrodev/meinberg ·
+硬件同步 ResearchGate 387422847 / GrandTour 2602.18164 · GoPro 卷帘 joancharmant/gyroflow ·
+π0 HF blog huggingface.co/blog/pi0。
+**批判**:离线 VIO 采完才知成败(第一痛点);动捕绑死场地;UWB 无姿态;
+π0"亚毫秒"查无官方出处已订正;LED 时标法受帧率限只到帧内 ms 不吹 µs。

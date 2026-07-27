@@ -70,6 +70,12 @@ LEGS = [
     # M2:力消融框架的判别力(能区分'力有用/无用')
     Leg("ablation", "runtime/legs/leg_ablation.py",
         r"结果: (\d+) 通过, (\d+) 失败"),
+    # M0-1:同步总线 BOM 可下单 + 总价在预算 + 规格达标
+    Leg("bom", "runtime/legs/leg_bom.py",
+        r"结果: (\d+) 通过, (\d+) 失败"),
+    # P14:引用纪律——承重文档必须标来源,引用他家必须带批判
+    Leg("provenance", "runtime/legs/leg_provenance.py",
+        r"结果: (\d+) 通过, (\d+) 失败"),
 ]
 
 

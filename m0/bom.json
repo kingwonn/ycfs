@@ -1,0 +1,25 @@
+{
+  "_note": "M0-1 同步总线子系统 BOM。价格为 2026 小批量单台成本估价(¥)。由 leg_bom 校验:总价≤预算、关键部件规格达标、每项带渠道。规格值单位见 spec 字段。",
+  "subsystem": "sync-bus",
+  "budget_cny": 150,
+  "items": [
+    {"part": "MCU主控", "model": "STM32G431CBU6", "unit_cny": 18, "channel": "立创/ST",
+     "spec": {"clock_mhz": 168, "has_hw_timestamp": true, "has_usb": true}},
+    {"part": "IMU", "model": "ICM-42688-P", "unit_cny": 22, "channel": "立创/TDK",
+     "spec": {"sample_hz": 1000, "axes": 6, "bus": "SPI"}},
+    {"part": "时基晶振", "model": "TCXO-25MHz-0.5ppm", "unit_cny": 12, "channel": "立创",
+     "spec": {"ppm": 0.5, "temp_compensated": true}},
+    {"part": "LED时标", "model": "IR-LED+driver", "unit_cny": 3, "channel": "立创",
+     "spec": {"controllable_us": true}},
+    {"part": "PCB", "model": "4层小板", "unit_cny": 40, "channel": "嘉立创",
+     "spec": {"layers": 4}},
+    {"part": "连接器线束", "model": "FPC+杜邦", "unit_cny": 25, "channel": "淘宝",
+     "spec": {}}
+  ],
+  "requirements": {
+    "counter_bits": 32,
+    "counter_tick_us": 1,
+    "min_monotonic_minutes": 60,
+    "sync_p99_ms_target": 5.0
+  }
+}

@@ -49,3 +49,13 @@
 - **M2a 力有用 + M2b 力跨本体丢失** → **最可能的坏结果**:力有用但绑本体 →
   产品必须改为"针对客户本体现采现标",不能卖通用力数据库。这直接改商业模式。
 - M2b 因数据太小无法定论 → 这本身就是"为什么要造这个设备"的论据:**缺口=市场**
+
+## 来源(P14 引用纪律)
+[有据] 项出处:UMI-FT github.com/real-stanford/UMI-FT (arXiv 2601.09988) ·
+DexUMI github.com/real-stanford/DexUMI (2505.21864,含 enable_fsr 开关) ·
+ForceMimic github.com/ForceMimic/forcecapture (2410.07554,+54.5%) ·
+RDP github.com/xiaoxiaoxh/reactive_diffusion_policy (2503.02881,MIT) ·
+FILIC arXiv 2509.17053 (+33~53pp) · RDT2/UMI-10k thu-ml/RDT2 (2602.03310,纯视觉无力) ·
+FastUMI-100K 2510.08022 · OXE 2306.11706 · robosuite/ManiSkill3 2410.00425。
+**批判**:TacUMI 承诺开源但当前无法确认下载(按"待验证"处理);FILIC 代码/数据开源状态公开无;
+RDT2 UMI-10k 完整数据 issue #25 显示仍在发布;所有 UMI 系数据规模 README 均未标注(需实测)。

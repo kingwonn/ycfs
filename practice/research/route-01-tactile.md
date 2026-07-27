@@ -36,3 +36,11 @@
 - **低成本铺量 → 开源视触觉(9DTact/DIGIT,BOM $30-50,sim2real 最省)或 AnySkin 磁皮**。
 
 **⚠ 一个 sim2real 悖论(对产品最重要)**:视触觉是最容易在仿真里造的模态(TACTO/Taxim 成熟)→ 它在仿真里**不稀缺**。而电容/磁/压电在仿真里难造→**真机数据稀缺价值更高**。这与"卖仿真够不到的模态"直接相关:**若卖稀缺性,电容/磁力觉数据比视触觉更值钱;若卖信号丰富+低成本,视触觉赢。**
+
+## 来源(P14 引用纪律)
+[有据] 项出处:DIGIT arXiv 2005.14679 · GelSlim 4.0 arXiv 2409.19770 · 9DTact 2308.14277 ·
+AnySkin 2409.08276 / ReSkin 2111.00071 · 帕西尼 PaXini paxini.com/mall · 戴盟 dmrobot.com ·
+FARM(GelSight 上改装 UMI) arXiv 2510.13324 · 仿真器 Taxim(CMU)/FOTS 2404.19217/TacEx 2411.04776 ·
+BioTac SynTouch · UltraTac 2508.20982 · QTC Peratech。
+批判分析散见正文(视触觉 sim2real 易造→稀缺价值低;压阻漂移迟滞进不了计量;磁性抓铁磁物污染;
+FBG 解调仪笨重手持出局;BioTac 供货收缩)。完整清单见调查 agent 原始输出。
