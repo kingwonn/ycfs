@@ -41,5 +41,12 @@
     "find": "num \\+= v \\* w",
     "replace": "num += v",
     "why": "让引擎忽略权重(选型退化为不加权,权重区分力断言必崩)"
+  },
+  {
+    "leg": "dashboard",
+    "file": "m0/tradeoff.py",
+    "find": "score = round\\(num / den, 3\\) if den else None",
+    "replace": "score = round(num / den, 3) + 0.002 if den else None",
+    "why": "让引擎算出与HTML不同的分数(展示与计算脱节必被抓)"
   }
 ]

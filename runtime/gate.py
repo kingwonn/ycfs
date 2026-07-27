@@ -64,6 +64,9 @@ LEGS = [
     # 选型决策矩阵:引擎自洽 + 权重有区分力 + 路线文件格式合规
     Leg("tradeoff", "runtime/legs/leg_tradeoff.py",
         r"结果: (\d+) 通过, (\d+) 失败"),
+    # HTML 仪表盘与引擎同步(展示数字不脱离计算源)
+    Leg("dashboard", "runtime/legs/leg_dashboard.py",
+        r"结果: (\d+) 通过, (\d+) 失败"),
 ]
 
 

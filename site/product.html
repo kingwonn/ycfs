@@ -1,0 +1,88 @@
+<!doctype html><html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UMI 力觉数采设备 · 产品定义</title>
+<style>
+:root{--bg:#fff;--fg:#1a1a1a;--mut:#666;--line:#e5e5e5;--card:#fafafa;--accent:#2563eb;--good:#16a34a;--warn:#d97706}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1115;--fg:#e8e8e8;--mut:#9aa0a8;--line:#2a2e37;--card:#171a21;--accent:#60a5fa;--good:#4ade80;--warn:#fbbf24}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 -apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:32px 20px 80px}
+h1{font-size:26px;margin:0 0 4px}.sub{color:var(--mut);margin:0 0 28px;font-size:14px}
+h2{font-size:19px;margin:36px 0 12px;padding-top:14px;border-top:1px solid var(--line)}
+.lead{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:14px 18px;margin:14px 0}
+.lead b{color:var(--accent)}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mut);font-weight:600;font-size:12.5px}
+.champ td.mod{font-weight:600;white-space:nowrap}.champ .sc{color:var(--mut);font-size:11px;margin-left:6px}
+.champ b{color:var(--good)}
+table.routes td{width:auto}.routes .rn{font-weight:600;white-space:nowrap}.routes .pr{color:var(--mut);font-size:12px;max-width:260px}
+.bar{position:relative;background:var(--line);border-radius:4px;height:20px;min-width:80px;overflow:hidden}
+.bar span{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--accent),var(--good));opacity:.35}
+.bar em{position:relative;font-style:normal;font-size:11.5px;padding:0 6px;line-height:20px;color:var(--fg)}
+.bar.na{background:transparent;color:var(--mut);font-size:11px;line-height:20px;padding-left:6px}
+details{background:var(--card);border:1px solid var(--line);border-radius:8px;margin:10px 0;padding:6px 14px}
+summary{cursor:pointer;font-weight:600;font-size:15px;padding:6px 0}.cnt{color:var(--mut);font-weight:400;font-size:12px;margin-left:8px}
+.tier{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:14px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+.card h3{margin:0 0 6px;font-size:16px}.card .price{color:var(--warn);font-weight:600;font-size:13px}
+.card ul{margin:8px 0 0;padding-left:18px;font-size:13px;color:var(--fg)}.card li{margin:3px 0}
+.card .who{color:var(--mut);font-size:12.5px;margin:2px 0 8px}
+.flow{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 18px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;white-space:pre;overflow-x:auto;color:var(--fg)}
+.pill{display:inline-block;font-size:11px;padding:1px 8px;border-radius:10px;background:var(--line);color:var(--mut);margin-left:6px}
+.risk td:first-child{font-weight:600}.sev-high{color:var(--warn);font-weight:600}.sev-fatal{color:#dc2626;font-weight:700}
+.foot{color:var(--mut);font-size:12px;margin-top:36px;border-top:1px solid var(--line);padding-top:14px}
+code{background:var(--line);padding:1px 5px;border-radius:4px;font-size:12px}
+</style></head><body><div class="wrap">
+<h1>UMI 力觉数采设备 · 产品定义</h1>
+<p class="sub">从具身大脑第一性原理 → 技术路线穷举 → 决策矩阵 → 三档产品。数字由 <code>m0/tradeoff.py</code> 从 <code>practice/routes/*.json</code> 实时算出,与 gate 一致 · 生成于本仓库工作分支</p>
+
+<div class="lead"><b>一句话:</b>同一套模态,三种权重,三个产品。<b>旗舰</b>用计量电容力觉打稀缺性、<b>铺量</b>用磁性 AnySkin 打成本一致性、<b>灵巧手</b>用外骨骼打关节级。而 <b>每指 CoinFT 力 + 实时板载 VIO</b> 是三档共用的地基——它们在所有权重下都赢。</div>
+
+<h2>各模态冠军(决策矩阵输出,可复算)</h2>
+<table class='champ'><thead><tr><th>模态</th><th>旗舰·计量档</th><th>铺量·众包档</th><th>灵巧手·外骨骼档</th></tr></thead><tbody><tr><td class='mod'>触觉</td><td><b>电容多维力(帕西尼PaXini)</b><span class='sc'>0.846</span></td><td><b>磁性(ReSkin/AnySkin/uSkin)</b><span class='sc'>0.877</span></td><td><b>电容多维力(帕西尼PaXini)</b><span class='sc'>0.835</span></td></tr><tr><td class='mod'>力测量(测量点方案)</td><td><b>每指6轴CoinFT(UMI-FT)</b><span class='sc'>0.769</span></td><td><b>每指6轴CoinFT(UMI-FT)</b><span class='sc'>0.769</span></td><td><b>每指6轴CoinFT(UMI-FT)</b><span class='sc'>0.774</span></td></tr><tr><td class='mod'>位姿追踪</td><td><b>实时板载VIO(FastUMI Ego/T265)</b><span class='sc'>0.715</span></td><td><b>实时板载VIO(FastUMI Ego/T265)</b><span class='sc'>0.785</span></td><td><b>实时板载VIO(FastUMI Ego/T265)</b><span class='sc'>0.687</span></td></tr><tr><td class='mod'>时间同步</td><td><b>硬件触发(MCU统一时钟)</b><span class='sc'>0.785</span></td><td><b>软件时间戳(NTP/PTP软件戳)</b><span class='sc'>0.877</span></td><td><b>硬件触发(MCU统一时钟)</b><span class='sc'>0.809</span></td></tr></tbody></table>
+
+<h2>三档产品</h2>
+<div class="tier">
+<div class="card"><h3>🅰 旗舰 Contact-Pro</h3><div class="price">BOM ¥12,000–18,000</div>
+<div class="who">做 contact-rich 任务(插装/装配/柔性物)、要最高保真力触觉的大脑创业公司</div>
+<ul><li>每指 CoinFT 六轴力 + 电容 PaXini 六维力触觉</li><li>实时鱼眼板载 VIO + 硬件触发 MCU 同步(全局快门工业相机)</li><li>可锁定夹爪去握力</li><li>诚实标注:力标签是"锁定相位静态可标定 + 运动段牛顿级",非全程计量</li></ul></div>
+<div class="card"><h3>🅱 铺量 Contact-Go <span class="pill">先做</span></h3><div class="price">BOM ¥3,000–5,000</div>
+<div class="who">需要规模+多样性、成本敏感、可众包分布式采集</div>
+<ul><li>磁 AnySkin 触觉(免标定台间一致,换皮 $5–10)</li><li>每指 CoinFT + 实时鱼眼板载 VIO</li><li>软件时间戳同步(保消费相机,认 ms 级)</li><li>一键开采 · 最可能规模化的一档</li></ul></div>
+<div class="card"><h3>🅲 灵巧手 Dexterous</h3><div class="price">BOM ¥15,000+ · 项目制</div>
+<div class="who">训练特定灵巧手(Inspire/XHand),要关节级对齐+触觉</div>
+<ul><li>外骨骼关节级采集(DexUMI,gap 最低)</li><li>电容/磁触觉 + 每指 CoinFT + 硬件同步</li><li>视觉 inpainting 换手</li><li>每类手一套外骨骼,不通用</li></ul></div>
+</div>
+
+<h2>技术路线穷举 × 三档得分</h2>
+<p class="sub">条数越多不代表越好;分数是七维加权(精度/多模态/轻便/成本/可量产/sim2real稀缺/成熟度),权重随档位变。点开每个模态看全部路线。</p>
+<details open><summary>力测量(测量点方案) <span class='cnt'>4 条路线</span></summary><table class='routes'><thead><tr><th>技术路线</th><th>旗舰·计量档</th><th>铺量·众包档</th><th>灵巧手·外骨骼档</th><th class='pr'>原理</th></tr></thead><tbody><tr><td class='rn'>每指6轴CoinFT(UMI-FT)</td><td><div class="bar"><span style="width:76%"></span><em>0.769</em></div></td><td><div class="bar"><span style="width:76%"></span><em>0.769</em></div></td><td><div class="bar"><span style="width:77%"></span><em>0.774</em></div></td><td class='pr'>每指尖微型6轴F/T,远端质量≈2g惯性天然趋零,双指求和/求差解耦握力</td></tr><tr><td class='rn'>腕/手柄6轴F/T(Bota)+补偿</td><td><div class="bar"><span style="width:70%"></span><em>0.708</em></div></td><td><div class="bar"><span style="width:66%"></span><em>0.662</em></div></td><td><div class="bar"><span style="width:72%"></span><em>0.722</em></div></td><td class='pr'>整爪作载荷,手柄F/T测传递旋量;远端质量大污染最大,需IMU+在线辨识补偿</td></tr><tr><td class='rn'>视触觉FEM反推力(FEATS)</td><td><div class="bar"><span style="width:61%"></span><em>0.615</em></div></td><td><div class="bar"><span style="width:60%"></span><em>0.600</em></div></td><td><div class="bar"><span style="width:63%"></span><em>0.635</em></div></td><td class='pr'>GelSight形变图FEM反演力分布;远端质量小但受帧率限</td></tr><tr><td class='rn'>电机电流估扭</td><td><div class="bar"><span style="width:56%"></span><em>0.569</em></div></td><td><div class="bar"><span style="width:72%"></span><em>0.723</em></div></td><td><div class="bar"><span style="width:50%"></span><em>0.504</em></div></td><td class='pr'>F≈i·Kt·J^-T反推抓持力;仅电动夹爪可用,不给外力</td></tr></tbody></table></details><details open><summary>位姿追踪 <span class='cnt'>5 条路线</span></summary><table class='routes'><thead><tr><th>技术路线</th><th>旗舰·计量档</th><th>铺量·众包档</th><th>灵巧手·外骨骼档</th><th class='pr'>原理</th></tr></thead><tbody><tr><td class='rn'>实时板载VIO(FastUMI Ego/T265)</td><td><div class="bar"><span style="width:71%"></span><em>0.715</em></div></td><td><div class="bar"><span style="width:78%"></span><em>0.785</em></div></td><td><div class="bar"><span style="width:68%"></span><em>0.687</em></div></td><td class='pr'>第一帧建世界系,板载增量VIO估计6-DoF,IMU给尺度;无需预建图无离线SLAM</td></tr><tr><td class='rn'>鱼眼/全景VIO</td><td><div class="bar"><span style="width:66%"></span><em>0.662</em></div></td><td><div class="bar"><span style="width:71%"></span><em>0.715</em></div></td><td><div class="bar"><span style="width:64%"></span><em>0.643</em></div></td><td class='pr'>360°大视场单位向量表示特征,弱纹理更易找特征;路线上是板载VIO镜头升级</td></tr><tr><td class='rn'>外部动捕(OptiTrack/Vicon)</td><td><div class="bar"><span style="width:60%"></span><em>0.608</em></div></td><td><div class="bar"><span style="width:53%"></span><em>0.538</em></div></td><td><div class="bar"><span style="width:60%"></span><em>0.609</em></div></td><td class='pr'>红外反光球主动定位,亚毫米零漂移;需布场进棚</td></tr><tr><td class='rn'>离线VIO(ORB-SLAM3,原版UMI)</td><td><div class="bar"><span style="width:60%"></span><em>0.600</em></div></td><td><div class="bar"><span style="width:64%"></span><em>0.646</em></div></td><td><div class="bar"><span style="width:57%"></span><em>0.574</em></div></td><td class='pr'>GoPro+IMU离线跑ORB-SLAM3联合优化;需离线后处理,采完才知成败</td></tr><tr><td class='rn'>UWB超宽带</td><td><div class="bar"><span style="width:53%"></span><em>0.531</em></div></td><td><div class="bar"><span style="width:61%"></span><em>0.615</em></div></td><td><div class="bar"><span style="width:49%"></span><em>0.496</em></div></td><td class='pr'>TDOA/AOA测距cm级,原生无姿态需融IMU;NLOS突跳</td></tr></tbody></table></details><details open><summary>时间同步 <span class='cnt'>3 条路线</span></summary><table class='routes'><thead><tr><th>技术路线</th><th>旗舰·计量档</th><th>铺量·众包档</th><th>灵巧手·外骨骼档</th><th class='pr'>原理</th></tr></thead><tbody><tr><td class='rn'>硬件触发(MCU统一时钟)</td><td><div class="bar"><span style="width:78%"></span><em>0.785</em></div></td><td><div class="bar"><span style="width:72%"></span><em>0.723</em></div></td><td><div class="bar"><span style="width:80%"></span><em>0.809</em></div></td><td class='pr'>MCU主时钟+触发线硬触发全局快门相机,曝光中点硬件打戳</td></tr><tr><td class='rn'>软件时间戳(NTP/PTP软件戳)</td><td><div class="bar"><span style="width:74%"></span><em>0.746</em></div></td><td><div class="bar"><span style="width:87%"></span><em>0.877</em></div></td><td><div class="bar"><span style="width:69%"></span><em>0.696</em></div></td><td class='pr'>各流软件打时间戳按主机时钟对齐;NTP/PTP软件戳无本质差别</td></tr><tr><td class='rn'>GenLock/外触发相机</td><td><div class="bar"><span style="width:66%"></span><em>0.669</em></div></td><td><div class="bar"><span style="width:56%"></span><em>0.562</em></div></td><td><div class="bar"><span style="width:70%"></span><em>0.704</em></div></td><td class='pr'>主灌时钟给从逐帧像素级对齐</td></tr></tbody></table></details><details open><summary>触觉 <span class='cnt'>7 条路线</span></summary><table class='routes'><thead><tr><th>技术路线</th><th>旗舰·计量档</th><th>铺量·众包档</th><th>灵巧手·外骨骼档</th><th class='pr'>原理</th></tr></thead><tbody><tr><td class='rn'>电容多维力(帕西尼PaXini)</td><td><div class="bar"><span style="width:84%"></span><em>0.846</em></div></td><td><div class="bar"><span style="width:83%"></span><em>0.838</em></div></td><td><div class="bar"><span style="width:83%"></span><em>0.835</em></div></td><td class='pr'>弹性介质受力改变电容,多电极解算六维力;点式非成像</td></tr><tr><td class='rn'>磁性(ReSkin/AnySkin/uSkin)</td><td><div class="bar"><span style="width:84%"></span><em>0.846</em></div></td><td><div class="bar"><span style="width:87%"></span><em>0.877</em></div></td><td><div class="bar"><span style="width:83%"></span><em>0.835</em></div></td><td class='pr'>磁颗粒弹性体形变→磁强计读B场→解算法向+切向力</td></tr><tr><td class='rn'>压电PVDF(动态/滑觉)</td><td><div class="bar"><span style="width:70%"></span><em>0.700</em></div></td><td><div class="bar"><span style="width:81%"></span><em>0.815</em></div></td><td><div class="bar"><span style="width:65%"></span><em>0.652</em></div></td><td class='pr'>PVDF受应变产生电荷,只对变化率响应;仅动态无静态</td></tr><tr><td class='rn'>视触觉(GelSight/DIGIT/9DTact)</td><td><div class="bar"><span style="width:66%"></span><em>0.669</em></div></td><td><div class="bar"><span style="width:72%"></span><em>0.723</em></div></td><td><div class="bar"><span style="width:66%"></span><em>0.661</em></div></td><td class='pr'>弹性体+相机看形变,光度立体/标记位移反算接触几何与切向力</td></tr><tr><td class='rn'>气压BioTac</td><td><div class="bar"><span style="width:63%"></span><em>0.638</em></div></td><td><div class="bar"><span style="width:46%"></span><em>0.469</em></div></td><td><div class="bar"><span style="width:71%"></span><em>0.713</em></div></td><td class='pr'>导电液填充弹性指,阻抗测压+水听器测振+热敏测温</td></tr><tr><td class='rn'>光纤FBG</td><td><div class="bar"><span style="width:60%"></span><em>0.608</em></div></td><td><div class="bar"><span style="width:56%"></span><em>0.562</em></div></td><td><div class="bar"><span style="width:60%"></span><em>0.609</em></div></td><td class='pr'>力使光纤应变→布拉格波长漂移→解算力;需解调仪</td></tr><tr><td class='rn'>压阻薄膜(Tekscan)</td><td><div class="bar"><span style="width:59%"></span><em>0.592</em></div></td><td><div class="bar"><span style="width:73%"></span><em>0.731</em></div></td><td><div class="bar"><span style="width:53%"></span><em>0.530</em></div></td><td class='pr'>压敏电阻受压变化,行列矩阵读压力分布;单层无切向</td></tr></tbody></table></details>
+
+<h2>跨档架构不变量(不分档,都这么做)</h2>
+<div class="lead">① <b>动作标签</b>:EE-pose 通用空间采集 → FeasibleCap 60Hz 源头可行性约束 → 交付前 VISTA 物理校验+按客户 URDF 重定向。②<b>视觉</b>:腕装鱼眼 155° + Cloak mask 掉末端(一份数据服务夹爪+灵巧手+不同臂)。③<b>规格</b>:训练交付 224²/采集 640×480@30fps(对齐 LeRobot 72% 主流),高帧率只为 VIO 与力事件对齐,交付降采样不过配。④<b>每批带质量证书</b>(十项可复算,已实现)。</div>
+
+<h2>Roadmap</h2>
+<div class="flow">M0 (0-8周)   铺量档 Contact-Go 样机:CoinFT + AnySkin + 板载VIO + 软件同步 + 数据管线
+             (最便宜验证全链路,最快出可训数据)
+   ↓
+M1 (8-12周)  数据管线+证书打通,跑通 LeRobot 官方 loader
+   ↓
+M2 (并行,不阻塞硬件) ★最致命验证:跨本体力迁移复现实验(公开 UMI-FT/ForceMimic 数据)
+             支持→力觉押注成立;否决→退回纯质检 UMI
+   ↓
+M3 (+4周)    工业 contact-rich 任务首个 pilot(分拣/插装),North-star 首测
+   ↓
+M4           成立则向旗舰档延伸(计量触觉+硬件同步);灵巧手需求出现则做 Dexterous 项目制</div>
+
+<h2>诚实的风险总账</h2>
+<table class="risk"><thead><tr><th>风险</th><th>严重度</th><th>应对</th></tr></thead><tbody>
+<tr><td>跨本体力迁移无效</td><td class="sev-fatal">致命</td><td>先于造设备用公开数据验(M2)</td></tr>
+<tr><td>鹿明踩住力觉+质检边缘</td><td class="sev-high">高</td><td>差异化钉死计量标定+可审计证书,与其竞速</td></tr>
+<tr><td>证书认证不了训练价值</td><td class="sev-high">高</td><td>证书+训练回路抽样验证组合,不单卖证书</td></tr>
+<tr><td>"计量级"力在手持自由运动下达不到</td><td class="sev-high">高</td><td>改措辞:锁定相位可标定静态力+运动段牛顿级</td></tr>
+<tr><td>买方自采/不外购</td><td>中高</td><td>客户锁定融资期创业公司,不碰头部</td></tr>
+<tr><td>数据生意整体未盈利(97家)</td><td>中</td><td>先做存在性证明,不做规模竞赛</td></tr>
+</tbody></table>
+
+<div class="foot">此页由 <code>m0/build_dashboard.py</code> 从仓库真实数据生成,可 <code>git</code> 追溯每个数字到 routes/*.json 与 research/route-0*.md。四处调查纠错(计量级措辞/科氏力/传感器分类/π0亚毫秒)已入 REALITY 台账。<br>引用纪律:文中数字标注 [有据]/[推断] 见各 research 文档;媒体口径说"某某报告称",不说"事实是"。</div>
+</div></body></html>
