@@ -12,3 +12,4 @@
 | R7 | 矩阵 | 6 路技术路线穷举调查并行(触觉/力测量/位姿+同步/动作标签+视觉);同时落 m0/tradeoff.py 选型决策矩阵引擎(7维加权、缺项记null不蒙混、三档权重flagship/volume/dexterous)+ leg_tradeoff 接gate | ✅ gate 6/6;阴性对照6/6(新:忽略权重必红) | 调查回来填 practice/routes/*.json,自动出产品矩阵 |
 | R8 | 矩阵 | 4路技术路线穷举全回库(触觉8条/力9条/位姿7+同步4/动作5+视觉5),各落 practice/research/route-0*.md;填 practice/routes/*.json 喂决策矩阵;跑出三档产品选型;合成 PRODUCT-MATRIX.md(3机型×4模态+roadmap) | ✅ gate 6/6;tradeoff腿164断言;4处纠错入台账 | 铺量档Go先做(M0);M2跨本体力迁移仍是最致命验证 |
 | R9 | HTML | 产品定义可视化:m0/build_dashboard.py 从 routes/*.json 经引擎实时算出→site/product.html(三档产品+模态得分条+roadmap+风险表,自包含明暗自适应);dashboard腿绑死HTML与引擎。阴性对照抓到首版"每次重生成=验不出陈旧"缺陷并修正 | ✅ gate 7/7;阴性对照7/7 | M2跨本体力迁移脚手架 |
+| R10 | M2 | 跨本体力迁移验证骨架:m2/ablation.py 力消融框架(同/跨本体×有力/无力,合成contact世界力+0.10跨本体保留、null世界-0.01正确识别噪声)+ leg_ablation接gate锁判别力;m2/README写死判决规则与诚实边界;数据可得性调查并行 | ✅ gate 8/8;阴性对照8/8 | 等调查确认公开真机力数据集,接入替换合成 | 

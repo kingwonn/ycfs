@@ -48,5 +48,12 @@
     "find": "score = round\\(num / den, 3\\) if den else None",
     "replace": "score = round(num / den, 3) + 0.002 if den else None",
     "why": "让引擎算出与HTML不同的分数(展示与计算脱节必被抓)"
+  },
+  {
+    "leg": "ablation",
+    "file": "m2/ablation.py",
+    "find": "logit = 1.5 \\* vis_signal \\+ 0.0 \\* latent_contact    # 力无关",
+    "replace": "logit = 1.5 * vis_signal + 1.3 * latent_contact    # 力无关",
+    "why": "让null世界的力也携带信息(框架失去区分力有用/无用的能力)"
   }
 ]

@@ -67,6 +67,9 @@ LEGS = [
     # HTML 仪表盘与引擎同步(展示数字不脱离计算源)
     Leg("dashboard", "runtime/legs/leg_dashboard.py",
         r"结果: (\d+) 通过, (\d+) 失败"),
+    # M2:力消融框架的判别力(能区分'力有用/无用')
+    Leg("ablation", "runtime/legs/leg_ablation.py",
+        r"结果: (\d+) 通过, (\d+) 失败"),
 ]
 
 
