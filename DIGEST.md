@@ -16,3 +16,4 @@
 | R11 | M2裂 | 数据可得性调查回库:M2劈成两半——M2a力有没有用(RDP/DexUMI公开可验,多篇+33~54pp一致)/ M2b力能否跨本体(硬缺口:最大跨本体数据全纯视觉无力,唯DexUMI双手小规模)。产品头号风险恰落在验不了那半。更新PRODUCT风险表+North-star,BACKLOG拆M2a/M2b卡 | ✅ gate 8/8 | M2a可立即做(下RDP);M2b需自采强证据=与"要不要造设备"绑定 |
 | R12 | M0-1+P14 | M0-1同步总线设计+可下单BOM(¥120≤150预算,leg_bom 16断言);P14引用纪律落判例+leg_provenance(承重文档必标来源、引用他家必带批判),首跑抓9处自己违规(路线文档丢链接)已补;删重复文档;fixture化阴性对照 | ✅ gate 10/10;阴性对照10/10 | M0-1可下单;M2a待算力 |
 | R13 | 功能定义 | FUNCTION-SPEC.md产品功能定义(10功能:4第一性推演N1-N6+6参考他家,各带出处+批判)→核心参数(13项,每个溯源到功能+值+来源+批判);结构化真源functions.json;leg_functions 107断言(功能有源/参考必批判/参数无孤儿/值不悖cert);FUNCTION-SPEC入provenance | ✅ gate 11/11;阴性对照11/11(孤儿参数必红) | 全程P14合规;下一步M0-2相机VIO选型 |
+| R14 | review+HTML | 参数完整性review:补12参数(力分辨率/夹爪行程/编码器/IMU率/续航/存储/开机/标定偏差/照度/语言标注/带宽/触觉/知情同意)+2功能(F11现场运行/F12合规),标新增与仍out-of-scope理由供Codex审;spec.html(功能参数表+完整性review+每轮prompt折叠日志R0-R29);leg_functions 188断言+leg_spec绑死HTML与真源 | ✅ gate 12/12;阴性对照12/12 | 供Codex批判性分析 |

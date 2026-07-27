@@ -61,18 +61,26 @@ def main():
         check(bool(p.get("critique")), f"{pid} 有 critique(承重参数带边界)")
         check(p.get("value") is not None and p.get("unit"), f"{pid} 有值与单位")
 
-    # 每个功能至少被一个参数覆盖(除纯软件功能 F7/F8/F9/F10 可无数值参数)
+    # 每个功能至少被一个参数覆盖(v2 review 后应全覆盖,无裸功能)
     covered = {p["traces_to"] for p in params}
-    hw_funcs = {"F1", "F2", "F3", "F4", "F5", "F6"}
-    for fid in hw_funcs:
-        check(fid in covered, f"{fid} 至少有一个核心参数覆盖")
+    for f in funcs:
+        check(f["id"] in covered, f"{f['id']} 至少有一个核心参数覆盖(review 后无裸功能)")
+
+    # review 段存在且列了新增与 out-of-scope(供批判性审阅)
+    rv = d.get("review", {})
+    check(len(rv.get("added_in_v2", [])) >= 5, "review 列出 ≥5 项新增参数")
+    check(len(rv.get("still_out_of_scope", [])) >= 3, "review 明列仍 out-of-scope 项+理由")
+    for o in rv.get("still_out_of_scope", []):
+        check(bool(o.get("reason")), f"out-of-scope 项 {o.get('item','?')} 带理由")
 
     # 值不与 cert 阈值矛盾
     sys.path.insert(0, str(ROOT / "m0"))
     from cert import THRESHOLDS
-    sync_params = [p for p in params if p["traces_to"] == "F4"]
+    # 只校验"同步误差"参数(单位含 ms),不误伤 F4 下的 IMU 率/带宽等
+    sync_params = [p for p in params
+                   if p["traces_to"] == "F4" and "ms" in str(p.get("unit", ""))]
+    check(len(sync_params) >= 1, "F4 至少有一个同步误差(ms)参数")
     for p in sync_params:
-        # P9 铺量档目标(取值 5)应 ≤ 证书阈值
         if isinstance(p["value"], (int, float)):
             check(p["value"] <= THRESHOLDS["sync_error_p99_ms"],
                   f"{p['id']} 同步目标 {p['value']}ms ≤ 证书阈值 "

@@ -76,5 +76,12 @@
     "find": "\"traces_to\": \"F1\", \"value\": 200",
     "replace": "\"traces_to\": \"F99\", \"value\": 200",
     "why": "把参数溯源改成不存在的功能F99(孤儿参数必被抓)"
+  },
+  {
+    "leg": "spec",
+    "file": "m0/functions.json",
+    "find": "\"name\": \"每指力采样率\", \"traces_to\": \"F2\", \"value\": 500",
+    "replace": "\"name\": \"每指力采样率\", \"traces_to\": \"F2\", \"value\": 999",
+    "why": "改力率500→999但不重生成HTML,spec腿应发现HTML陈旧(999不在HTML)"
   }
 ]

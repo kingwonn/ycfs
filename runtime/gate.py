@@ -79,6 +79,9 @@ LEGS = [
     # 功能→参数定义溯源自洽(每功能有第一性/参考源,参数无孤儿)
     Leg("functions", "runtime/legs/leg_functions.py",
         r"结果: (\d+) 通过, (\d+) 失败"),
+    # spec.html 与真源(functions.json+prompts.md)同步
+    Leg("spec", "runtime/legs/leg_spec.py",
+        r"结果: (\d+) 通过, (\d+) 失败"),
 ]
 
 
