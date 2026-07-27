@@ -3,13 +3,14 @@
   "legs": {
     "outbound-tests": 50,
     "choke-point-static": 26,
-    "secret-scan": 77,
+    "secret-scan": 80,
     "no-self-certification": 45,
     "pipeline": 31,
     "tradeoff": 164,
     "dashboard": 17,
     "ablation": 4,
     "bom": 16,
-    "provenance": 31
+    "provenance": 34,
+    "functions": 107
   }
 }

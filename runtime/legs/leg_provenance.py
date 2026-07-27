@@ -20,7 +20,7 @@ PASSED = FAILED = 0
 # 承重文档:研究、技术路线、产品定义、关键设计
 TARGETS = []
 for pat in ["practice/research/*.md", "practice/route-*.md",
-            "PRODUCT*.md", "m0/M0-*.md", "m2/data-availability.md",
+            "PRODUCT*.md", "FUNCTION-SPEC.md", "m0/M0-*.md", "m2/data-availability.md",
             "m0/fixtures/prov_fixture.md"]:
     TARGETS += sorted(ROOT.glob(pat))
 

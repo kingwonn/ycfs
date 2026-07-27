@@ -69,5 +69,12 @@
     "find": "PROV_MARK \\[有据\\]",
     "replace": "PROV_MARK none",
     "why": "删 fixture 唯一来源标记([有据]/出处)→该文档无来源→provenance必红"
+  },
+  {
+    "leg": "functions",
+    "file": "m0/functions.json",
+    "find": "\"traces_to\": \"F1\", \"value\": 200",
+    "replace": "\"traces_to\": \"F99\", \"value\": 200",
+    "why": "把参数溯源改成不存在的功能F99(孤儿参数必被抓)"
   }
 ]

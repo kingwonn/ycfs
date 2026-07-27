@@ -76,6 +76,9 @@ LEGS = [
     # P14:引用纪律——承重文档必须标来源,引用他家必须带批判
     Leg("provenance", "runtime/legs/leg_provenance.py",
         r"结果: (\d+) 通过, (\d+) 失败"),
+    # 功能→参数定义溯源自洽(每功能有第一性/参考源,参数无孤儿)
+    Leg("functions", "runtime/legs/leg_functions.py",
+        r"结果: (\d+) 通过, (\d+) 失败"),
 ]
 
 
