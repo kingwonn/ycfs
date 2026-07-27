@@ -27,5 +27,12 @@
     "find": "\"generated_by_system_under_test\": false,\n      \"_known_risk\"",
     "replace": "\"generated_by_system_under_test\": true,\n      \"_known_risk\"",
     "why": "把真值锚改成由被测系统生成(自等式)"
+  },
+  {
+    "leg": "pipeline",
+    "file": "m0/cert.py",
+    "find": "\"sync_error_p99_ms\": 5\\.0,",
+    "replace": "\"sync_error_p99_ms\": 500.0,",
+    "why": "偷偷放宽同步阈值(坏数据将拿到好证书)"
   }
 ]

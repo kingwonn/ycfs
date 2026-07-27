@@ -58,6 +58,9 @@ LEGS = [
         r"结果: (\d+) 文件, (\d+) 命中"),
     Leg("no-self-certification", "runtime/legs/leg_no_self_certification.py",
         r"结果: (\d+) 通过, (\d+) 失败"),
+    # M0-4:数据管线骨架 + 证书判别力(好批必过、坏批必被抓)
+    Leg("pipeline", "runtime/legs/leg_pipeline.py",
+        r"结果: (\d+) 通过, (\d+) 失败"),
 ]
 
 
