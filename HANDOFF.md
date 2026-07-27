@@ -29,6 +29,7 @@
 | 成本最优 | 对标:DIGIT BOM $15;鹿明 FastUMI Pro 1mm 精度是精度标杆 | BOM 目标价未定 |
 
 ## 交付进度
+- **product-definition.md ✅(承重决策文档,取代 spec-v0 的骑墙部分:三个押注全押明)**
 - spec-v0.md ✅(本会话接手产出,交接会话失败)
 - outreach.md ✅(两问脚本+6触点名单)
 - review-rubric.md ✅ / value-verdict-independent.md ✅(监督方独立评估)
