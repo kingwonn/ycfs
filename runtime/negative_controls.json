@@ -34,5 +34,12 @@
     "find": "\"sync_error_p99_ms\": 5\\.0,",
     "replace": "\"sync_error_p99_ms\": 500.0,",
     "why": "偷偷放宽同步阈值(坏数据将拿到好证书)"
+  },
+  {
+    "leg": "tradeoff",
+    "file": "m0/tradeoff.py",
+    "find": "num \\+= v \\* w",
+    "replace": "num += v",
+    "why": "让引擎忽略权重(选型退化为不加权,权重区分力断言必崩)"
   }
 ]

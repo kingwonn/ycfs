@@ -61,6 +61,9 @@ LEGS = [
     # M0-4:数据管线骨架 + 证书判别力(好批必过、坏批必被抓)
     Leg("pipeline", "runtime/legs/leg_pipeline.py",
         r"结果: (\d+) 通过, (\d+) 失败"),
+    # 选型决策矩阵:引擎自洽 + 权重有区分力 + 路线文件格式合规
+    Leg("tradeoff", "runtime/legs/leg_tradeoff.py",
+        r"结果: (\d+) 通过, (\d+) 失败"),
 ]
 
 
