@@ -1,0 +1,36 @@
+{
+  "modality": "位姿追踪",
+  "_note": "评分 1-5。portability 含'傻瓜化/开机即采'适配。数据源 route-03-pose-sync.md。",
+  "routes": [
+    {
+      "name": "实时板载VIO(FastUMI Ego/T265)",
+      "principle": "第一帧建世界系,板载增量VIO估计6-DoF,IMU给尺度;无需预建图无离线SLAM",
+      "scores": {"accuracy": 3, "multimodal": 3, "portability": 5, "cost": 4, "manufacturability": 4, "sim2real_scarcity": 3, "maturity": 4},
+      "source": "Fast-UMI 2409.19499;闭环<1%漂移,高加速~10cm"
+    },
+    {
+      "name": "鱼眼/全景VIO",
+      "principle": "360°大视场单位向量表示特征,弱纹理更易找特征;路线上是板载VIO镜头升级",
+      "scores": {"accuracy": 3, "multimodal": 3, "portability": 5, "cost": 4, "manufacturability": 3, "sim2real_scarcity": 3, "maturity": 3},
+      "source": "LF-VIO/Sphere-VIO 2606.29910"
+    },
+    {
+      "name": "离线VIO(ORB-SLAM3,原版UMI)",
+      "principle": "GoPro+IMU离线跑ORB-SLAM3联合优化;需离线后处理,采完才知成败",
+      "scores": {"accuracy": 3, "multimodal": 2, "portability": 1, "cost": 5, "manufacturability": 3, "sim2real_scarcity": 3, "maturity": 5},
+      "source": "UMI 2402.10329;转弯发散/快旋丢失=行业第一痛点"
+    },
+    {
+      "name": "外部动捕(OptiTrack/Vicon)",
+      "principle": "红外反光球主动定位,亚毫米零漂移;需布场进棚",
+      "scores": {"accuracy": 5, "multimodal": 2, "portability": 1, "cost": 1, "manufacturability": 4, "sim2real_scarcity": 2, "maturity": 5},
+      "source": "OptiTrack 0.3-0.65mm;$5k-100k,违背随地采集"
+    },
+    {
+      "name": "UWB超宽带",
+      "principle": "TDOA/AOA测距cm级,原生无姿态需融IMU;NLOS突跳",
+      "scores": {"accuracy": 2, "multimodal": 2, "portability": 3, "cost": 4, "manufacturability": 3, "sim2real_scarcity": 2, "maturity": 4},
+      "source": "需布锚点,金属/人体遮挡NLOS,精度不足接触操作"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "modality": "力测量(测量点方案)",
+  "_note": "评分 1-5。数据源 route-02-force.md。补偿方法(B系列)是叠加项不单列。手持关键:accuracy 已按'系统交付层牛顿级'打分,非传感器铭牌值。",
+  "routes": [
+    {
+      "name": "每指6轴CoinFT(UMI-FT)",
+      "principle": "每指尖微型6轴F/T,远端质量≈2g惯性天然趋零,双指求和/求差解耦握力",
+      "scores": {"accuracy": 4, "multimodal": 4, "portability": 5, "cost": 4, "manufacturability": 3, "sim2real_scarcity": 4, "maturity": 3},
+      "source": "arXiv 2601.09988 / 2503.19225;RMSE 0.16N,带宽公开无"
+    },
+    {
+      "name": "腕/手柄6轴F/T(Bota)+补偿",
+      "principle": "整爪作载荷,手柄F/T测传递旋量;远端质量大污染最大,需IMU+在线辨识补偿",
+      "scores": {"accuracy": 3, "multimodal": 4, "portability": 2, "cost": 2, "manufacturability": 4, "sim2real_scarcity": 4, "maturity": 5},
+      "source": "Bota MiniONE 35mN@100Hz/2000Hz/60g/数千$;TacUMI/ForceMimic"
+    },
+    {
+      "name": "视触觉FEM反推力(FEATS)",
+      "principle": "GelSight形变图FEM反演力分布;远端质量小但受帧率限",
+      "scores": {"accuracy": 3, "multimodal": 5, "portability": 3, "cost": 3, "manufacturability": 2, "sim2real_scarcity": 2, "maturity": 4},
+      "source": "arXiv 2411.03315;法向MAE<0.8N,带宽~16.7Hz"
+    },
+    {
+      "name": "电机电流估扭",
+      "principle": "F≈i·Kt·J^-T反推抓持力;仅电动夹爪可用,不给外力",
+      "scores": {"accuracy": 2, "multimodal": 1, "portability": 5, "cost": 5, "manufacturability": 4, "sim2real_scarcity": 2, "maturity": 3},
+      "source": "DDHand RSS2019;±15%,被动UMI无电机不可用"
+    }
+  ]
+}

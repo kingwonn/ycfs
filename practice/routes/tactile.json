@@ -1,0 +1,48 @@
+{
+  "modality": "触觉",
+  "_note": "评分 1-5(5最优)。方向已归一:高分=对本产品有利。sim2real_scarcity 高分=仿真难造=真机数据稀缺价值高。数据源 route-01-tactile.md。",
+  "routes": [
+    {
+      "name": "视触觉(GelSight/DIGIT/9DTact)",
+      "principle": "弹性体+相机看形变,光度立体/标记位移反算接触几何与切向力",
+      "scores": {"accuracy": 3, "multimodal": 5, "portability": 4, "cost": 4, "manufacturability": 3, "sim2real_scarcity": 1, "maturity": 5},
+      "source": "arXiv 2005.14679 / 2409.19770 / FARM 2510.13324"
+    },
+    {
+      "name": "电容多维力(帕西尼PaXini)",
+      "principle": "弹性介质受力改变电容,多电极解算六维力;点式非成像",
+      "scores": {"accuracy": 5, "multimodal": 3, "portability": 5, "cost": 3, "manufacturability": 5, "sim2real_scarcity": 4, "maturity": 4},
+      "source": "paxini.com/mall PX-6AX;1%FS/1000Hz/IP68/6×6×4mm"
+    },
+    {
+      "name": "磁性(ReSkin/AnySkin/uSkin)",
+      "principle": "磁颗粒弹性体形变→磁强计读B场→解算法向+切向力",
+      "scores": {"accuracy": 4, "multimodal": 4, "portability": 4, "cost": 5, "manufacturability": 5, "sim2real_scarcity": 4, "maturity": 4},
+      "source": "AnySkin arXiv 2409.08276;免标定台间一致,但铁磁物污染"
+    },
+    {
+      "name": "压电PVDF(动态/滑觉)",
+      "principle": "PVDF受应变产生电荷,只对变化率响应;仅动态无静态",
+      "scores": {"accuracy": 2, "multimodal": 2, "portability": 5, "cost": 5, "manufacturability": 4, "sim2real_scarcity": 4, "maturity": 4},
+      "source": "Frontiers Robotics 2025;30Hz-2.5kHz;只做补充模态"
+    },
+    {
+      "name": "压阻薄膜(Tekscan)",
+      "principle": "压敏电阻受压变化,行列矩阵读压力分布;单层无切向",
+      "scores": {"accuracy": 2, "multimodal": 1, "portability": 5, "cost": 5, "manufacturability": 2, "sim2real_scarcity": 3, "maturity": 5},
+      "source": "Tekscan;漂移迟滞严重,进不了计量级"
+    },
+    {
+      "name": "光纤FBG",
+      "principle": "力使光纤应变→布拉格波长漂移→解算力;需解调仪",
+      "scores": {"accuracy": 4, "multimodal": 2, "portability": 1, "cost": 2, "manufacturability": 5, "sim2real_scarcity": 3, "maturity": 3},
+      "source": "解调仪笨重贵,手持出局;一致性极好但被体积毙掉"
+    },
+    {
+      "name": "气压BioTac",
+      "principle": "导电液填充弹性指,阻抗测压+水听器测振+热敏测温",
+      "scores": {"accuracy": 4, "multimodal": 5, "portability": 2, "cost": 1, "manufacturability": 1, "sim2real_scarcity": 5, "maturity": 2},
+      "source": "SynTouch;>$1万/指,供货收缩,唯一原生测温"
+    }
+  ]
+}

@@ -10,3 +10,4 @@
 | R5 | M0-4 | 调查 4 路并行出发(力觉买家/采集运营/形态与在位者/采购行为);同时落 m0/ 管线骨架:证书计算器十项(好批必过/坏批必被抓,同步指标区分0.5ms与25ms差一个量级)+ LeRobot v3 形状打包器 + pipeline 腿接入 gate | ✅ gate 5/5;阴性对照 5/5(新对照:偷偷放宽同步阈值→必红) | loader 验收待样机环境;调查回来后合成完整产品定义 PRODUCT.md |
 | R6 | PRODUCT | 四路调查全合成为 PRODUCT.md:七步推理链+三押注(计量标定力/可审计证书/部署傻瓜化,各带证伪退路)+ 参数表按调查更新(可靠性升一级/VIO傻瓜化/力计量标定)+ 风险总账6条+North-star具体化 | ✅ gate 5/5;三处纠错入台账 | 最致命风险=跨本体力迁移,M2-1 先于造设备验(不需硬件) |
 | R7 | 矩阵 | 6 路技术路线穷举调查并行(触觉/力测量/位姿+同步/动作标签+视觉);同时落 m0/tradeoff.py 选型决策矩阵引擎(7维加权、缺项记null不蒙混、三档权重flagship/volume/dexterous)+ leg_tradeoff 接gate | ✅ gate 6/6;阴性对照6/6(新:忽略权重必红) | 调查回来填 practice/routes/*.json,自动出产品矩阵 |
+| R8 | 矩阵 | 4路技术路线穷举全回库(触觉8条/力9条/位姿7+同步4/动作5+视觉5),各落 practice/research/route-0*.md;填 practice/routes/*.json 喂决策矩阵;跑出三档产品选型;合成 PRODUCT-MATRIX.md(3机型×4模态+roadmap) | ✅ gate 6/6;tradeoff腿164断言;4处纠错入台账 | 铺量档Go先做(M0);M2跨本体力迁移仍是最致命验证 |

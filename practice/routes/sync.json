@@ -1,0 +1,24 @@
+{
+  "modality": "时间同步",
+  "_note": "评分 1-5。accuracy=可达同步精度。portability=对消费级相机(GoPro)的适配。数据源 route-03-pose-sync.md。注:π0亚毫秒要求存疑,ms级对50Hz动作通常已够。",
+  "routes": [
+    {
+      "name": "硬件触发(MCU统一时钟)",
+      "principle": "MCU主时钟+触发线硬触发全局快门相机,曝光中点硬件打戳",
+      "scores": {"accuracy": 5, "multimodal": 5, "portability": 1, "cost": 4, "manufacturability": 4, "sim2real_scarcity": 3, "maturity": 5},
+      "source": "µs~sub-1ms;$5-30板;但GoPro无外触发,须全局快门工业相机"
+    },
+    {
+      "name": "软件时间戳(NTP/PTP软件戳)",
+      "principle": "各流软件打时间戳按主机时钟对齐;NTP/PTP软件戳无本质差别",
+      "scores": {"accuracy": 2, "multimodal": 3, "portability": 5, "cost": 5, "manufacturability": 5, "sim2real_scarcity": 3, "maturity": 5},
+      "source": "ms级(NTP LAN 1-2ms);GoPro唯一可行路;抓不到亚毫秒"
+    },
+    {
+      "name": "GenLock/外触发相机",
+      "principle": "主灌时钟给从逐帧像素级对齐",
+      "scores": {"accuracy": 5, "multimodal": 4, "portability": 1, "cost": 2, "manufacturability": 3, "sim2real_scarcity": 3, "maturity": 4},
+      "source": "eSync2 ±5µs;消费相机无GenLock输入"
+    }
+  ]
+}
