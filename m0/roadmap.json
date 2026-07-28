@@ -1,0 +1,97 @@
+{
+  "_note": "三代产品 roadmap 结构化真源。代际=时间层(G1→G2→G3,每代为下一代去风险并设门),区别于并发的三档 SKU(Go/Pro/Dexterous)。每代:押注 bet + 证伪 falsification + 退路 fallback(不骑墙)+ 准入 entry(依赖上一代出口)+ 出口 exit(北极星量化)+ de_risks(消哪条风险)+ origin(🧬第一性/📎参考+出处+批判,P14)+ traces(激活的功能F*/子系统S*)。G3 按 G2 的力迁移判决分叉(fork_on=G2),两条分支都做成可执行,不预设。leg_roadmap 校验代际递进、证伪≠退路、de_risks 无孤儿、traces 真实、G3 必分叉。",
+  "version": "v1",
+  "risks": {
+    "R_COMMERCIAL": "商业闭环是否存在——有没有人为'合规数据+证书'付费(格式/质量是不是真瓶颈)",
+    "R_XEMBODIMENT": "跨本体力迁移无效——手持力数据换到客户本体上还有没有训练价值(致命,零生产级证据)",
+    "R_SCALE": "商业模式能否规模化——通用力库 vs 按本体现采现标,哪个撑得起经常性收入"
+  },
+  "generations": [
+    {
+      "id": "G1",
+      "name": "立足 · 铺量档 Contact-Go",
+      "horizon": "0–6 月",
+      "tier": "Contact-Go",
+      "goal": "用最便宜、能出合规数据的设备进门,立起'证书+傻瓜化'护城河,拿到 design partner",
+      "ships": [
+        "每指 CoinFT 六轴力 + 磁 AnySkin 触觉(免标定、台间一致)",
+        "实时板载 VIO + 软件时间戳同步(认 ms 级)",
+        "LeRobot v3 原生 + RLDS 导出(客户零接入)",
+        "十项质量证书(m0/cert.py 已实现)+ 一键开采 CLI"
+      ],
+      "bet": "傻瓜化开采 + 可审计证书,能让融资期大脑公司先付费拿数据——即便力的跨本体价值尚未证实(押注 2+3)",
+      "falsification": "目标客户都在受控训练场采集(不缺纹理→傻瓜化无溢价),且只认'喂进模型涨不涨点'、完全不看形式合规(证书无独立价值)",
+      "fallback": "退回把证书/质检做成纯软件工具卖(不卖硬件),或做在位者(鹿明)的质检插件——设备退居其次",
+      "entry_depends_on": null,
+      "entry": "现在即可启动;方向由 M2a『力有没有用』公开可验为正向背书(FILIC +33~53pp / ForceMimic +54.5% / TacUMI 34%→75% 多篇同向)",
+      "exit": "≥3 家 design partner 用其数据训练零 loader 报错;证书十项被 ≥1 家接受为交付验收口径;单批『采集→打包→证书』全链路 < 1 人日",
+      "de_risks": "R_COMMERCIAL",
+      "north_star": false,
+      "origin": "reference",
+      "basis": null,
+      "source": "route-03 傻瓜化痛点排序;GR00T 原生 LeRobot;m0/cert.py 十项证书;PRODUCT 押注 2/3;第一性 N4(一致性=天花板)、N2(规模/多样性=泛化)",
+      "critique": "⚠ 在位者鹿明已踩住『有触觉+有质检』边缘,Gen1 差异化薄——靠工程完成度与证书可信度取胜,不是靠概念;傻瓜化溢价在受控场景可能为零(已列为证伪条件)",
+      "traces": ["F1", "F2", "F4", "F6", "F7", "F8", "S3", "S4", "S7", "S9"]
+    },
+    {
+      "id": "G2",
+      "name": "差异化 · 旗舰档 Contact-Pro + 自采跨本体力数据",
+      "horizon": "6–15 月",
+      "tier": "Contact-Pro",
+      "goal": "把接触力做成真差异化,并采到全行业没有的『带力+跨本体』稀缺数据,正面验证头号风险 M2b(强证据须自采)",
+      "ships": [
+        "电容 PaXini 六维力触觉(计量/稀缺)+ 牛顿级力标定流程",
+        "硬件触发 MCU 同步(全局快门工业相机)",
+        "可锁定夹爪(相位锁去握力,F9)",
+        "力觉数据服务(剃刀刀片的『刀片』:按可审计力觉有效小时计费)"
+      ],
+      "bet": "牛顿级标定力 + 可审计证书值 3–4× 价;且自采力数据在客户本体上迁移有效——这一步同时是产品差异化和对最大风险的正面消除(押注 1)",
+      "falsification": "在自采数据上,含力策略相对无力基线在跨客户本体迁移后增益消失(北极星做不到)",
+      "fallback": "力模块 BOM ≤30%,摘除仍是可卖的合规 UMI;商业模式改为『针对客户本体现采现标』,不卖通用力库——把 Gen3 强制导向 Fork B",
+      "entry_depends_on": "G1",
+      "entry": "Gen1 出口达成(design partner + 管线证书跑通)且 M2a 复现与已发表数字同向;有客户愿共采其本体做迁移验证",
+      "exit": "北极星:一家融资期大脑创业公司用本系统力觉数据微调,在工业 contact-rich 任务上相对无力基线成功率可测提升(参照 GR00T 74%→94% 量级),且该力数据在客户自己本体上迁移有效",
+      "de_risks": "R_XEMBODIMENT",
+      "north_star": true,
+      "origin": "first-principle",
+      "basis": "N6",
+      "source": "第一性 N6(接触物理只能来自真机,仿真结构盲区)推演出『力数据必须自采』;route-02 CoinFT/PaXini 选型;PRODUCT 北极星/风险①;m2/data-availability.md(M2b 硬缺口)",
+      "critique": "⚠ 手持无固定基座测不了计量级,力标签只到牛顿级(物理上限,route-02 订正);M2b 公开数据只能给弱信号,这一注押在『全行业都没验过』的论断上——双刃:风险即市场(缺口=稀缺物)",
+      "traces": ["F2", "F4", "F9", "S1", "S6", "S9"]
+    },
+    {
+      "id": "G3",
+      "name": "平台/服务 · 按 Gen2 力迁移判决分叉",
+      "horizon": "15 月+",
+      "tier": "Dexterous / 数据服务",
+      "goal": "把已验证的能力放大成平台或服务——但走哪条由 Gen2 的 M2b 判决决定,不预设;两条分支都提前做成可执行,避免『赌对了才有路』",
+      "ships": [
+        "重定向引擎 v1(URDF→FeasibleCap 可行性标注→按客户本体交付)",
+        "灵巧手档 Dexterous(外骨骼/DexUMI 路线,仅 Fork A)",
+        "经常性收费的数据服务(按 Fork 定价)"
+      ],
+      "bet": "Gen2 的判决把 Gen3 一分为二;提前把两条路都做成可执行,谁赢由数据说了算",
+      "falsification": "两条分叉都无买家规模化付费(通用库无人信、且现采现标毛利撑不起经常性收入)",
+      "fallback": "退回 Gen1 的『设备+证书』标品 + 项目制 Dexterous,不做平台化",
+      "entry_depends_on": "G2",
+      "entry": "Gen2 的 M2b 判决产出(无论成立与否);对应 Fork 的首个客户就位",
+      "exit": "平台/数据服务达成经常性收入(recurring revenue),而非一次性卖设备",
+      "de_risks": "R_SCALE",
+      "north_star": false,
+      "fork_on": "G2",
+      "forks": [
+        {"branch": "A", "condition": "力跨本体成立(Gen2 北极星达成)",
+         "product": "通用力觉数据库 + 灵巧手档 Dexterous(外骨骼采关节级)+ 重定向即服务",
+         "business": "按『可审计力觉有效小时』卖通用数据(剃刀刀片规模化)"},
+        {"branch": "B", "condition": "力跨本体不成立(Gen2 证伪触发)",
+         "product": "针对客户本体的『现采现标』数据服务 + 重定向引擎为核心产品",
+         "business": "按客户本体的采集+标注项目收费,不卖通用力库(改商业模式)"}
+      ],
+      "origin": "first-principle",
+      "basis": "N3",
+      "source": "第一性 N3(动作必须落在目标本体可行关节空间)推演出『跨本体不成立则必须现采现标+重定向』;route-04 服务多本体配方;PRODUCT 证伪-退路纪律;m2 判决规则",
+      "critique": "⚠ Fork A 依赖一个尚未验证的乐观论断(力可跨本体),不能默认;Fork B 毛利与规模是真问题(项目制难放大)。分叉不是骑墙——是把不确定性显式绑到 Gen2 的可裁决判决上",
+      "traces": ["F3", "F5", "F10", "S2", "S5", "S8"]
+    }
+  ]
+}

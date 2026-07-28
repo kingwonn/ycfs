@@ -1,0 +1,58 @@
+<!doctype html><html lang=zh><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>三代产品 Roadmap · UMI 力觉数采</title><style>
+:root{--bg:#fff;--fg:#1a1a1a;--mut:#666;--line:#e5e7eb;--card:#fafafa;--g1:#eef4ff;--g2:#eefaf3;--g3:#f6effc;--acc:#2563eb;--bet:#2563eb;--fal:#b45309;--fbk:#0891b2;--crit:#b45309;--chip:#eef2f7;--ns:#d97706}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1115;--fg:#e8e8e8;--mut:#9aa0a8;--line:#2a2e37;--card:#171a21;--g1:#14203a;--g2:#0f2620;--g3:#231733;--acc:#60a5fa;--bet:#60a5fa;--fal:#fbbf24;--fbk:#22d3ee;--crit:#fcd34d;--chip:#1c2230;--ns:#fbbf24}}
+:root[data-theme=dark]{--bg:#0f1115;--fg:#e8e8e8;--mut:#9aa0a8;--line:#2a2e37;--card:#171a21;--g1:#14203a;--g2:#0f2620;--g3:#231733;--acc:#60a5fa;--bet:#60a5fa;--fal:#fbbf24;--fbk:#22d3ee;--crit:#fcd34d;--chip:#1c2230;--ns:#fbbf24}
+:root[data-theme=light]{--bg:#fff;--fg:#1a1a1a;--mut:#666;--line:#e5e7eb;--card:#fafafa;--g1:#eef4ff;--g2:#eefaf3;--g3:#f6effc;--acc:#2563eb;--bet:#2563eb;--fal:#b45309;--fbk:#0891b2;--crit:#b45309;--chip:#eef2f7;--ns:#d97706}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.65 -apple-system,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:30px 20px 80px}
+a.back{color:var(--acc);text-decoration:none;font-size:13px}
+h1{font-size:25px;margin:6px 0 4px}.sub{color:var(--mut);font-size:13.5px;margin:0 0 22px}
+.lead{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--acc);border-radius:8px;padding:12px 16px;margin:12px 0 8px;font-size:13.5px}
+.flow{display:flex;flex-direction:column;gap:0;margin-top:18px}
+.gen{border:1px solid var(--line);border-radius:12px;padding:16px 18px;position:relative}
+.gen.first-principle{border-left:4px solid var(--acc)}.gen.reference{border-left:4px solid var(--mut)}
+.conn{height:26px;width:2px;background:var(--line);margin:0 auto;position:relative}
+.conn::after{content:"▼";position:absolute;left:-6px;bottom:-4px;color:var(--mut);font-size:12px}
+.gh{display:flex;gap:12px;align-items:flex-start}
+.gid{font:700 15px/1 ui-monospace,Menlo,monospace;background:var(--acc);color:#fff;border-radius:8px;padding:8px 11px;white-space:nowrap}
+.gen.reference .gid{background:var(--mut)}
+.gt b{font-size:16px}.gmeta{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px;align-items:center}
+.hz,.tier{font:11.5px/1 ui-monospace,Menlo,monospace;color:var(--mut);border:1px solid var(--line);border-radius:6px;padding:3px 7px}
+.pill{font-size:10.5px;padding:2px 8px;border-radius:9px;background:var(--chip);color:var(--mut)}
+.ns{font-size:11px;color:var(--ns);border:1px solid var(--ns);border-radius:7px;padding:1px 7px;margin-left:8px;white-space:nowrap}
+.goal{margin:11px 0 4px;font-size:13.5px}
+.lbl{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin-bottom:3px}
+.ships{margin:8px 0}.ships ul{margin:2px 0 0;padding-left:18px;font-size:12.5px;color:var(--mut)}.ships li{margin:1px 0}
+.triad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.t{border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:12.5px;background:var(--card)}
+.t.bet{border-top:2px solid var(--bet)}.t.fal{border-top:2px solid var(--fal)}.t.fbk{border-top:2px solid var(--fbk)}
+.gate{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.ge,.gx{border:1px dashed var(--line);border-radius:9px;padding:9px 11px;font-size:12.5px}
+.gx{background:var(--g2)}
+.forks{margin:10px 0;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--g3)}
+.forkhead{font-size:12.5px;font-weight:600;margin-bottom:8px}
+.forkgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fork{border:1px solid var(--line);border-radius:9px;padding:9px 11px;background:var(--bg)}
+.fb{font:700 12px/1 ui-monospace,Menlo,monospace;color:var(--acc);margin-bottom:4px}
+.fcond{font-size:12.5px;font-weight:600;margin-bottom:6px}
+.fkv{font-size:12px;margin:2px 0}.fkv span{display:inline-block;min-width:34px;color:var(--mut);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em}
+.foota{display:flex;flex-wrap:wrap;gap:10px 16px;margin:10px 0 2px;font-size:11.5px}
+.derisk{color:var(--fal);font-weight:600}.src{color:var(--mut)}
+.crit{font-size:12px;color:var(--crit);margin:4px 0 8px}
+.traces{display:flex;flex-wrap:wrap;gap:4px}
+.chip{font-size:11px;background:var(--chip);border:1px solid var(--line);border-radius:7px;padding:1px 7px;white-space:nowrap}.chip i{color:var(--mut);font-style:normal;margin-left:4px}
+.foot{color:var(--mut);font-size:12px;margin-top:30px;border-top:1px solid var(--line);padding-top:14px}
+@media(max-width:680px){.triad,.gate,.forkgrid{grid-template-columns:1fr}}
+</style></head><body><div class=wrap>
+<a class=back href="index.html">← 总览</a>
+<h1>三代产品 Roadmap</h1>
+<p class=sub>UMI 力觉数采 · 代际=时间层(G1→G2→G3,每代为下一代去风险并设门)· 文案由 <code>m0/roadmap.json</code> 生成不手抄</p>
+
+<div class=lead><b>读法:</b>这不是三档并卖的 SKU(那是 <a class=back href="product.html">产品矩阵</a>),而是<b>时间上的递进押注</b>——每代一个可裁决的押注 + 证伪条件 + 退路(不骑墙),且被上一代的<b>出口</b>设门才启动。<b>G3 不预设方向:它按 G2『力能否跨本体』的判决分叉</b>,两条路都提前做成可执行。这正是"把最大风险的验证与'要不要造设备'绑成同一件事"。</div>
+
+<div class=flow><section class='gen reference'><div class=gh><div class=gid>G1</div><div class=gt><b>立足 · 铺量档 Contact-Go</b><div class=gmeta><span class=hz>0–6 月</span><span class=tier>Contact-Go</span><span class=pill>📎 参考他家</span></div></div></div><div class=goal>用最便宜、能出合规数据的设备进门,立起&#x27;证书+傻瓜化&#x27;护城河,拿到 design partner</div><div class=ships><span class=lbl>交付</span><ul><li>每指 CoinFT 六轴力 + 磁 AnySkin 触觉(免标定、台间一致)</li><li>实时板载 VIO + 软件时间戳同步(认 ms 级)</li><li>LeRobot v3 原生 + RLDS 导出(客户零接入)</li><li>十项质量证书(m0/cert.py 已实现)+ 一键开采 CLI</li></ul></div><div class=triad><div class='t bet'><span class=lbl>押注</span>傻瓜化开采 + 可审计证书,能让融资期大脑公司先付费拿数据——即便力的跨本体价值尚未证实(押注 2+3)</div><div class='t fal'><span class=lbl>证伪(可裁决)</span>目标客户都在受控训练场采集(不缺纹理→傻瓜化无溢价),且只认&#x27;喂进模型涨不涨点&#x27;、完全不看形式合规(证书无独立价值)</div><div class='t fbk'><span class=lbl>退路</span>退回把证书/质检做成纯软件工具卖(不卖硬件),或做在位者(鹿明)的质检插件——设备退居其次</div></div><div class=gate><div class=ge><span class=lbl>准入</span>现在即可启动;方向由 M2a『力有没有用』公开可验为正向背书(FILIC +33~53pp / ForceMimic +54.5% / TacUMI 34%→75% 多篇同向)</div><div class=gx><span class=lbl>出口</span>≥3 家 design partner 用其数据训练零 loader 报错;证书十项被 ≥1 家接受为交付验收口径;单批『采集→打包→证书』全链路 &lt; 1 人日</div></div><div class=foota><span class=derisk>消解风险:R_COMMERCIAL</span><span class=src>来源:route-03 傻瓜化痛点排序;GR00T 原生 LeRobot;m0/cert.py 十项证书;PRODUCT 押注 2/3;第一性 N4(一致性=天花板)、N2(规模/多样性=泛化)</span></div><div class=crit>⚠ ⚠ 在位者鹿明已踩住『有触觉+有质检』边缘,Gen1 差异化薄——靠工程完成度与证书可信度取胜,不是靠概念;傻瓜化溢价在受控场景可能为零(已列为证伪条件)</div><div class=traces><span class=chip>F1<i>记录末端位姿轨迹</i></span> <span class=chip>F2<i>记录接触力/触觉</i></span> <span class=chip>F4<i>多模态时间同步</i></span> <span class=chip>F6<i>采集时实时质检</i></span> <span class=chip>F7<i>原生训练格式输出</i></span> <span class=chip>F8<i>质量证书交付</i></span> <span class=chip>S3<i>VIO/位姿软件</i></span> <span class=chip>S4<i>数据管线语言与格式</i></span> <span class=chip>S7<i>质检/证书计算</i></span> <span class=chip>S9<i>力/触觉采集</i></span></div></section><div class=conn></div><section class='gen first-principle'><div class=gh><div class=gid>G2</div><div class=gt><b>差异化 · 旗舰档 Contact-Pro + 自采跨本体力数据</b><span class=ns>★ 北极星</span><div class=gmeta><span class=hz>6–15 月</span><span class=tier>Contact-Pro</span><span class=pill>🧬 第一性·N6</span></div></div></div><div class=goal>把接触力做成真差异化,并采到全行业没有的『带力+跨本体』稀缺数据,正面验证头号风险 M2b(强证据须自采)</div><div class=ships><span class=lbl>交付</span><ul><li>电容 PaXini 六维力触觉(计量/稀缺)+ 牛顿级力标定流程</li><li>硬件触发 MCU 同步(全局快门工业相机)</li><li>可锁定夹爪(相位锁去握力,F9)</li><li>力觉数据服务(剃刀刀片的『刀片』:按可审计力觉有效小时计费)</li></ul></div><div class=triad><div class='t bet'><span class=lbl>押注</span>牛顿级标定力 + 可审计证书值 3–4× 价;且自采力数据在客户本体上迁移有效——这一步同时是产品差异化和对最大风险的正面消除(押注 1)</div><div class='t fal'><span class=lbl>证伪(可裁决)</span>在自采数据上,含力策略相对无力基线在跨客户本体迁移后增益消失(北极星做不到)</div><div class='t fbk'><span class=lbl>退路</span>力模块 BOM ≤30%,摘除仍是可卖的合规 UMI;商业模式改为『针对客户本体现采现标』,不卖通用力库——把 Gen3 强制导向 Fork B</div></div><div class=gate><div class=ge><span class=lbl>准入</span>Gen1 出口达成(design partner + 管线证书跑通)且 M2a 复现与已发表数字同向;有客户愿共采其本体做迁移验证</div><div class=gx><span class=lbl>出口</span>北极星:一家融资期大脑创业公司用本系统力觉数据微调,在工业 contact-rich 任务上相对无力基线成功率可测提升(参照 GR00T 74%→94% 量级),且该力数据在客户自己本体上迁移有效</div></div><div class=foota><span class=derisk>消解风险:R_XEMBODIMENT</span><span class=src>来源:第一性 N6(接触物理只能来自真机,仿真结构盲区)推演出『力数据必须自采』;route-02 CoinFT/PaXini 选型;PRODUCT 北极星/风险①;m2/data-availability.md(M2b 硬缺口)</span></div><div class=crit>⚠ ⚠ 手持无固定基座测不了计量级,力标签只到牛顿级(物理上限,route-02 订正);M2b 公开数据只能给弱信号,这一注押在『全行业都没验过』的论断上——双刃:风险即市场(缺口=稀缺物)</div><div class=traces><span class=chip>F2<i>记录接触力/触觉</i></span> <span class=chip>F4<i>多模态时间同步</i></span> <span class=chip>F9<i>握力解耦</i></span> <span class=chip>S1<i>MCU固件(采样与时基)</i></span> <span class=chip>S6<i>固件↔主机协议</i></span> <span class=chip>S9<i>力/触觉采集</i></span></div></section><div class=conn></div><section class='gen first-principle'><div class=gh><div class=gid>G3</div><div class=gt><b>平台/服务 · 按 Gen2 力迁移判决分叉</b><div class=gmeta><span class=hz>15 月+</span><span class=tier>Dexterous / 数据服务</span><span class=pill>🧬 第一性·N3</span></div></div></div><div class=goal>把已验证的能力放大成平台或服务——但走哪条由 Gen2 的 M2b 判决决定,不预设;两条分支都提前做成可执行,避免『赌对了才有路』</div><div class=ships><span class=lbl>交付</span><ul><li>重定向引擎 v1(URDF→FeasibleCap 可行性标注→按客户本体交付)</li><li>灵巧手档 Dexterous(外骨骼/DexUMI 路线,仅 Fork A)</li><li>经常性收费的数据服务(按 Fork 定价)</li></ul></div><div class=triad><div class='t bet'><span class=lbl>押注</span>Gen2 的判决把 Gen3 一分为二;提前把两条路都做成可执行,谁赢由数据说了算</div><div class='t fal'><span class=lbl>证伪(可裁决)</span>两条分叉都无买家规模化付费(通用库无人信、且现采现标毛利撑不起经常性收入)</div><div class='t fbk'><span class=lbl>退路</span>退回 Gen1 的『设备+证书』标品 + 项目制 Dexterous,不做平台化</div></div><div class=gate><div class=ge><span class=lbl>准入</span>Gen2 的 M2b 判决产出(无论成立与否);对应 Fork 的首个客户就位</div><div class=gx><span class=lbl>出口</span>平台/数据服务达成经常性收入(recurring revenue),而非一次性卖设备</div></div><div class=forks><div class=forkhead>⑃ 按 G2 的力迁移判决分叉(两支都做成可执行)</div><div class=forkgrid><div class=fork><div class=fb>Fork A</div><div class=fcond>力跨本体成立(Gen2 北极星达成)</div><div class=fkv><span>产品</span>通用力觉数据库 + 灵巧手档 Dexterous(外骨骼采关节级)+ 重定向即服务</div><div class=fkv><span>商业</span>按『可审计力觉有效小时』卖通用数据(剃刀刀片规模化)</div></div><div class=fork><div class=fb>Fork B</div><div class=fcond>力跨本体不成立(Gen2 证伪触发)</div><div class=fkv><span>产品</span>针对客户本体的『现采现标』数据服务 + 重定向引擎为核心产品</div><div class=fkv><span>商业</span>按客户本体的采集+标注项目收费,不卖通用力库(改商业模式)</div></div></div></div><div class=foota><span class=derisk>消解风险:R_SCALE</span><span class=src>来源:第一性 N3(动作必须落在目标本体可行关节空间)推演出『跨本体不成立则必须现采现标+重定向』;route-04 服务多本体配方;PRODUCT 证伪-退路纪律;m2 判决规则</span></div><div class=crit>⚠ ⚠ Fork A 依赖一个尚未验证的乐观论断(力可跨本体),不能默认;Fork B 毛利与规模是真问题(项目制难放大)。分叉不是骑墙——是把不确定性显式绑到 Gen2 的可裁决判决上</div><div class=traces><span class=chip>F3<i>记录腕视角视觉</i></span> <span class=chip>F5<i>采集时可行性反馈</i></span> <span class=chip>F10<i>跨设备标定一致</i></span> <span class=chip>S2<i>板载算力平台</i></span> <span class=chip>S5<i>在线IK/可行性/重定向</i></span> <span class=chip>S8<i>操作端App(启停/实时质检显示)</i></span></div></section></div>
+
+<div class=foot>由 <code>m0/build_roadmap_html.py</code> 从 roadmap.json 生成;roadmap 腿(93 断言)守代际递进/证伪≠退路/de_risks 无孤儿/G3 必分叉,roadmap-html 腿绑死此页与真源(改文案不重生成即红)。🧬第一性带 N1-N6 依据,📎参考带出处+批判(P14),均可追溯 PRODUCT.md / practice/research/route-0*.md。</div>
+</div></body></html>

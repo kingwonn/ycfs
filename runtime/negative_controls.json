@@ -97,5 +97,19 @@
     "find": "\"choice\": \"Pinocchio",
     "replace": "\"choice\": \"改库Pinocchio",
     "why": "改S5选型但不重生成HTML,techstack-html腿应发现HTML陈旧(新选型串不在旧HTML)"
+  },
+  {
+    "leg": "roadmap",
+    "file": "m0/roadmap.json",
+    "find": "\"entry_depends_on\": \"G2\"",
+    "replace": "\"entry_depends_on\": \"G1\"",
+    "why": "把 Gen3 准入依赖从 Gen2 改成 Gen1(打破代际递进,变成并行猜而非分阶段去风险,必被抓)"
+  },
+  {
+    "leg": "roadmap-html",
+    "file": "m0/roadmap.json",
+    "find": "\"name\": \"立足 ",
+    "replace": "\"name\": \"改代 ",
+    "why": "改 G1 代名但不重生成HTML,roadmap-html腿应发现HTML陈旧(新代名不在旧HTML)"
   }
 ]

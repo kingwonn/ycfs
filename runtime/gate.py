@@ -88,6 +88,12 @@ LEGS = [
     # techstack.html 与真源(techstack.json)同步
     Leg("techstack-html", "runtime/legs/leg_techstack_html.py",
         r"结果: (\d+) 通过, (\d+) 失败"),
+    # 三代 roadmap:代际递进 + 证伪≠退路(不骑墙) + G3 按 G2 判决分叉
+    Leg("roadmap", "runtime/legs/leg_roadmap.py",
+        r"结果: (\d+) 通过, (\d+) 失败"),
+    # roadmap.html 与真源(roadmap.json)同步
+    Leg("roadmap-html", "runtime/legs/leg_roadmap_html.py",
+        r"结果: (\d+) 通过, (\d+) 失败"),
 ]
 
 
