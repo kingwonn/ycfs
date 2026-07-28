@@ -82,6 +82,12 @@ LEGS = [
     # spec.html 与真源(functions.json+prompts.md)同步
     Leg("spec", "runtime/legs/leg_spec.py",
         r"结果: (\d+) 通过, (\d+) 失败"),
+    # 平台/技术栈选型溯源(每选型有来源+批判,serves 无孤儿,参考类必批判)
+    Leg("techstack", "runtime/legs/leg_techstack.py",
+        r"结果: (\d+) 通过, (\d+) 失败"),
+    # techstack.html 与真源(techstack.json)同步
+    Leg("techstack-html", "runtime/legs/leg_techstack_html.py",
+        r"结果: (\d+) 通过, (\d+) 失败"),
 ]
 
 

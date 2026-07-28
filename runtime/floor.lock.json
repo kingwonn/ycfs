@@ -3,15 +3,17 @@
   "legs": {
     "outbound-tests": 50,
     "choke-point-static": 26,
-    "secret-scan": 83,
+    "secret-scan": 88,
     "no-self-certification": 45,
     "pipeline": 31,
     "tradeoff": 164,
     "dashboard": 17,
     "ablation": 4,
     "bom": 16,
-    "provenance": 34,
+    "provenance": 37,
     "functions": 188,
-    "spec": 64
+    "spec": 65,
+    "techstack": 130,
+    "techstack-html": 36
   }
 }

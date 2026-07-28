@@ -83,5 +83,19 @@
     "find": "\"name\": \"每指力采样率\", \"traces_to\": \"F2\", \"value\": 500",
     "replace": "\"name\": \"每指力采样率\", \"traces_to\": \"F2\", \"value\": 999",
     "why": "改力率500→999但不重生成HTML,spec腿应发现HTML陈旧(999不在HTML)"
+  },
+  {
+    "leg": "techstack",
+    "file": "m0/techstack.json",
+    "find": "\"critique\": \"PI承认LeRobot",
+    "replace": "\"_critique\": \"PI承认LeRobot",
+    "why": "抹掉参考类子系统(S4 LeRobot)的批判→引用他家却不批判,违反P14必被抓"
+  },
+  {
+    "leg": "techstack-html",
+    "file": "m0/techstack.json",
+    "find": "\"choice\": \"Pinocchio",
+    "replace": "\"choice\": \"改库Pinocchio",
+    "why": "改S5选型但不重生成HTML,techstack-html腿应发现HTML陈旧(新选型串不在旧HTML)"
   }
 ]

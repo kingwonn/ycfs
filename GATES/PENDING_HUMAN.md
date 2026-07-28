@@ -28,3 +28,11 @@
    凭证、出网、生产库连接——不要靠正则禁止 agent 用,直接让它在环境里拿不到。
    研究给的判据:**它拿不到密钥,就不需要你写规则禁止它用密钥。**
    正则防线可以被穷举绕过(本轮已实测穿透一次),权限边界不能。
+
+7. **启用 GitHub Pages(把产品定义发成可分享的站点)**:
+   仓库 Settings → Pages → Source 设为 **"GitHub Actions"**(仓库管理员权限,agent 够不到)。
+   现状:`.github/workflows/pages.yml` 已写好——先跑 `gate`(红则不发)+ 阴性对照 + 重生成无 diff,
+   再上传 `site/`;**deploy 只在默认分支 `main` 触发**(功能分支只验证不发布,避开环境保护)。
+   验收:启用后,把本分支合入 `main` → Actions 的 pages 工作流绿 → 站点 URL 可访问
+   (`index.html` 总览 → product/spec/techstack 三页)。
+   ⚠ 说明:从功能分支部署 Pages 受 `github-pages` 环境保护限制,正式对外须在受保护主分支发。

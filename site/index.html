@@ -1,0 +1,74 @@
+<!doctype html><html lang=zh><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>UMI 力觉数采 · 产品定义总览</title><style>
+:root{--bg:#fff;--fg:#16181d;--mut:#5f6672;--line:#e5e7eb;--card:#fafbfc;--acc:#2563eb;--acc2:#0891b2;--grid:#eef1f5;--warn:#b45309}
+@media(prefers-color-scheme:dark){:root{--bg:#0d0f13;--fg:#e8eaed;--mut:#9aa0a8;--line:#252a33;--card:#141821;--acc:#60a5fa;--acc2:#22d3ee;--grid:#171b23;--warn:#fbbf24}}
+:root[data-theme=dark]{--bg:#0d0f13;--fg:#e8eaed;--mut:#9aa0a8;--line:#252a33;--card:#141821;--acc:#60a5fa;--acc2:#22d3ee;--grid:#171b23;--warn:#fbbf24}
+:root[data-theme=light]{--bg:#fff;--fg:#16181d;--mut:#5f6672;--line:#e5e7eb;--card:#fafbfc;--acc:#2563eb;--acc2:#0891b2;--grid:#eef1f5;--warn:#b45309}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:15px/1.65 -apple-system,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px;background-position:-1px -1px}
+.wrap{max-width:1060px;margin:0 auto;padding:56px 20px 90px}
+.eyebrow{font:11px/1 ui-monospace,"SF Mono",Menlo,monospace;letter-spacing:.18em;text-transform:uppercase;color:var(--acc2);margin:0 0 14px}
+h1{font-size:30px;line-height:1.2;margin:0 0 10px;text-wrap:balance;letter-spacing:-.01em}
+.tag{color:var(--mut);font-size:15px;max-width:60ch;margin:0 0 8px}
+.chain{font:12.5px/1.5 ui-monospace,"SF Mono",Menlo,monospace;color:var(--mut);
+  background:var(--card);border:1px solid var(--line);border-radius:9px;padding:11px 15px;margin:20px 0 34px;overflow-x:auto;white-space:nowrap}
+.chain b{color:var(--fg)}.chain .a{color:var(--acc)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+a.card{display:block;text-decoration:none;color:inherit;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;padding:20px 20px 18px;transition:border-color .15s,transform .15s}
+a.card:hover{border-color:var(--acc);transform:translateY(-2px)}
+a.card:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.card .no{font:11px/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;color:var(--mut)}
+.card h2{font-size:18px;margin:8px 0 6px}
+.card p{font-size:13px;color:var(--mut);margin:0 0 12px}
+.card .go{font-size:13px;color:var(--acc);font-weight:600}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:34px}
+.pill{font:11.5px/1 ui-monospace,Menlo,monospace;color:var(--mut);
+  background:var(--card);border:1px solid var(--line);border-radius:20px;padding:6px 12px}
+.pill b{color:var(--fg)}
+.note{margin-top:30px;font-size:12.5px;color:var(--mut);border-top:1px solid var(--line);padding-top:16px;max-width:70ch}
+.note code{background:var(--grid);padding:1.5px 5px;border-radius:4px;font:12px ui-monospace,Menlo,monospace}
+</style></head><body><div class=wrap>
+<p class=eyebrow>UMI · 力觉数据采集 · 卖铲子给具身大脑</p>
+<h1>产品定义总览</h1>
+<p class=tag>从具身大脑第一性数据需求出发,推导出的产品功能、核心参数、技术路线矩阵与实现选型——每条主张都被机器验证器绑死(改真源不重生成即红)。</p>
+
+<div class=chain>
+<span class=a>N1-N6</span> 第一性数据要求 <b>→</b> 12 功能 <b>→</b> 27 参数 <b>→</b> 4 模态×3 机型矩阵 <b>→</b> <span class=a>10</span> 实现子系统 <b>→</b> <code style=color:inherit>ycfs gate</code> + CI 守
+</div>
+
+<div class=cards>
+  <a class=card href="product.html">
+    <div class=no>01 / 矩阵</div>
+    <h2>产品矩阵与路线图</h2>
+    <p>三档机型(旗舰 Contact-Pro / 铺量 Contact-Go / 灵巧手)× 四模态得分,经加权决策矩阵实时算出,含 roadmap 与风险表。</p>
+    <div class=go>打开 →</div>
+  </a>
+  <a class=card href="spec.html">
+    <div class=no>02 / 定义</div>
+    <h2>功能与核心参数定义</h2>
+    <p>12 功能(🧬第一性推演 / 📎参考他家+批判)→ 27 参数,每个溯源到功能、带值/来源/边界;附参数完整性 review 与每轮 prompt 日志。</p>
+    <div class=go>打开 →</div>
+  </a>
+  <a class=card href="techstack.html">
+    <div class=no>03 / 实现</div>
+    <h2>平台与技术栈选型</h2>
+    <p>10 个实现子系统(固件/算力/VIO/管线/IK/协议/质检/App/传感/CI),每条选型列候选、比较、给出处+批判,serves 指回所服务的功能。</p>
+    <div class=go>打开 →</div>
+  </a>
+</div>
+
+<div class=meta>
+  <span class=pill><b>14</b> 门禁腿</span>
+  <span class=pill>棘轮 · 只紧不松</span>
+  <span class=pill>阴性对照 · 每腿证明会红</span>
+  <span class=pill>P14 · 引用必带批判</span>
+  <span class=pill>被测不能自证</span>
+</div>
+
+<p class=note>本站由 <code>site/*.html</code> 从结构化真源(<code>m0/*.json</code> + <code>practice/research/</code>)生成,经 <code>runtime/gate.py</code> 绑死 HTML 与真源后,由 <code>.github/workflows/pages.yml</code> 发布——工作流先跑门禁(红则不发),保证上线页与真源一致。这正是"被测不能自证"落到发布面:能上线的页,必然过了门禁。</p>
+</div></body></html>

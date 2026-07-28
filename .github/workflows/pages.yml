@@ -1,0 +1,72 @@
+# 发布 site/ 到 GitHub Pages —— 但先跑门禁,红则不发。
+# 这把"被测不能自证"落到发布面:能上线的页,必然过了 gate(HTML 与真源一致)。
+# 需人一次性:仓库 Settings → Pages → Source 设为 "GitHub Actions"(管理员权限)。
+name: pages
+
+on:
+  push:
+    branches:
+      - main
+      - claude/yan-chu-fa-sui-tech-progress-0vl3zq
+    paths:
+      - "site/**"
+      - "m0/**"
+      - "runtime/**"
+      - "practice/**"
+      - "m2/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # 第一关:门禁必须绿,且已提交的 HTML 与真源一致(重生成后无 diff)。
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 装依赖
+        run: pip install numpy scikit-learn
+      - name: 跑门禁(诚实性 + HTML 与真源同步)
+        run: python3 runtime/gate.py
+      - name: 阴性对照(每条腿证明会红)
+        run: python3 runtime/gate.py --selftest
+      - name: 重生成 HTML,确认与已提交无 diff(防陈旧漏网)
+        run: |
+          python3 m0/build_dashboard.py
+          python3 m0/build_spec_html.py
+          python3 m0/build_techstack_html.py
+          git diff --exit-code -- site/ || {
+            echo "::error::site/ 的 HTML 与真源不一致——请本地重生成后再提交"; exit 1; }
+
+  # 第二关:打包 site/ 上传为 Pages 产物(所有触发分支都做,便于预览产物)。
+  build:
+    needs: gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  # 第三关:仅默认分支正式部署上线(功能分支只验证不发布,避开环境保护限制)。
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
