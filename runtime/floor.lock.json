@@ -3,7 +3,7 @@
   "legs": {
     "outbound-tests": 50,
     "choke-point-static": 26,
-    "secret-scan": 93,
+    "secret-scan": 94,
     "no-self-certification": 45,
     "pipeline": 31,
     "tradeoff": 164,
