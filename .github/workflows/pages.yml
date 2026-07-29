@@ -47,6 +47,7 @@ jobs:
           python3 m0/build_spec_html.py
           python3 m0/build_techstack_html.py
           python3 m0/build_roadmap_html.py
+          python3 m0/build_watchlist_html.py
           git diff --exit-code -- site/ || {
             echo "::error::site/ 的 HTML 与真源不一致——请本地重生成后再提交"; exit 1; }
 
